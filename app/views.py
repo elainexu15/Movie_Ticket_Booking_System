@@ -22,7 +22,25 @@ def before_request():
         user = next((x for x in LincolnCinema.all_customers if x.username == session['user_username']), None)
         if user:
             g.user = user
+
+
+@views.before_request
+def before_request():
+    g.user = None
+
+    if 'user_username' in session:
+        user = next((x for x in LincolnCinema.all_customers if x.username == session['user_username']), None)
+        if user is None:
+            user = next((x for x in LincolnCinema.all_admins if x.username == session['user_username']), None)
+        if user is None:
+            user = next((x for x in LincolnCinema.all_staff if x.username == session['user_username']), None)
         
+        if user:
+            g.user = user
+            print(user.name)
+            print(user.username)
+
+
 
 @views.route('/login', methods=['GET', 'POST'])
 def login():
@@ -42,21 +60,22 @@ def login():
             if user is None:
                 user = next((x for x in LincolnCinema.all_admins if x.username == username), None)
             if user is None:
-                user = next((x for x in LincolnCinema.all_staff if x.username == username), None)
+                user = next((x for x in LincolnCinema.all_front_desk_staffs if x.username == username), None)
         except StopIteration:
             user = None
 
         if user is not None and check_password_hash(user.password, password):
             session['user_username'] = user.username
+            print(user.username)
             if isinstance(user, Customer):
                 flash("Login successful!", 'success')
-                return render_template('profile.html')
+                return redirect(url_for('views.profile'))
             elif isinstance(user, Admin):
                 flash("Login successful!", 'success')
-                return render_template('admin_dashboard.html')
+                return redirect(url_for('views.admin_dashboard'))
             elif isinstance(user, FrontDeskStaff):
                 flash("Login successful!", 'success')
-                return render_template('staff_dashboard.html')
+                return redirect(url_for('views.staff_dashboard'))
         else:
             flash("Invalid username or password. Please try again.", 'error')
             return redirect(url_for('views.login'))
@@ -77,8 +96,21 @@ def dashboard():
 def profile():
     if not g.user:
         return redirect(url_for('views.login'))
-
     return render_template('profile.html')
+
+
+@views.route('/admin_dashboard')
+def admin_dashboard():
+    if not g.user:
+        return redirect(url_for('views.login'))
+    return render_template('admin_dashboard.html')
+
+
+@views.route('/staff_dashboard')
+def staff_dashboard():
+    if not g.user:
+        return redirect(url_for('views.login'))
+    return render_template('staff_dashboard.html')
 
 
 @views.route('/register', methods=['GET', 'POST'])

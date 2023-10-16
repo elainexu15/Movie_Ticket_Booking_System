@@ -24,11 +24,39 @@ class Admin(User):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
         super().__init__(name, address, email, phone, username, password)
 
+    # get admin name
+    @property
+    def name(self):
+        return self._name
+
+    # get admin username
+    @property
+    def username(self):
+        return self._username
+    
+    # get admin password
+    @property
+    def password(self):
+        return self._password
 
 class FrontDeskStaff(User):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
         super().__init__(name, address, email, phone, username, password)
+    
+    # get front desk staff name
+    @property
+    def name(self):
+        return self._name
 
+    # get front desk staff username
+    @property
+    def username(self):
+        return self._username
+    
+    # get front desk staff password
+    @property
+    def password(self):
+        return self._password
 
 class Customer(User):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
@@ -69,6 +97,3 @@ class Customer(User):
     def __repr__(self):
         return f'<Customer: {self.name}>'
     
-
-customer = Customer('leo','62','admin@lu.com','1111111111','manager2', '111')
-print(customer)

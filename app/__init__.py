@@ -16,6 +16,8 @@ DB_NAME = "database.db"
 # Create an instance of CinemaController and load the database during application startup
 LincolnCinema = CinemaController()
 LincolnCinema.load_database()
+print(LincolnCinema.all_admins)
+print(LincolnCinema.all_front_desk_staffs)
 
 from app.views import views
 
