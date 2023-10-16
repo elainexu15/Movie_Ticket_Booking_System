@@ -33,7 +33,7 @@ def before_request():
         if user is None:
             user = next((x for x in LincolnCinema.all_admins if x.username == session['user_username']), None)
         if user is None:
-            user = next((x for x in LincolnCinema.all_staff if x.username == session['user_username']), None)
+            user = next((x for x in LincolnCinema.all_front_desk_staffs if x.username == session['user_username']), None)
         
         if user:
             g.user = user
@@ -69,7 +69,7 @@ def login():
             print(user.username)
             if isinstance(user, Customer):
                 flash("Login successful!", 'success')
-                return redirect(url_for('views.profile'))
+                return redirect(url_for('views.customer_dashboard'))
             elif isinstance(user, Admin):
                 flash("Login successful!", 'success')
                 return redirect(url_for('views.admin_dashboard'))
@@ -83,20 +83,11 @@ def login():
     return render_template('login.html')
 
 
-
-
-@views.route('/dashboard')
-def dashboard():
+@views.route('/customer_dashboard')
+def customer_dashboard():
     if not g.user:
         return redirect(url_for('views.login'))
-    return render_template('dashboard.html')
-
-
-@views.route('/profile')
-def profile():
-    if not g.user:
-        return redirect(url_for('views.login'))
-    return render_template('profile.html')
+    return render_template('customer_dashboard.html')
 
 
 @views.route('/admin_dashboard')
