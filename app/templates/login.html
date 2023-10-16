@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lincoln Cinema Online Ticket Booking System</title>
+    {% include 'bootstrap.html' %}
+    
+  </head>
+  <body>
+  	{% include 'nav.html' %}
+    {% include 'banner.html' %}
+  	{% include 'flash.html' %}
+
+    <div class="container">
+        <form class="mx-1 mx-md-4" action="{{url_for('views.login')}}" method="post">
+
+        <!-- Input field for user name -->
+        <div class="d-flex flex-row align-items-center mb-4">
+            <div class="form-outline flex-fill mb-0">
+            <input type="text" class="form-control" name="username" placeholder="User Name"/> 
+            </div>
+        </div>
+
+        <!-- Input field for password -->
+        <div class="d-flex flex-row align-items-center mb-4">
+            <div class="form-outline flex-fill mb-0">
+            <input type="password" class="form-control" name="password" placeholder="Password" /> 
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+
+        </form>
+          
+    </div>
+    {% include 'footer.html' %}
+  </body>
+</html>
