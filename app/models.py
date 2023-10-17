@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import date
 
 class General(ABC):
     pass
@@ -12,7 +13,6 @@ class Person(General, ABC):
         self._address = address
         self._email = email
         self._phone = phone
-
 
 class User(Person, ABC):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
@@ -97,3 +97,56 @@ class Customer(User):
     def __repr__(self):
         return f'<Customer: {self.name}>'
     
+# ========= class Movie ==========
+class Movie:
+    """! The Movie class: Represents a movie with details."""
+    next_id = 100
+
+    def __init__(self, title: str, language: str, genre: str, country: str, release_date: date, duration_in_mins: int, description: str) -> None:
+        """! Constructor for the Movie class.
+        @param title (str): The title of the movie.
+        @param language (str): The language of the movie.
+        @param genre (str): The genre of the movie.
+        @param country (str): The country of the movie.
+        @param release_date (date): The release date of the movie.
+        @param duration_in_mins (int): The duration of the movie in minutes.
+        @param description (str): A description of the movie.
+        """
+        self.__movie_id = Movie.next_id    # Unique movie ID
+        self.__title = title               # The title of the movie
+        self.__language = language         # The language of the movie
+        self.__genre = genre               # The genre of the movie
+        self.__country = country           # The country of the movie
+        self.__release_date = release_date # The release date of the movie
+        self.__duration_in_mins = duration_in_mins  # Duration of the movie in minutes
+        self.__description = description   # A description of the movie
+        self.__screenings = []             # List of screenings for this movie
+        Movie.next_id += 1                 # Increment the movie ID counter
+
+    @property
+    def title(self):
+        return self.__title
+
+    @property
+    def language(self):
+        return self.__language
+
+    @property
+    def genre(self):
+        return self.__genre
+
+    @property
+    def country(self):
+        return self.__country
+
+    @property
+    def release_date(self):
+        return self.__release_date
+
+    @property
+    def duration_in_mins(self):
+        return self.__duration_in_mins
+
+    @property
+    def description(self):
+        return self.__description

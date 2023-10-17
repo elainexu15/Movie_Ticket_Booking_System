@@ -6,6 +6,7 @@ class CinemaController:
         self.__customers = []
         self.__admins = []
         self.__front_desk_staffs = []
+        self.__movies = []
 
     @property
     def all_customers(self):
@@ -19,7 +20,12 @@ class CinemaController:
     def all_front_desk_staffs(self):
         return self.__front_desk_staffs
 
-        
+    @property
+    def all_movies(self):
+        return self.__movies
+            
+
+
     def find_customer(self, username):
         for customer in self.__customers:
             if customer.username == username:
@@ -30,12 +36,15 @@ class CinemaController:
     def add_customer(self, customer):
         self.__customers.append(customer)
     
- 
     def add_admin(self, admin):
         self.__admins.append(admin)
 
     def add_front_desk_staff(self, front_desk_staff):
         self.__front_desk_staffs.append(front_desk_staff)
+
+    def add_movie(self, movie_object):
+        self.__movies.append(movie_object)
+            
 
     def register_customer(self, name, address, email, phone, username, hashed_password) -> bool:
         # Check if the username already exists
@@ -97,9 +106,24 @@ class CinemaController:
         except Exception as e:
             print(f"An unexpected error occurred while reading '{file_name}': {str(e)}")
 
-
+   # Method to read movie data from a file and create Movie objects
+    def add_movies_from_file(self, file_name):
+        try:
+            with open(file_name, 'r') as file:
+                for line in file:
+                    data = line.strip().split(',')
+                    title, language, genre, country, release_date, duration_in_minutes, description = data[0], data[1], data[2], data[3], data[4], data[5], data[6]
+                    movie_object = Movie(title, language, genre, country, release_date, duration_in_minutes, description)
+                    self.add_movie(movie_object)
+        except FileNotFoundError:
+            print(f"Error: File '{file_name}' not found.")
+        except PermissionError:
+            print(f"Error: Permission denied for file '{file_name}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred while reading '{file_name}': {str(e)}")
     
     def load_database(self):
         self.add_customers_from_file('app/database/customers.txt')
         self.add_admins_from_file('app/database/admins.txt')
         self.add_front_desk_staffs_from_file('app/database/front_desk_staffs.txt')
+        self.add_movies_from_file('app/database/movies.txt')

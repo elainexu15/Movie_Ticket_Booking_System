@@ -141,3 +141,10 @@ def logout():
     if 'user_username' in session:
         session.pop('user_username', None)
     return redirect(url_for('views.home'))
+
+@views.route('/all_movies')
+def all_movies():
+    all_movies = LincolnCinema.all_movies
+    return render_template('all_movies.html', all_movies = all_movies)
+
+

@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lincoln Cinema Online Ticket Booking System</title>
+    {% include 'bootstrap.html' %}
+    
+  </head>
+  <body>
+  	{% include 'nav.html' %}
+    {% include 'banner.html' %}
+  	{% include 'flash.html' %}
+  	{% include 'sidebar_filter.html' %}
+   
+
+    <div class="container">
+        {% for movie in all_movies %}
+            <h1>{{ movie.title }}</h1>
+            <p>Language: {{ movie.language }}</p>
+            <p>Genre: {{ movie.genre }}</p>
+            <p>Country: {{ movie.country }}</p>
+            <p>Release Date: {{ movie.release_date }}</p>
+            <p>Duration (mins): {{ movie.duration_in_mins }}</p>
+            <p>Description: {{ movie.description }}</p>
+        {% endfor %}
+
+    </div>
+    {% include 'footer.html' %}
+  </body>
+</html>
