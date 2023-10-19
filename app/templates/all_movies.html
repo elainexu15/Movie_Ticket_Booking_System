@@ -4,27 +4,132 @@
   <head>
     <title>Lincoln Cinema Online Ticket Booking System</title>
     {% include 'bootstrap.html' %}
-    
+    <style>
+ input {
+            visibility: hidden;
+        }
+
+        label {
+            cursor: pointer;
+            display: inline-block;
+            padding: 0px 8px; /* 4px top/bottom, 5px left/right */
+            border-radius: 4px;
+        }
+
+        input:checked + label {
+            background: #198754;
+            padding: 0px 8px; /* 4px top/bottom, 5px left/right */
+            border-radius: 4px;
+            color: white;
+        }
+
+ 
+    </style>
   </head>
   <body>
   	{% include 'nav.html' %}
     {% include 'banner.html' %}
   	{% include 'flash.html' %}
-  	{% include 'sidebar_filter.html' %}
-   
 
-    <div class="container">
-        {% for movie in all_movies %}
-            <h1>{{ movie.title }}</h1>
-            <p>Language: {{ movie.language }}</p>
-            <p>Genre: {{ movie.genre }}</p>
-            <p>Country: {{ movie.country }}</p>
-            <p>Release Date: {{ movie.release_date }}</p>
-            <p>Duration (mins): {{ movie.duration_in_mins }}</p>
-            <p>Description: {{ movie.description }}</p>
-        {% endfor %}
+    <form method="POST" action="/filter_movies">
+        <section>
+                <div class="container">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <strong class="me-3">Language:</strong>
+                                </div>
+                                <div class="col-md-11">
+                                    <input class="form-check-input" type="radio" name="language" id="all" value ='all' >
+                                    <label class="form-check-label me-3" for="all">ALL</label>
+                        
+                                    {% for language in language_list %}
+                                    <input class="form-check-input" type="radio" name="language" id="{{ language }}" value ='{{ language }}'>
+                                    <label class="form-check-label me-3" for="{{ language }}" >{{ language }}</label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </li>
+        
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <strong class="me-3">Genre:</strong>
+                                </div>
+                                <div class="col-md-11">
+                                    <input class="form-check-input" type="radio" name="genre" id="genre_all" value="all">
+                                    <label class="form-check-label me-3" for="genre_all">ALL</label>
+                            
+                                    {% for genre in genre_list %}
+                                    <input class="form-check-input" type="radio" name="genre" id="{{genre}}" value="{{genre}}">
+                                    <label class="form-check-label me-3" for="{{genre}}">{{genre}}</label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </li>
+                        
+                            
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <strong class="me-3">Year:</strong>
+                                </div>
+                                <div class="col-md-11">
+                                    <input class="form-check-input" type="radio" name="year" id="year_all" value="all">
+                                    <label class="form-check-label me-3" for="year_all">ALL</label>
+                            
+                                    {% for year in release_year_list %}
+                                    <input class="form-check-input" type="radio" name="year" id="{{year}}" value="{{year}}">
+                                    <label class="form-check-label me-3" for="{{year}}">{{year}}</label>
+                                    {% endfor %}
+        
+                                    <input class="form-check-input" type="radio" name="year" id="before" value="other">
+                                    <label class="form-check-label me-3" for="before">Before {{current_year-12}}</label>
+        
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-outline-success">Filter Movies</button>
+            </div>
+        </section>
+    </form>
 
-    </div>
+    
+        <section class="p-5">
+            <div class="container">
+                <h2 class="text-center mb-3">ON SHOWING</h2>
+                <div class="row g-4">
+                    {% if all_movies %}
+                    {% for movie in all_movies %}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <img src="#" alt="">
+                                <h3 class="cart-title">{{movie.title}}</h3>
+                                <p class="card-text">Language: {{ movie.language }}</p>
+                                <p class="card-text">Genre: {{ movie.genre }}</p>
+                                <p class="card-text">Country: {{ movie.country }}</p>
+                                <p class="card-text">Release Date: {{ movie.release_date }}</p>
+                            </div>
+                        </div>            
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p>No Movies</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+  
+
+
     {% include 'footer.html' %}
+
+    
+
   </body>
 </html>

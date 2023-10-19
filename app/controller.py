@@ -127,3 +127,53 @@ class CinemaController:
         self.add_admins_from_file('app/database/admins.txt')
         self.add_front_desk_staffs_from_file('app/database/front_desk_staffs.txt')
         self.add_movies_from_file('app/database/movies.txt')
+
+
+    def search_by_title(self, title: str):
+        # Placeholder implementation for searching movies by title
+        search_results = []
+
+        # Assuming you have a list of movies in the movie catalog
+        for movie in self.all_movies:
+            if title.lower() in movie.title.lower():
+                # Case-insensitive search; add the movie to the results
+                search_results.append(movie)
+
+        return search_results
+    
+
+    # ======== get movie details ========
+    def get_language_list(self):
+        language_list = []
+        for movie in self.all_movies:
+            if movie.language not in language_list:
+                language_list.append(movie.language)
+        return language_list
+    
+    def get_genre_list(self):
+        genre_list = []
+        for movie in self.all_movies:
+            if movie.genre not in genre_list:
+                genre_list.append(movie.genre)
+        return genre_list
+    
+
+    def filter_movies(self, selected_language, selected_genre, selected_year, guest):
+        filtered_movies = self.all_movies
+        if selected_language:
+            if selected_language == 'all':
+                filtered_movies = filtered_movies
+            else:
+                filtered_movies = guest.search_movie_lang(selected_language, filtered_movies)
+        if selected_genre:
+            if selected_genre == 'all':
+                filtered_movies = filtered_movies
+            else:
+                filtered_movies = guest.search_movie_genre(selected_genre, filtered_movies)
+        if selected_year:
+            if selected_year == 'all':
+                filtered_movies = filtered_movies
+            else:
+                filtered_movies = guest.search_movie_date(selected_year, filtered_movies)
+        return filtered_movies
+

@@ -1,11 +1,84 @@
 from abc import ABC, abstractmethod
-from datetime import date
+from datetime import date, datetime
 
 class General(ABC):
-    pass
+    @abstractmethod
+    def search_movie_title(self, title: str):
+        pass
+
+    @abstractmethod
+    def search_movie_lang(self, lang: str):
+        pass
+
+    @abstractmethod
+    def search_movie_genre(self, genre: str):
+        pass
+
+    @abstractmethod
+    def search_movie_date(self, release_date: date):
+        pass
+
+    @abstractmethod
+    def view_movie_details(self, a_movie):
+        pass
+
 
 class Guest(General):
-    pass
+    def register(self):
+        # Implement guest registration logic here
+        pass
+
+    def search_movie_title(self, title: str, movies):
+        # Implement search by movie title for guests
+        matching_movies = []
+
+        for movie in movies:  # Assuming you have a list of movies in the General class
+            if title.lower() in movie.title.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+    
+
+    def search_movie_lang(self, selected_language: str, filtered_movies):
+        # Implement search by movie language for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_language.lower() in movie.language.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_genre(self, selected_genre: str, filtered_movies):
+        # Implement search by movie genre for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_genre.lower() in movie.genre.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_date(self, selected_year: date, filtered_movies):
+        # Implement search by movie release date for guests
+        matching_movies = []   
+        current_year = datetime.now().year
+        if selected_year == 'other': 
+            for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+                if movie.year is not None and movie.year < current_year-12:
+                    matching_movies.append(movie)
+        else:
+            for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+                if movie.year is not None and int(selected_year) == movie.year:
+                    matching_movies.append(movie)
+        return matching_movies
+
+
+    def view_movie_details(self, a_movie):
+        # Implement viewing movie details for guests
+        pass
 
 class Person(General, ABC):
     def __init__(self, name: str, address: str, email: str, phone: str) -> None:
@@ -142,6 +215,14 @@ class Movie:
     @property
     def release_date(self):
         return self.__release_date
+    
+    @property
+    def year(self):
+        # Convert the release date to a datetime object
+        release_date = datetime.fromisoformat(self.release_date)
+        # Extract the year from the release date
+        release_year = release_date.year
+        return release_year
 
     @property
     def duration_in_mins(self):

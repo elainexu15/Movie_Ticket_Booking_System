@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Filter</title>
+    <style>
+        .filter-buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .filter-buttons label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px;
+            border: 1px solid #ccc;
+            margin: 5px;
+        }
+
+        .filter-buttons input[type="radio"] {
+            display: none; /* Hide the actual radio buttons */
+        }
+
+        .filter-buttons label:hover {
+            background-color: lightgray; /* Highlight on hover */
+        }
+
+        .filter-buttons input[type="radio"]:checked + label {
+            background-color: lightblue; /* Color when selected */
+        }
+    </style>
+</head>
+<body>
+    <form class="filter-buttons">
+        <label>
+            <input type="radio" name="filter" value="English" onclick="this.form.submit()"> English
+        </label>
+        <label>
+            <input type="radio" name="filter" value="Spanish" onclick="this.form.submit()"> Spanish
+        </label>
+        <label>
+            <input type="radio" name="filter" value="Action" onclick="this.form.submit()"> Action
+        </label>
+        <label>
+            <input type="radio" name="filter" value="Drama" onclick="this.form.submit()"> Drama
+        </label>
+    </form>
+
+    <!-- Display filtered movies here -->
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie.title }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

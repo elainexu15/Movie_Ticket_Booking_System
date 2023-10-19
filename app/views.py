@@ -3,10 +3,17 @@ from . import LincolnCinema
 from .models import *
 from flask import g, redirect, render_template, request, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
+import requests
 
 
 views = Blueprint('views', __name__)
 
+@views.route('/index')
+def index():
+    raw_data = requests.get('http://www.omdbapi.com/?i=tt3896198&apikey=b5a0eeb8&s=batman')
+    movies = raw_data.json()
+    return render_template('index.html', movies = movies)
 
 @views.route('/')
 def home():
@@ -144,7 +151,41 @@ def logout():
 
 @views.route('/all_movies')
 def all_movies():
+    current_year = datetime.datetime.now().year
     all_movies = LincolnCinema.all_movies
-    return render_template('all_movies.html', all_movies = all_movies)
+    language_list = LincolnCinema.get_language_list()
+    genre_list = LincolnCinema.get_genre_list()
+    release_year_list = [i for i in range(current_year,current_year - 13, -1)]
+    return render_template('all_movies.html', all_movies = all_movies, language_list = language_list, 
+                           genre_list = genre_list, release_year_list = release_year_list, current_year = current_year)
 
 
+@views.route('/search_by_title', methods = ['POST'])
+def search_by_title():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        print(title)
+    return redirect(url_for('views.all_movies'))
+
+
+@views.route('/filter_movies', methods=['GET', 'POST'])
+def filter_movies():
+    if request.method == 'POST':
+        # Get the customer's selected filters from the form
+        selected_language = request.form.get('language')
+        selected_genre = request.form.get('genre')
+        selected_year = request.form.get('year')
+        print(selected_year)
+        guest = Guest()
+
+        filtered_movies = LincolnCinema.filter_movies(selected_language, selected_genre, selected_year, guest)
+
+        current_year = datetime.datetime.now().year
+        language_list = LincolnCinema.get_language_list()
+        genre_list = LincolnCinema.get_genre_list()
+        release_year_list = [i for i in range(current_year,current_year - 13, -1)]
+        return render_template('all_movies.html', all_movies=filtered_movies, language_list = language_list, 
+                           genre_list = genre_list, release_year_list = release_year_list, current_year = current_year)
+
+    # If the method is GET, initially display the form
+    return render_template('your_original_template.html')
