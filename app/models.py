@@ -61,18 +61,12 @@ class Guest(General):
         return matching_movies
 
 
-    def search_movie_date(self, selected_year: date, filtered_movies):
+    def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
         # Implement search by movie release date for guests
         matching_movies = []   
-        current_year = datetime.now().year
-        if selected_year == 'other': 
-            for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-                if movie.year is not None and movie.year < current_year-12:
-                    matching_movies.append(movie)
-        else:
-            for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-                if movie.year is not None and int(selected_year) == movie.year:
-                    matching_movies.append(movie)
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if movie.release_date >= date_from and movie.release_date <= date_to:
+                matching_movies.append(movie)
         return matching_movies
 
 
@@ -185,7 +179,7 @@ class Movie:
         @param duration_in_mins (int): The duration of the movie in minutes.
         @param description (str): A description of the movie.
         """
-        self.__movie_id = Movie.next_id    # Unique movie ID
+        self.__id = Movie.next_id    # Unique movie ID
         self.__title = title               # The title of the movie
         self.__language = language         # The language of the movie
         self.__genre = genre               # The genre of the movie
@@ -195,6 +189,10 @@ class Movie:
         self.__description = description   # A description of the movie
         self.__screenings = []             # List of screenings for this movie
         Movie.next_id += 1                 # Increment the movie ID counter
+
+    @property
+    def id(self):
+        return self.__id
 
     @property
     def title(self):

@@ -1,58 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Movie Filter</title>
-    <style>
-        .filter-buttons {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
+<div class="justify-content-center row">
+    <div class="col-lg-12">
+        <div class="candidate-list-widgets mb-4">
+            <form method="POST" action="/filter_movies">
+                <div class="g-2 row">
+                    <div class="col-lg-3">
+                        <div class="filler-job-form">
+                            <i class="uil uil-briefcase-alt"></i><input name="title" id="validation_title" placeholder="Title... " type="search" class="form-control filler-job-input-box form-control" />
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="filler-job-form">
+                            <i class="uil uil-location-point"></i>
+                            <select class="form-select selectForm__inner" data-trigger="true" name="language" id="language" aria-label="Default select example">
+                                <option selected disabled>Language</option>
+                                <option value="all">All</option>
+                                {% for language in language_list %}
+                                <option value="{{language}}">{{language}}</option>
+                                {% endfor %}
 
-        .filter-buttons label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            padding: 5px;
-            border: 1px solid #ccc;
-            margin: 5px;
-        }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="filler-job-form">
+                            <i class="uil uil-clipboard-notes"></i>
+                            <select class="form-select selectForm__inner" data-trigger="true" name="genre" id="genre" aria-label="Default select example">
+                                <option selected disabled>Genre</option>
+                                <option value="all">All</option>
+                                {% for genre in genre_list %}
+                                <option value="{{genre}}">{{genre}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
 
-        .filter-buttons input[type="radio"] {
-            display: none; /* Hide the actual radio buttons */
-        }
-
-        .filter-buttons label:hover {
-            background-color: lightgray; /* Highlight on hover */
-        }
-
-        .filter-buttons input[type="radio"]:checked + label {
-            background-color: lightblue; /* Color when selected */
-        }
-    </style>
-</head>
-<body>
-    <form class="filter-buttons">
-        <label>
-            <input type="radio" name="filter" value="English" onclick="this.form.submit()"> English
-        </label>
-        <label>
-            <input type="radio" name="filter" value="Spanish" onclick="this.form.submit()"> Spanish
-        </label>
-        <label>
-            <input type="radio" name="filter" value="Action" onclick="this.form.submit()"> Action
-        </label>
-        <label>
-            <input type="radio" name="filter" value="Drama" onclick="this.form.submit()"> Drama
-        </label>
-    </form>
-
-    <!-- Display filtered movies here -->
-    <ul>
-        {% for movie in movies %}
-            <li>{{ movie.title }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+                            <div class="input-daterange input-group" id="datepicker">
+                                <input type="date" class="input-sm form-control me-2" name="date_from" placeholder="From date"/>
+                                <span class="input-group-addon">to</span>
+                                <input type="date" class="input-sm form-control ms-2" name="date_to" placeholder="To date"/>
+                            </div>
+   
+                    </div>
+                    <div class="col-lg-1">
+                        <button type="submit" class="btn btn-base">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

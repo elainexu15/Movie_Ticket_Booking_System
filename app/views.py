@@ -8,12 +8,9 @@ import requests
 
 
 views = Blueprint('views', __name__)
+LANGUAGE_LIST = sorted(LincolnCinema.get_language_list())
+GENRE_LIST = sorted(LincolnCinema.get_genre_list())
 
-@views.route('/index')
-def index():
-    raw_data = requests.get('http://www.omdbapi.com/?i=tt3896198&apikey=b5a0eeb8&s=batman')
-    movies = raw_data.json()
-    return render_template('index.html', movies = movies)
 
 @views.route('/')
 def home():
@@ -153,10 +150,10 @@ def logout():
 def all_movies():
     current_year = datetime.datetime.now().year
     all_movies = LincolnCinema.all_movies
-    language_list = LincolnCinema.get_language_list()
-    genre_list = LincolnCinema.get_genre_list()
+    language_list = LANGUAGE_LIST
+    genre_list = GENRE_LIST
     release_year_list = [i for i in range(current_year,current_year - 13, -1)]
-    return render_template('all_movies.html', all_movies = all_movies, language_list = language_list, 
+    return render_template('movies.html', all_movies = all_movies, language_list = language_list, 
                            genre_list = genre_list, release_year_list = release_year_list, current_year = current_year)
 
 
@@ -172,20 +169,24 @@ def search_by_title():
 def filter_movies():
     if request.method == 'POST':
         # Get the customer's selected filters from the form
+        title = request.form.get('title')
         selected_language = request.form.get('language')
         selected_genre = request.form.get('genre')
-        selected_year = request.form.get('year')
-        print(selected_year)
+        date_from = request.form.get('date_from')
+        date_to = request.form.get('date_to')
+        if date_from and not date_to:
+            date_to = str(date.today())
+        elif date_to and not date_from:
+            date_from = '1900-01-01'
         guest = Guest()
-
-        filtered_movies = LincolnCinema.filter_movies(selected_language, selected_genre, selected_year, guest)
-
-        current_year = datetime.datetime.now().year
-        language_list = LincolnCinema.get_language_list()
-        genre_list = LincolnCinema.get_genre_list()
-        release_year_list = [i for i in range(current_year,current_year - 13, -1)]
-        return render_template('all_movies.html', all_movies=filtered_movies, language_list = language_list, 
-                           genre_list = genre_list, release_year_list = release_year_list, current_year = current_year)
+        
+        # filter movies 
+        filtered_movies = LincolnCinema.filter_movies(title, selected_language, selected_genre, date_from, date_to, guest)
+        
+        language_list = LANGUAGE_LIST
+        genre_list = GENRE_LIST
+        return render_template('movies.html', all_movies=filtered_movies, language_list = language_list, 
+                           genre_list = genre_list)
 
     # If the method is GET, initially display the form
-    return render_template('your_original_template.html')
+    return redirect(url_for('views.all_movies'))

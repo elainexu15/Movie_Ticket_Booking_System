@@ -129,18 +129,7 @@ class CinemaController:
         self.add_movies_from_file('app/database/movies.txt')
 
 
-    def search_by_title(self, title: str):
-        # Placeholder implementation for searching movies by title
-        search_results = []
 
-        # Assuming you have a list of movies in the movie catalog
-        for movie in self.all_movies:
-            if title.lower() in movie.title.lower():
-                # Case-insensitive search; add the movie to the results
-                search_results.append(movie)
-
-        return search_results
-    
 
     # ======== get movie details ========
     def get_language_list(self):
@@ -158,8 +147,11 @@ class CinemaController:
         return genre_list
     
 
-    def filter_movies(self, selected_language, selected_genre, selected_year, guest):
+    # ======== get movie details ========
+    def filter_movies(self, title, selected_language, selected_genre, date_from, date_to, guest):
         filtered_movies = self.all_movies
+        if title:
+            filtered_movies = guest.search_movie_title(title, filtered_movies)
         if selected_language:
             if selected_language == 'all':
                 filtered_movies = filtered_movies
@@ -170,10 +162,9 @@ class CinemaController:
                 filtered_movies = filtered_movies
             else:
                 filtered_movies = guest.search_movie_genre(selected_genre, filtered_movies)
-        if selected_year:
-            if selected_year == 'all':
-                filtered_movies = filtered_movies
-            else:
-                filtered_movies = guest.search_movie_date(selected_year, filtered_movies)
+        if not date_from or not date_to:
+            filtered_movies = filtered_movies
+        else:
+            filtered_movies = guest.search_movie_date(date_from, date_to, filtered_movies)
         return filtered_movies
 

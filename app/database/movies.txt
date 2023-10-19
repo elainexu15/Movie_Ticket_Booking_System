@@ -13,7 +13,6 @@ Life of Pi, English, Adventure, USA,2012-11-21, 127, A young man survives a ship
 Gravity, English, Science Fiction, USA,2013-10-04, 91, Two astronauts struggle to survive after their space shuttle is destroyed.
 Birdman, English, Comedy, USA,2014-08-27, 119, A washed-up actor attempts a comeback on Broadway.
 The Revenant, English, Drama, USA,2015-12-25, 156, A frontiersman battles for survival and revenge in the wilderness.
-La La Land, English, Musical, USA,2016-12-09, 128, A love story set in the world of Hollywood.
 The Shape of Water, English, Fantasy, USA,2017-12-01, 123, A mute woman forms a unique bond with an amphibious creature.
 Roma, Spanish, Drama, Mexico,2018-08-30, 135, A maid's life unfolds amidst political and personal turmoil.
 Dune, English, Science Fiction, USA,2021-09-03, 155, A noble family navigates political intrigue on a desert planet.
