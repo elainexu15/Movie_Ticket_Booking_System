@@ -1,0 +1,25 @@
+{% extends 'home_admin.html' %}
+
+
+{% block content %}
+<h2 align="center">ADD NEW MOVIE</h2>
+
+{% if filename %}
+<div class="text-center">
+    <img src="{{ url_for('views.display_image', filename=filename) }}" alt="">
+</div>
+{% endif %}
+
+<form action="/admin_add_movie" method="post" enctype="multipart/form-data" class="row g-3">
+    <div class="col-11">
+      <input type="file" name="file" class="form-control" autocomplete="off" required>
+    </div>
+    <div class="col-1">
+        <input type="submit" value="Submit" class="btn btn-info">
+    </div>
+  </form>
+
+
+
+{% endblock %}
+

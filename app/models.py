@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import date, datetime
 
+
 class General(ABC):
     @abstractmethod
     def search_movie_title(self, title: str):
@@ -81,11 +82,52 @@ class Person(General, ABC):
         self._email = email
         self._phone = phone
 
+    @abstractmethod
+    def search_movie_title(self, title: str):
+        pass
+
+    @abstractmethod
+    def search_movie_lang(self, lang: str):
+        pass
+
+    @abstractmethod
+    def search_movie_genre(self, genre: str):
+        pass
+
+    @abstractmethod
+    def search_movie_date(self, release_date: date):
+        pass
+
+    @abstractmethod
+    def view_movie_details(self, a_movie):
+        pass
+
+
 class User(Person, ABC):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
         super().__init__(name, address, email, phone)
         self._username = username
         self._password = password
+
+    @abstractmethod
+    def search_movie_title(self, title: str):
+        pass
+
+    @abstractmethod
+    def search_movie_lang(self, lang: str):
+        pass
+
+    @abstractmethod
+    def search_movie_genre(self, genre: str):
+        pass
+
+    @abstractmethod
+    def search_movie_date(self, release_date: date):
+        pass
+
+    @abstractmethod
+    def view_movie_details(self, a_movie):
+        pass
 
 class Admin(User):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
@@ -105,6 +147,52 @@ class Admin(User):
     @property
     def password(self):
         return self._password
+    
+    def search_movie_title(self, title: str, movies):
+        # Implement search by movie title for guests
+        matching_movies = []
+
+        for movie in movies:  # Assuming you have a list of movies in the General class
+            if title.lower() in movie.title.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+    
+
+    def search_movie_lang(self, selected_language: str, filtered_movies):
+        # Implement search by movie language for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_language.lower() in movie.language.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_genre(self, selected_genre: str, filtered_movies):
+        # Implement search by movie genre for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_genre.lower() in movie.genre.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
+        # Implement search by movie release date for guests
+        matching_movies = []   
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if movie.release_date >= date_from and movie.release_date <= date_to:
+                matching_movies.append(movie)
+        return matching_movies
+
+
+    def view_movie_details(self, a_movie):
+        # Implement viewing movie details for guests
+        pass
 
 class FrontDeskStaff(User):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
@@ -124,6 +212,52 @@ class FrontDeskStaff(User):
     @property
     def password(self):
         return self._password
+    
+    def search_movie_title(self, title: str, movies):
+        # Implement search by movie title for guests
+        matching_movies = []
+
+        for movie in movies:  # Assuming you have a list of movies in the General class
+            if title.lower() in movie.title.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+    
+
+    def search_movie_lang(self, selected_language: str, filtered_movies):
+        # Implement search by movie language for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_language.lower() in movie.language.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_genre(self, selected_genre: str, filtered_movies):
+        # Implement search by movie genre for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_genre.lower() in movie.genre.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
+        # Implement search by movie release date for guests
+        matching_movies = []   
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if movie.release_date >= date_from and movie.release_date <= date_to:
+                matching_movies.append(movie)
+        return matching_movies
+
+
+    def view_movie_details(self, a_movie):
+        # Implement viewing movie details for guests
+        pass
 
 class Customer(User):
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
@@ -229,3 +363,49 @@ class Movie:
     @property
     def description(self):
         return self.__description
+    
+    def search_movie_title(self, title: str, movies):
+        # Implement search by movie title for guests
+        matching_movies = []
+
+        for movie in movies:  # Assuming you have a list of movies in the General class
+            if title.lower() in movie.title.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+    
+
+    def search_movie_lang(self, selected_language: str, filtered_movies):
+        # Implement search by movie language for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_language.lower() in movie.language.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_genre(self, selected_genre: str, filtered_movies):
+        # Implement search by movie genre for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_genre.lower() in movie.genre.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
+        # Implement search by movie release date for guests
+        matching_movies = []   
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if movie.release_date >= date_from and movie.release_date <= date_to:
+                matching_movies.append(movie)
+        return matching_movies
+
+
+    def view_movie_details(self, a_movie):
+        # Implement viewing movie details for guests
+        pass

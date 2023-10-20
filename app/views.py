@@ -1,15 +1,51 @@
 from flask import Blueprint, flash
 from . import LincolnCinema
 from .models import *
-from flask import g, redirect, render_template, request, session, url_for
+from flask import g, redirect, render_template, request, session, url_for, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
-import requests
-
+import os
+import urllib.request
+from app import app
+from werkzeug.utils import secure_filename
 
 views = Blueprint('views', __name__)
+
 LANGUAGE_LIST = sorted(LincolnCinema.get_language_list())
 GENRE_LIST = sorted(LincolnCinema.get_genre_list())
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+
+# ======== admin functions ========
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@views.route('/admin_add_movie', methods=['POST', 'GET'])
+def admin_add_movie():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No image selected for uploading')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            destination_folder = app.config['UPLOAD_FOLDER']
+            os.makedirs(destination_folder, exist_ok=True)  # Create the folder if it doesn't exist
+            file.save(os.path.join(destination_folder, filename))
+            flash('Image successfully uploaded and displayed below')
+            return render_template('admin_add_movie.html', filename=filename)
+        else:
+            flash('Allowed image types are - png, jpg, jpeg, gif')
+            return redirect(request.url)
+    return render_template('admin_add_movie.html')
+
+@views.route('/display/<filename>')
+def display_image(filename):
+    return redirect(url_for('static', filename='movie_img/' + filename), code=301)
+
 
 
 @views.route('/')
@@ -53,7 +89,6 @@ def login():
 
         username = request.form['username']
         password = request.form['password']
-
         if not username or not password:
             flash("Both username and password are required.", 'error')
             return redirect(url_for('views.login'))
@@ -73,13 +108,13 @@ def login():
             print(user.username)
             if isinstance(user, Customer):
                 flash("Login successful!", 'success')
-                return redirect(url_for('views.customer_dashboard'))
+                return redirect(url_for('views.home_customer'))
             elif isinstance(user, Admin):
                 flash("Login successful!", 'success')
-                return redirect(url_for('views.admin_dashboard'))
+                return redirect(url_for('views.home_admin'))
             elif isinstance(user, FrontDeskStaff):
                 flash("Login successful!", 'success')
-                return redirect(url_for('views.staff_dashboard'))
+                return redirect(url_for('views.home_front_desk_staff'))
         else:
             flash("Invalid username or password. Please try again.", 'error')
             return redirect(url_for('views.login'))
@@ -87,25 +122,25 @@ def login():
     return render_template('login.html')
 
 
-@views.route('/customer_dashboard')
-def customer_dashboard():
+@views.route('/home_customer')
+def home_customer():
     if not g.user:
         return redirect(url_for('views.login'))
-    return render_template('customer_dashboard.html')
+    return render_template('home_customer.html')
 
 
-@views.route('/admin_dashboard')
-def admin_dashboard():
+@views.route('/home_admin')
+def home_admin():
     if not g.user:
         return redirect(url_for('views.login'))
-    return render_template('admin_dashboard.html')
+    return render_template('home_admin.html')
 
 
-@views.route('/staff_dashboard')
-def staff_dashboard():
+@views.route('/home_front_desk_staff')
+def home_front_desk_staff():
     if not g.user:
         return redirect(url_for('views.login'))
-    return render_template('staff_dashboard.html')
+    return render_template('home_front_desk_staff.html')
 
 
 @views.route('/register', methods=['GET', 'POST'])
@@ -190,3 +225,4 @@ def filter_movies():
 
     # If the method is GET, initially display the form
     return redirect(url_for('views.all_movies'))
+

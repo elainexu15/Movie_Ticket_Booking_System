@@ -1,0 +1,17 @@
+{% extends 'home_admin.html' %}
+
+
+{% block content %}
+<h2 align="center">MOVIE DETAILS</h2>
+
+
+<div>
+    <img src="{{ url_for('views.display_image', filename=filename) }}" alt="">
+</div>
+{% endif %}
+
+
+
+
+
+{% endblock %}
