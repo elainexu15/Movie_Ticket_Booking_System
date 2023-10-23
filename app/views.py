@@ -1,7 +1,7 @@
 from flask import Blueprint, flash
 from . import LincolnCinema
 from .models import *
-from flask import g, redirect, render_template, request, session, url_for, send_from_directory
+from flask import g, redirect, render_template, request, session, url_for, send_from_directory, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import os
@@ -13,16 +13,44 @@ views = Blueprint('views', __name__)
 
 LANGUAGE_LIST = sorted(LincolnCinema.get_language_list())
 GENRE_LIST = sorted(LincolnCinema.get_genre_list())
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['jpg'])
 
 
 # ======== admin functions ========
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+from flask import request, flash, redirect, render_template, url_for
+from werkzeug.utils import secure_filename
+import os
+
+
+# ========= Admin views =========
 @views.route('/admin_add_movie', methods=['POST', 'GET'])
 def admin_add_movie():
     if request.method == 'POST':
+
+        # Get movie information from the form
+        title = request.form.get('title')
+        genre = request.form.get('genre')
+        release_date = request.form.get('release_date')
+        country = request.form.get('country')
+        duration = request.form.get('duration')
+        language = request.form.get('language')
+        description = request.form.get('description')
+
+        # Create a Movie object
+        movie = Movie(title, language, genre, country, release_date, duration, description)
+        LincolnCinema.add_movie(movie)
+        # Combine movie information into a single comma-separated line
+        movie_info = f"{title},{language},{genre},{country},{release_date},{duration},{description}"
+
+        # Save the movie information to a text file
+        with open('app/database/movies.txt', 'a') as file:
+            file.write(movie_info + '\n')
+
+        flash('Movie information has been saved.')
+
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
@@ -31,20 +59,31 @@ def admin_add_movie():
             flash('No image selected for uploading')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = secure_filename(str(movie.id) + os.path.splitext(file.filename)[1])            
             destination_folder = app.config['UPLOAD_FOLDER']
             os.makedirs(destination_folder, exist_ok=True)  # Create the folder if it doesn't exist
             file.save(os.path.join(destination_folder, filename))
             flash('Image successfully uploaded and displayed below')
-            return render_template('admin_add_movie.html', filename=filename)
+            return render_template('movie_details.html', movie=movie, filename=filename)
         else:
             flash('Allowed image types are - png, jpg, jpeg, gif')
             return redirect(request.url)
     return render_template('admin_add_movie.html')
 
+
 @views.route('/display/<filename>')
 def display_image(filename):
     return redirect(url_for('static', filename='movie_img/' + filename), code=301)
+
+
+@views.route('/admin_view_movie_details/<movie_id>')
+def admin_view_movie_details(movie_id):
+    movie_id = int(movie_id)
+    movie = LincolnCinema.find_movie(movie_id)
+    return render_template('admin_view_movie_details.html', movie = movie)
+
+
+
 
 
 
@@ -133,7 +172,10 @@ def home_customer():
 def home_admin():
     if not g.user:
         return redirect(url_for('views.login'))
-    return render_template('home_admin.html')
+    all_movies = LincolnCinema.all_movies
+    language_list = LANGUAGE_LIST
+    genre_list = GENRE_LIST
+    return render_template('home_admin.html', all_movies=all_movies, language_list=language_list, genre_list=genre_list)
 
 
 @views.route('/home_front_desk_staff')
@@ -183,21 +225,11 @@ def logout():
 
 @views.route('/all_movies')
 def all_movies():
-    current_year = datetime.datetime.now().year
     all_movies = LincolnCinema.all_movies
     language_list = LANGUAGE_LIST
     genre_list = GENRE_LIST
-    release_year_list = [i for i in range(current_year,current_year - 13, -1)]
     return render_template('movies.html', all_movies = all_movies, language_list = language_list, 
-                           genre_list = genre_list, release_year_list = release_year_list, current_year = current_year)
-
-
-@views.route('/search_by_title', methods = ['POST'])
-def search_by_title():
-    if request.method == 'POST':
-        title = request.form.get('title')
-        print(title)
-    return redirect(url_for('views.all_movies'))
+                           genre_list = genre_list)
 
 
 @views.route('/filter_movies', methods=['GET', 'POST'])
@@ -220,7 +252,7 @@ def filter_movies():
         
         language_list = LANGUAGE_LIST
         genre_list = GENRE_LIST
-        return render_template('movies.html', all_movies=filtered_movies, language_list = language_list, 
+        return render_template('home_admin.html', all_movies=filtered_movies, language_list = language_list, 
                            genre_list = genre_list)
 
     # If the method is GET, initially display the form

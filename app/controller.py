@@ -23,7 +23,6 @@ class CinemaController:
     @property
     def all_movies(self):
         return self.__movies
-            
 
 
     def find_customer(self, username):
@@ -32,6 +31,13 @@ class CinemaController:
                 return customer
         return None
 
+    def find_movie(self, id):
+        for movie in self.__movies:
+            print(type(movie.id))
+            print(type(id))
+            if movie.id == id:
+                return movie
+        return None
 
     def add_customer(self, customer):
         self.__customers.append(customer)

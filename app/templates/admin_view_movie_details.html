@@ -2,11 +2,10 @@
 
 {% block content %}
 
-{% if filename %}
+
 <div class="col-lg-3 mb-3">
-    <img src="{{ url_for('views.display_image', filename=filename) }}" alt="">
+    <img src="{{ url_for('static', filename='movie_img/' ~ movie.id ~ '.jpg') }}" alt="..." class="card-img-top">
 </div>
-{% endif %}
 
 
 <div class="col-lg-9 mb-3 ">

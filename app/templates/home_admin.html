@@ -6,62 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lincoln Cinema Online Ticket Booking System</title>
     {% include 'bootstrap.html' %}
+    <style>
+      .card-img-top {
+    width: 100%;
+    height: 25vw;
+    object-fit: cover;
+}
+    </style>
   </head>
   <body>
 
-    <!-- nav bar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary rounded" aria-label="Thirteenth navbar example">
-      <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-controls="navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-    
-        <div class="collapse navbar-collapse d-lg-flex" id="navbarsExample11">
-          <a class="navbar-brand col-lg-3 me-0" href="#">Lincoln Cinema</a>
-          <ul class="navbar-nav col-lg-6 justify-content-lg-center">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{{url_for('views.home_admin')}}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{url_for('views.admin_add_movie')}}">Add Movie</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </li>
-          </ul>
-          <div class="d-lg-flex col-lg-3 justify-content-lg-end">
-              <h5 class="mt-2 me-2">Hi {{ g.user.name }}</h5> 
-              <a class="btn btn-primary me-2" href=" {{url_for('views.logout')}}">Log Out</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    {% include 'banner.html' %}
+    {% include 'nav_admin.html' %}
     {% include 'flash.html' %}
-
-    
-    <div class="container ">
-      <div class="row mt-4">
-          {% block search %}
-              
-          {% endblock %}
-      </div>
+    <div class="container">
+      <br>
     </div>
 
-
+  
     <div class="container ">
         <div class="row mt-4">
             {% block content %}
-            <h2 class="subtitle">
-              Admin dashboard <br>
-              Hi, {{g.user.name}}
-          </h2>
+            
+            {% include 'search.html' %}
+
+            {% for movie in all_movies %}
+            <div class="col co-sm-4 col-lg-3 mb-3 ">
+                <div class="card" style="width: 18rem;">
+                  <img src="{{ url_for('static', filename='movie_img/' ~ movie.id ~ '.jpg') }}" alt="..." class="card-img-top">
+                  <div class="card-body">
+                        <!-- <h5 class="card-title">{{movie.title}}</h5> -->
+                        <p class="card-text">{{movie.title}}</p>
+                        <a href="{{url_for('views.admin_view_movie_details', movie_id=movie.id)}}" class="btn btn-primary">Check out</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
             {% endblock %}
         </div>
     </div>

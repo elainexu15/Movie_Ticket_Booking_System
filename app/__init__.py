@@ -24,7 +24,6 @@ LincolnCinema = CinemaController()
 LincolnCinema.load_database()
 print(LincolnCinema.all_admins)
 print(LincolnCinema.all_front_desk_staffs)
-print(LincolnCinema.all_movies)
 
 from app.views import views
 

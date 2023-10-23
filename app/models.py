@@ -409,3 +409,6 @@ class Movie:
     def view_movie_details(self, a_movie):
         # Implement viewing movie details for guests
         pass
+    
+    def __str__(self):
+        return f"Movie ID: {self.__id}\nTitle: {self.__title}\nLanguage: {self.__language}\nGenre: {self.__genre}\nCountry: {self.__country}\nRelease Date: {self.__release_date}\nDuration (mins): {self.__duration_in_mins}\nDescription: {self.__description}"

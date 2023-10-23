@@ -4,19 +4,67 @@
 {% block content %}
 <h2 align="center">ADD NEW MOVIE</h2>
 
-{% if filename %}
-<div class="text-center">
-    <img src="{{ url_for('views.display_image', filename=filename) }}" alt="">
-</div>
-{% endif %}
-
 <form action="/admin_add_movie" method="post" enctype="multipart/form-data" class="row g-3">
-    <div class="col-11">
+  
+  <div class="mb-3 row">
+    <div class="col-3"></div>
+      <label for="title" class="col-lg-1 col-form-label text-end">Title</label>
+    <div class="col-lg-5">
+      <input type="text" class="form-control" id="title" name="title">
+    </div>
+    <div class="col-3"></div>
+  </div>
+
+  <div class="mb-3 row">
+    <div class="col-lg-3"></div>
+    <label class="col-lg-1 col-form-label text-end" for="genre" >Genre</label>
+    <div class="col-lg-5"><input type="text" class="form-control" id="genre" name="genre"></div> 
+    <div class="col-lg-3"></div>
+  </div>
+
+  <div class="mb-3 row">
+    <div class="col-lg-2"></div>
+    <label class="col-lg-2 col-form-label text-end" for="release_date" >Release Date</label>
+    <div class="col-lg-2"><input type="date" class="form-control" id="release_date" name="release_date"></div> 
+    <label class="col-lg-1 col-form-label text-end" for="country" >Country</label>
+    <div class="col-lg-2"><input type="text" class="form-control" id="country" name="country"></div>
+    <div class="col-lg-3"></div>
+  </div>
+
+<!--  -->
+  <div class="mb-3 row">
+    <div class="col-lg-2"></div>
+    <label class="col-lg-2 col-form-label  text-end" for="duration" >Duration(min)</label>
+    <div class="col-lg-2"><input type="text" class="form-control" id="duration" name="duration"></div>
+    <label class="col-lg-1 col-form-label text-end" for="language" >Language</label>
+    <div class="col-lg-2"><input type="text" class="form-control" id="language" name="language"></div>
+
+    <div class="col-lg-3"></div>
+  </div>
+    
+<!-- add description -->
+  <div class="mb-3 row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-1"><label class="col-form-label  text-end" for="duration" >Description</label></div>
+    <div class="col-lg-5"><textarea class="form-control" name="description" id="description" cols="30" rows="10"></textarea></div>
+    <div class="col-lg-3"></div>
+  </div>
+    
+
+<!-- upload img -->
+  <div class="mb-3 row">
+    <div class="col-lg-2"></div>
+    <label class="col-lg-2 col-form-label  text-end">Upload poster</label>
+    <div class="col-lg-5">
       <input type="file" name="file" class="form-control" autocomplete="off" required>
     </div>
-    <div class="col-1">
-        <input type="submit" value="Submit" class="btn btn-info">
-    </div>
+    <div class="col-lg-3"></div>
+  </div>
+
+    <div class="text-center">
+      <input type="submit" value="Submit" class="btn btn-info">
+  </div>
+
   </form>
 
 

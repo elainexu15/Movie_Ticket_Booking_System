@@ -1,19 +1,3 @@
-The Dark Knight, English, Action, USA,2008-07-18, 152, A caped crusader battles crime in Gotham City.
-Parasite, Korean, Thriller, South Korea,2019-05-30, 132, A tale of class struggle in modern society.
-Inception, English, Science Fiction, USA,2010-07-16, 148, Dreams within dreams in a world of espionage.
-Spirited Away, Japanese, Animated, Japan,2001-07-20, 125, A young girl's adventure in a magical world.
-The Shawshank Redemption, English, Drama, USA,1994-09-23, 142, Friendship and hope in prison.
-The Lord of the Rings, English, Fantasy, USA,2003-12-17, 201, The epic conclusion to the Ring saga.
-Gladiator, English, Historical, USA,2000-05-05, 155, A general's quest for revenge and justice.
-La La Land, French, Musical, USA,2016-12-09, 128, A love story set in the world of Hollywood.
-Crouching Tiger, Chinese, Martial Arts, Taiwan,2000-12-08, 120, A legendary sword and martial arts adventure.
-Pulp Fiction, English, Crime, USA,1994-10-14, 154, A non-linear crime drama with intersecting stories.
-Midnight in Paris, English, Romance, USA,2011-06-10, 94, A writer finds himself transported to 1920s Paris each night.
-Life of Pi, English, Adventure, USA,2012-11-21, 127, A young man survives a shipwreck and shares a lifeboat with a Bengal tiger.
-Gravity, English, Science Fiction, USA,2013-10-04, 91, Two astronauts struggle to survive after their space shuttle is destroyed.
-Birdman, English, Comedy, USA,2014-08-27, 119, A washed-up actor attempts a comeback on Broadway.
-The Revenant, English, Drama, USA,2015-12-25, 156, A frontiersman battles for survival and revenge in the wilderness.
-The Shape of Water, English, Fantasy, USA,2017-12-01, 123, A mute woman forms a unique bond with an amphibious creature.
-Roma, Spanish, Drama, Mexico,2018-08-30, 135, A maid's life unfolds amidst political and personal turmoil.
-Dune, English, Science Fiction, USA,2021-09-03, 155, A noble family navigates political intrigue on a desert planet.
-Paw Patrol: The Mighty Movie, English, Animated, USA,2023-09-23, 93, When a magical meteor crash lands in Adventure City, it gives the PAW Patrol pups superpowers.
+TAYLOR SWIFT THE ERAS TOUR,English,Concert,US,2023-10-13,168,The cultural phenomenon continues on the big screen! Immerse yourself in this once-in-a-lifetime concert film experience with a breathtaking, cinematic view of the history-making tour. Taylor Swift Eras Tour attire and friendship bracelets are strongly encouraged!
+SHAYDA,Persian ,Drama,Australia,2023-10-05,118,A young Iranian mother and her six-year-old daughter finds refuge in an Australian women’s shelter during the two weeks of Iranian New Year (Nowrooz) which is celebrated as a time of renewal and rebirth. Aided by the strong community of women at the refuge they seek their freedom in this new world of possibilities, only to find themselves facing the violence they tried so hard to escape.
+PARASITE,Korean,Thriller,Korea,2019-05-30,132,A poor family's and a rich family's lives unexpectedly intersect in this Best Picture Oscar-winning tragicomedy from South Korean auteur, Bong Joon-Ho .
