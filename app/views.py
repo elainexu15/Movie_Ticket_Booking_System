@@ -9,6 +9,7 @@ import urllib.request
 from app import app
 from werkzeug.utils import secure_filename
 
+
 views = Blueprint('views', __name__)
 
 LANGUAGE_LIST = sorted(LincolnCinema.get_language_list())
@@ -82,14 +83,58 @@ def admin_view_movie_details(movie_id):
     movie = LincolnCinema.find_movie(movie_id)
     return render_template('admin_view_movie_details.html', movie = movie)
 
+# Define a route for adding a screening
+from datetime import datetime, timedelta
 
+@views.route('/admin_add_screening/<int:movie_id>', methods=['GET', 'POST'])
+def admin_add_screening(movie_id):
+    # Get the movie based on its ID
+    movie = LincolnCinema.find_movie(movie_id)
+    hall_name_list = [hall.hall_name for hall in LincolnCinema.all_halls]
+    
+    if request.method == 'POST':
+        screening_date = request.form['screening_date']
+        start_time = request.form['start_time']
+        end_time = request.form['end_time']
+        hall_name = request.form['hall_name']
+        price = request.form['price']
 
+        hall = LincolnCinema.find_hall(hall_name)
+
+        # Calculate the ending time based on start_time and movie.duration_in_minutes
+        movie_duration_in_mins = int(movie.duration_in_mins)  # Replace with your actual duration
+
+        start_datetime = datetime.strptime(start_time, '%H:%M')
+        calculated_end_time = start_datetime + timedelta(minutes=movie_duration_in_mins)
+        selected_end_datetime = datetime.strptime(end_time, '%H:%M')
+
+        if selected_end_datetime <= calculated_end_time:
+            flash('invalid end time. Show time should be no shorter than Movie duration.', 'error')
+            return render_template('admin_add_screening.html', movie=movie, hall_name_list=hall_name_list)
+
+        # Create a CinemaScreening object
+        screening = Screening(screening_date, start_time, end_time, hall, price)
+
+        # Add the screening to the movie
+        movie.add_screening(screening)
+        
+        flash('Screening has been added.')
+
+        # Create a set of unique dates
+        unique_dates = set()
+        for screening in movie.screenings:
+            unique_dates.add(screening.screening_date)
+        # Convert the set back to a list
+        screening_date_list = list(unique_dates)
+        # Redirect to the movie details page
+        return render_template('admin_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
+
+    return render_template('admin_add_screening.html', movie=movie, hall_name_list=hall_name_list)
 
 
 
 @views.route('/')
 def home():
-    print(LincolnCinema.all_customers)
     return render_template('home.html')
 
 
@@ -116,8 +161,6 @@ def before_request():
         
         if user:
             g.user = user
-            print(user.name)
-            print(user.username)
 
 
 
@@ -144,13 +187,12 @@ def login():
 
         if user is not None and check_password_hash(user.password, password):
             session['user_username'] = user.username
-            print(user.username)
             if isinstance(user, Customer):
                 flash("Login successful!", 'success')
                 return redirect(url_for('views.home_customer'))
             elif isinstance(user, Admin):
                 flash("Login successful!", 'success')
-                return redirect(url_for('views.home_admin'))
+                return redirect(url_for('views.admin_home'))
             elif isinstance(user, FrontDeskStaff):
                 flash("Login successful!", 'success')
                 return redirect(url_for('views.home_front_desk_staff'))
@@ -168,14 +210,14 @@ def home_customer():
     return render_template('home_customer.html')
 
 
-@views.route('/home_admin')
-def home_admin():
+@views.route('/admin_home')
+def admin_home():
     if not g.user:
         return redirect(url_for('views.login'))
     all_movies = LincolnCinema.all_movies
     language_list = LANGUAGE_LIST
     genre_list = GENRE_LIST
-    return render_template('home_admin.html', all_movies=all_movies, language_list=language_list, genre_list=genre_list)
+    return render_template('admin_home.html', all_movies=all_movies, language_list=language_list, genre_list=genre_list)
 
 
 @views.route('/home_front_desk_staff')
@@ -197,9 +239,7 @@ def register():
         
         # Check if the username already exists
         if LincolnCinema.find_customer(username):
-            print("Username already exists. Please choose a different one.")
             flash("Username already exists. Please choose a different one.", category='error')
-            print(LincolnCinema.all_customers)
             return redirect(url_for('views.register'))
         
         hashed_password = generate_password_hash(password, method='sha256')
@@ -252,7 +292,7 @@ def filter_movies():
         
         language_list = LANGUAGE_LIST
         genre_list = GENRE_LIST
-        return render_template('home_admin.html', all_movies=filtered_movies, language_list = language_list, 
+        return render_template('admin_home.html', all_movies=filtered_movies, language_list = language_list, 
                            genre_list = genre_list)
 
     # If the method is GET, initially display the form

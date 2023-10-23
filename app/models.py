@@ -347,14 +347,6 @@ class Movie:
     @property
     def release_date(self):
         return self.__release_date
-    
-    @property
-    def year(self):
-        # Convert the release date to a datetime object
-        release_date = datetime.fromisoformat(self.release_date)
-        # Extract the year from the release date
-        release_year = release_date.year
-        return release_year
 
     @property
     def duration_in_mins(self):
@@ -363,6 +355,15 @@ class Movie:
     @property
     def description(self):
         return self.__description
+    
+    @property
+    def screenings(self):
+        return self.__screenings
+    
+    def add_screening(self, screening_object):
+        self.__screenings.append(screening_object)
+        self.__screenings.sort(key=lambda x: x.screening_date)
+        
     
     def search_movie_title(self, title: str, movies):
         # Implement search by movie title for guests
@@ -412,3 +413,91 @@ class Movie:
     
     def __str__(self):
         return f"Movie ID: {self.__id}\nTitle: {self.__title}\nLanguage: {self.__language}\nGenre: {self.__genre}\nCountry: {self.__country}\nRelease Date: {self.__release_date}\nDuration (mins): {self.__duration_in_mins}\nDescription: {self.__description}"
+
+
+class CinemaHallSeat:
+    def __init__(self, seat_number, row_number, is_reserved, seat_price=None):
+        self.__seat_number = seat_number
+        self.__row_number = row_number
+        self.__is_reserved = is_reserved
+        self.__seat_price = seat_price  # Optional seat price
+
+    @property
+    def seat_price(self):
+        return self.__seat_price
+    
+    @seat_price.setter
+    def seat_price(self, price):
+        self.__seat_price = price
+
+    def __str__(self):
+        return f"Seat {self.seat_number} in Row {self.row_number} - {'Reserved' if self.is_reserved else 'Available'}"
+
+
+class CinemaHall:
+    """! The Hall class: Represents a movie hall with a name and seating capacity."""
+    def __init__(self, hall_name: str, capacity: int) -> None:
+        """! Constructor for the Hall class.
+        @param hall_name (str): The name of the hall.
+        @param capacity (int): The seating capacity of the hall.
+        """
+        self.__hall_name = hall_name  # Name of the hall
+        self.__capacity = capacity    # Seating capacity of the hall
+        self.__seats = []
+
+    @property
+    def hall_name(self):
+        return self.__hall_name
+    
+    @property
+    def capacity(self):
+        return self.__capacity
+
+    def add_seats(self):        # Initialize seats for the hall
+        for row_number in range(1, self.__capacity // 10 + 1):  # Assuming 10 seats per row
+            for seat_number in range(1, 11):  # 10 seats per row
+                seat = CinemaHallSeat(seat_number, row_number, False)  # Initialize seats
+                self.__seats.append(seat)  # Add seats to the hall
+
+    @property
+    def seats(self):
+        return self.__seats
+    
+    def __str__(self):
+        return f"Cinema Hall {self.__hall_name}, Total Seats: {self.__capacity}"
+
+
+class Screening:
+    def __init__(self, screening_date, start_time, end_time, hall: CinemaHall, seat_price) -> None:
+        self.__screening_date = screening_date
+        self.__start_time = start_time
+        self.__end_time = end_time
+        self.__hall = hall  # An instance of CinemaHall
+        self.__seat_price = seat_price
+
+    @property
+    def screening_date(self):
+        return self.__screening_date
+    
+    @property
+    def start_time(self):
+        return self.__start_time
+    
+    @property
+    def end_time(self):
+        return self.__end_time
+    
+    @property
+    def hall(self):
+        return self.__hall
+    
+    @property
+    def seat_price(self):
+        return self.__seat_price
+    
+    def __str__(self):
+        return f"Screening Date: {self.screening_date}\n" \
+               f"Start Time: {self.start_time}\n" \
+               f"End Time: {self.end_time}\n" \
+               f"Hall: {self.hall}\n" \
+               f"Price: {self.seat_price}"

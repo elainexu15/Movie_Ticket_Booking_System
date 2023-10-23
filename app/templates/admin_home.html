@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lincoln Cinema Online Ticket Booking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-...">
+
     {% include 'bootstrap.html' %}
     <style>
       .card-img-top {
@@ -16,7 +18,7 @@
   </head>
   <body>
 
-    {% include 'nav_admin.html' %}
+    {% include 'admin_nav.html' %}
     {% include 'flash.html' %}
     <div class="container">
       <br>
@@ -26,7 +28,7 @@
     <div class="container ">
         <div class="row mt-4">
             {% block content %}
-            
+
             {% include 'search.html' %}
 
             {% for movie in all_movies %}
@@ -36,7 +38,8 @@
                   <div class="card-body">
                         <!-- <h5 class="card-title">{{movie.title}}</h5> -->
                         <p class="card-text">{{movie.title}}</p>
-                        <a href="{{url_for('views.admin_view_movie_details', movie_id=movie.id)}}" class="btn btn-primary">Check out</a>
+                        <a href="{{url_for('views.admin_view_movie_details', movie_id=movie.id)}}" class="btn btn-primary">Detials</a>
+                        <a href="{{url_for('views.admin_add_screening', movie_id=movie.id)}}" class="btn btn-primary">Add Screenings</a>
                     </div>
                 </div>
             </div>
@@ -56,4 +59,6 @@
   {% include 'footer.html' %}
   
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+
 </html>

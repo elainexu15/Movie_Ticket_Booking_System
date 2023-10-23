@@ -24,6 +24,9 @@ LincolnCinema = CinemaController()
 LincolnCinema.load_database()
 print(LincolnCinema.all_admins)
 print(LincolnCinema.all_front_desk_staffs)
+# for hall in LincolnCinema.all_halls:
+#     for seat in hall.seats:
+#         print(seat)
 
 from app.views import views
 

@@ -1,0 +1,92 @@
+{% extends 'cus_home.html' %}
+
+{% block content %}
+<h2 align="center" class="mb-5">MOVIE DETIALS</h2>
+
+<div class="col-lg-3 mb-3">
+    <img src="{{ url_for('static', filename='movie_img/' ~ movie.id ~ '.jpg') }}" alt="..." class="card-img-top">
+</div>
+
+
+<div class="col-lg-6 mb-3 ">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{movie.title}}</h5>
+            <p class="card-text">Language: {{movie.language}}</p>
+            <p class="card-text">Genre: {{movie.genre}}</p>
+            <p class="card-text">Country: {{movie.country}}</p>
+            <p class="card-text">Release Date: {{movie.release_date}}</p>
+            <p class="card-text">Duration: {{movie.duration_in_mins}}min</p>
+            <p class="card-text">Description: {{movie.description}}</p>
+        </div>
+    </div>
+    <a href="{{url_for('views.admin_add_screening', movie_id=movie.id)}}" class="btn btn-primary mt-4">Add Screenings</a>
+</div>
+
+<style>
+.start-time-container {
+    position: relative;
+    display: inline-block;
+}
+
+.start-time {
+    display: block;
+    border: 2px solid #007bff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.book-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 123, 255, 0.7);
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.start-time-container:hover .book-overlay {
+    opacity: 1;
+}
+
+</style>
+
+<div class="col-lg-3 mb-3">
+    <h4 class="text-center">SHOWTIMES</h4>
+    <div class="accordion" id="screeningAccordion">
+        {% for screening in movie.screenings %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="screening{{ screening.screening_date }}Heading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#screening{{ screening.screening_date }}" aria-expanded="true" aria-controls="screening{{ screening.screening_date }}">
+                        {{ screening.screening_date }}
+                    </button>
+                </h2>
+                <div id="screening{{ screening.screening_date }}" class="accordion-collapse collapse" aria-labelledby="screening{{ screening.screening_date }}Heading" data-bs-parent="#screeningAccordion">
+                    <div class="accordion-body">
+                        <div class="start-time-container">
+                            <div class="start-time">{{ screening.start_time }}</div>
+                            <div class="book-overlay">
+                                BOOK
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}

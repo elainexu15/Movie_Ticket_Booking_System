@@ -7,6 +7,7 @@ class CinemaController:
         self.__admins = []
         self.__front_desk_staffs = []
         self.__movies = []
+        self.__halls = []
 
     @property
     def all_customers(self):
@@ -23,7 +24,11 @@ class CinemaController:
     @property
     def all_movies(self):
         return self.__movies
-
+    
+    @property
+    def all_halls(self):
+        return self.__halls
+    
 
     def find_customer(self, username):
         for customer in self.__customers:
@@ -33,10 +38,14 @@ class CinemaController:
 
     def find_movie(self, id):
         for movie in self.__movies:
-            print(type(movie.id))
-            print(type(id))
             if movie.id == id:
                 return movie
+        return None
+    
+    def find_hall(self, hall_name):
+        for hall in self.__halls:
+            if hall.hall_name == hall_name:
+                return hall
         return None
 
     def add_customer(self, customer):
@@ -50,6 +59,9 @@ class CinemaController:
 
     def add_movie(self, movie_object):
         self.__movies.append(movie_object)
+
+    def add_hall(self, hall_object):
+        self.__halls.append(hall_object)
             
 
     def register_customer(self, name, address, email, phone, username, hashed_password) -> bool:
@@ -128,11 +140,36 @@ class CinemaController:
         except Exception as e:
             print(f"An unexpected error occurred while reading '{file_name}': {str(e)}")
     
+   # Method to read hall data from a file and create Cinema Hall objects
+    def add_hall_from_file(self, file_name):
+        try:
+            with open(file_name, 'r') as file:
+                for line in file:
+                    data = line.strip().split(',')
+                    hall_name, capacity = data[0], int(data[1])
+                    cinema_hall_object = CinemaHall(hall_name, capacity)
+                    self.add_hall(cinema_hall_object)
+        except FileNotFoundError:
+            print(f"Error: File '{file_name}' not found.")
+        except PermissionError:
+            print(f"Error: Permission denied for file '{file_name}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred while reading '{file_name}': {str(e)}")
+
+    def initialise_hall_seats(self):
+        for hall in self.all_halls:
+            hall.add_seats()
+
+
+
     def load_database(self):
         self.add_customers_from_file('app/database/customers.txt')
         self.add_admins_from_file('app/database/admins.txt')
         self.add_front_desk_staffs_from_file('app/database/front_desk_staffs.txt')
         self.add_movies_from_file('app/database/movies.txt')
+        self.add_hall_from_file('app/database/cinema_hall.txt')
+        self.initialise_hall_seats()
+
 
 
 
