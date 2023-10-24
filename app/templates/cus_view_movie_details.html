@@ -1,4 +1,4 @@
-{% extends 'admin_home.html' %}
+{% extends 'cus_home.html' %}
 
 {% block content %}
 <style>
@@ -16,6 +16,41 @@
         cursor: pointer;
     }
     
+    .start-time-container {
+    position: relative;
+    display: inline-block;
+}
+
+.start-time {
+    display: block;
+    border: 2px solid #007bff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.book-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(0, 123, 255);
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.start-time-container:hover .book-overlay {
+    opacity: 1;
+}
     </style>
     
 <h2 align="center" class="mb-5">MOVIE DETIALS</h2>
@@ -37,8 +72,6 @@
             <p class="card-text">Description: {{movie.description}}</p>
         </div>
     </div>
-    <a href="{{url_for('views.admin_add_screening', movie_id=movie.id)}}" class="btn btn-primary mt-4">Add Screenings</a>
-    <a href="{{url_for('views.admin_cancel_movie', movie_id=movie.id)}}" class="btn btn-warning mt-4">Cancel Movie</a>
 </div>
 
 
@@ -57,6 +90,11 @@
                         {% for screening in movie.screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d")  %}
                             <div class="start-time-container">
                                 <div class="start-time">{{ screening.start_time }}</div>
+                                <div class="book-overlay">
+                                    <a href="{{ url_for('select_seats', movie_id = movie.id, screening_date=screening.screening_date, start_time = screening.start_time) }}" class="book-overlay">
+                                        BOOK
+                                    </a>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>

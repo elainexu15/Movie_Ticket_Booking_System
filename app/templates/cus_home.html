@@ -1,22 +1,62 @@
-
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lincoln Cinema Online Ticket Booking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-...">
+
     {% include 'bootstrap.html' %}
-    
+    <style>
+      .card-img-top {
+    width: 100%;
+    height: 25vw;
+    object-fit: cover;
+}
+    </style>
   </head>
   <body>
-  	{% include 'nav_logged_in.html' %}
-    {% include 'banner.html' %}
-  	{% include 'flash.html' %}
 
+    {% include 'cus_nav.html' %}
+    {% include 'flash.html' %}
     <div class="container">
-        <h2 class="subtitle">
-            Hi, {{g.user.name}}
-        </h2>
-          
+      <br>
     </div>
-    {% include 'footer.html' %}
+
+  
+    <div class="container ">
+        <div class="row mt-4">
+            {% block content %}
+
+            {% include 'cus_search.html' %}
+
+            {% for movie in all_movies %}
+            <div class="col co-sm-4 col-lg-3 mb-3 ">
+                <div class="card" style="width: 18rem;">
+                  <img src="{{ url_for('static', filename='movie_img/' ~ movie.id ~ '.jpg') }}" alt="..." class="card-img-top">
+                  <div class="card-body">
+                        <!-- <h5 class="card-title">{{movie.title}}</h5> -->
+                        <p class="card-text">{{movie.title}}</p>
+                        <a href="{{url_for('views.customer_view_movie_details', movie_id=movie.id)}}" class="btn btn-primary">Detials</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="container ">
+      <div class="row mt-4">
+          {% block search_result %}
+            
+          {% endblock %}
+      </div>
+  </div>
+
+  {% include 'footer.html' %}
+  
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+
 </html>

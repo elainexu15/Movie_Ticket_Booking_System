@@ -3,11 +3,12 @@ from . import LincolnCinema
 from .models import *
 from flask import g, redirect, render_template, request, session, url_for, send_from_directory, abort
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+from datetime import datetime, timedelta
 import os
 import urllib.request
 from app import app
 from werkzeug.utils import secure_filename
+import json
 
 
 views = Blueprint('views', __name__)
@@ -43,12 +44,30 @@ def admin_add_movie():
         # Create a Movie object
         movie = Movie(title, language, genre, country, release_date, duration, description)
         LincolnCinema.add_movie(movie)
-        # Combine movie information into a single comma-separated line
-        movie_info = f"{title},{language},{genre},{country},{release_date},{duration},{description}"
+        
+         # Load existing movie data from movies.json if it exists
+        movie_data = []
+        try:
+            with open('movies.json', 'r') as json_file:
+                movie_data = json.load(json_file)
+        except FileNotFoundError:
+            pass
 
-        # Save the movie information to a text file
-        with open('app/database/movies.txt', 'a') as file:
-            file.write(movie_info + '\n')
+        # Append the new movie data to the existing data
+        movie_data.append({
+            "title": title,
+            "language": language,
+            "genre": genre,
+            "country": country,
+            "release_date": release_date,
+            "duration": duration,
+            "description": description,
+            "screenings": []
+        })
+
+        # Save the updated movie data back to movies.json
+        with open('app/database/movies.json', 'w') as json_file:
+            json.dump(movie_data, json_file, indent=4)
 
         flash('Movie information has been saved.')
 
@@ -81,10 +100,14 @@ def display_image(filename):
 def admin_view_movie_details(movie_id):
     movie_id = int(movie_id)
     movie = LincolnCinema.find_movie(movie_id)
-    return render_template('admin_view_movie_details.html', movie = movie)
+    screening_date_list = movie.get_screening_date_list()
+    return render_template('admin_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
 
-# Define a route for adding a screening
-from datetime import datetime, timedelta
+
+@views.route('/admin_cancel_movie/<int:movie_id>', methods=['GET', 'POST'])
+def admin_cancel_movie(movie_id):
+
+    return redirect(url_for("views.admin_home"))
 
 @views.route('/admin_add_screening/<int:movie_id>', methods=['GET', 'POST'])
 def admin_add_screening(movie_id):
@@ -99,36 +122,65 @@ def admin_add_screening(movie_id):
         hall_name = request.form['hall_name']
         price = request.form['price']
 
-        hall = LincolnCinema.find_hall(hall_name)
-
+        # convert time to 24-hour format
+        start_time = datetime.strptime(start_time, '%H:%M').strftime('%H:%M')
+        end_time = datetime.strptime(end_time, '%H:%M').strftime('%H:%M')        
+        
         # Calculate the ending time based on start_time and movie.duration_in_minutes
-        movie_duration_in_mins = int(movie.duration_in_mins)  # Replace with your actual duration
+        movie_duration_in_mins = int(movie.duration_in_mins) 
 
         start_datetime = datetime.strptime(start_time, '%H:%M')
         calculated_end_time = start_datetime + timedelta(minutes=movie_duration_in_mins)
         selected_end_datetime = datetime.strptime(end_time, '%H:%M')
 
         if selected_end_datetime <= calculated_end_time:
-            flash('invalid end time. Show time should be no shorter than Movie duration.', 'error')
+            flash('Invalid end time. Show time should be no shorter than Movie duration.', 'error')
             return render_template('admin_add_screening.html', movie=movie, hall_name_list=hall_name_list)
-
+        
+        # get hall object
+        hall = LincolnCinema.find_hall(hall_name)
+        
+        seats = LincolnCinema.initialise_seats(hall, price)
         # Create a CinemaScreening object
-        screening = Screening(screening_date, start_time, end_time, hall, price)
+        screening = Screening(screening_date, start_time, end_time, hall, seats)
 
         # Add the screening to the movie
         movie.add_screening(screening)
-        
+
+        # Get the seat data for this screening
+        seats = [seat.to_json() for seat in screening.seats]
+
+        screening_data = {
+        "screening_date": screening_date,
+        "start_time": start_time,
+        "end_time": end_time,
+        "hall_name": hall_name,
+        "price": price,
+        "seats": seats
+    }
+
+        # Define the filename based on the movie ID
+        filename = f'app/database/screenings_{movie_id}.json'
+
+        if os.path.exists(filename):
+            # File exists, so let's read the existing data
+            with open(filename, 'r') as json_file:
+                existing_data = json.load(json_file)
+        else:
+            # File doesn't exist, create an empty list
+            existing_data = []
+
+        # Append the new screening data to the existing data
+        existing_data.append(screening_data)
+
+        # Write the updated data back to the file
+        with open(filename, 'w') as json_file:
+            json.dump(existing_data, json_file, indent=4)
         flash('Screening has been added.')
 
-        # Create a set of unique dates
-        unique_dates = set()
-        for screening in movie.screenings:
-            unique_dates.add(screening.screening_date)
-        # Convert the set back to a list
-        screening_date_list = list(unique_dates)
-        # Redirect to the movie details page
-        return render_template('admin_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
+        screening_date_list = movie.get_screening_date_list()
 
+        return render_template('admin_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
     return render_template('admin_add_screening.html', movie=movie, hall_name_list=hall_name_list)
 
 
@@ -144,21 +196,10 @@ def before_request():
 
     if 'user_username' in session:
         user = next((x for x in LincolnCinema.all_customers if x.username == session['user_username']), None)
-        if user:
-            g.user = user
-
-
-@views.before_request
-def before_request():
-    g.user = None
-
-    if 'user_username' in session:
-        user = next((x for x in LincolnCinema.all_customers if x.username == session['user_username']), None)
         if user is None:
             user = next((x for x in LincolnCinema.all_admins if x.username == session['user_username']), None)
         if user is None:
             user = next((x for x in LincolnCinema.all_front_desk_staffs if x.username == session['user_username']), None)
-        
         if user:
             g.user = user
 
@@ -189,7 +230,7 @@ def login():
             session['user_username'] = user.username
             if isinstance(user, Customer):
                 flash("Login successful!", 'success')
-                return redirect(url_for('views.home_customer'))
+                return redirect(url_for('views.customer_home'))
             elif isinstance(user, Admin):
                 flash("Login successful!", 'success')
                 return redirect(url_for('views.admin_home'))
@@ -203,11 +244,6 @@ def login():
     return render_template('login.html')
 
 
-@views.route('/home_customer')
-def home_customer():
-    if not g.user:
-        return redirect(url_for('views.login'))
-    return render_template('home_customer.html')
 
 
 @views.route('/admin_home')
@@ -298,3 +334,47 @@ def filter_movies():
     # If the method is GET, initially display the form
     return redirect(url_for('views.all_movies'))
 
+# ======= CUSTOMER VIEWS =======
+@views.route('/customer_home')
+def customer_home():
+    if not g.user:
+        return redirect(url_for('views.login'))
+    all_movies = LincolnCinema.all_movies
+    language_list = LANGUAGE_LIST
+    genre_list = GENRE_LIST
+    return render_template('cus_home.html', all_movies=all_movies, language_list=language_list, genre_list=genre_list)
+
+
+@views.route('/customer_view_movie_details/<movie_id>')
+def customer_view_movie_details(movie_id):
+    movie_id = int(movie_id)
+    movie = LincolnCinema.find_movie(movie_id)
+    screening_date_list = movie.get_screening_date_list()
+    return render_template('cus_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
+
+
+@views.route('/customer_filter_movies/<customer_username>', methods=['GET', 'POST'])
+def customer_filter_movies(customer_username):
+    print(customer_username)
+    customer = LincolnCinema.find_customer(customer_username)
+    if request.method == 'POST':
+        # Get the customer's selected filters from the form
+        title = request.form.get('title')
+        selected_language = request.form.get('language')
+        selected_genre = request.form.get('genre')
+        date_from = request.form.get('date_from')
+        date_to = request.form.get('date_to')
+        if date_from and not date_to:
+            date_to = str(date.today())
+        elif date_to and not date_from:
+            date_from = '1900-01-01'
+
+        # filter movies 
+        filtered_movies = LincolnCinema.customer_filter_movies(title, selected_language, selected_genre, date_from, date_to, customer)
+        language_list = LANGUAGE_LIST
+        genre_list = GENRE_LIST
+        return render_template('cus_home.html', all_movies=filtered_movies, language_list = language_list, 
+                           genre_list = genre_list)
+
+    # If the method is GET, initially display the form
+    return redirect(url_for('views.customer_home'))

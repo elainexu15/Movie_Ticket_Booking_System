@@ -14,16 +14,12 @@ app.secret_key = 'somesecretkeythatonlyishouldknow'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-# create a database object
-db = SQLAlchemy()
-# define a name for the database
-DB_NAME = "database.db"
-
 # Create an instance of CinemaController and load the database during application startup
 LincolnCinema = CinemaController()
 LincolnCinema.load_database()
 print(LincolnCinema.all_admins)
 print(LincolnCinema.all_front_desk_staffs)
+print(LincolnCinema.all_movies)
 # for hall in LincolnCinema.all_halls:
 #     for seat in hall.seats:
 #         print(seat)

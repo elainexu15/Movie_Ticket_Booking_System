@@ -1,0 +1,54 @@
+{
+    "movies": [
+        {
+            "title": "TAYLOR SWIFT THE ERAS TOUR",
+            "language": "English",
+            "genre": "Concert",
+            "country": "US",
+            "release_date": "2023-10-13",
+            "duration": "168",
+            "description": "The cultural phenomenon continues on the big screen! Immerse yourself in this once-in-a-lifetime concert film experience with a breathtaking, cinematic view of the history-making tour. Taylor Swift Eras Tour attire and friendship bracelets are strongly encouraged!",
+            "Screenings": []
+
+        },
+        {
+            "title": "SHAYDA",
+            "language": "Persian",
+            "genre": "Drama",
+            "country": "Australia",
+            "release_date": "2023-10-05",
+            "duration": "118",
+            "description": "A young Iranian mother and her six-year-old daughter finds refuge in an Australian women's shelter during the two weeks of Iranian New Year (Nowrooz) which is celebrated as a time of renewal and rebirth. Aided by the strong community of women at the refuge they seek their freedom in this new world of possibilities, only to find themselves facing the violence they tried so hard to escape."
+        },
+        {
+            "title": "PARASITE",
+            "language": "Korean",
+            "genre": "Thriller",
+            "country": "Korea",
+            "release_date": "2019-05-30",
+            "duration": "132",
+            "description": "A poor family's and a rich family's lives unexpectedly intersect in this Best Picture Oscar-winning tragicomedy from South Korean auteur, Bong Joon-Ho."
+        },
+        {
+            "title": "THE CREATOR",
+            "language": "English",
+            "genre": "Adventure",
+            "country": "US",
+            "release_date": "2023-09-28",
+            "duration": "133",
+            "description": "From director/co-writer Gareth Edwards (\u201cRogue One,\u201d \u201cGodzilla\u201d) comes an epic sci-fi action thriller set amidst a future war between the human race and the forces of artificial intelligence. Joshua (John David Washington), a hardened ex-special forces agent grieving the disappearance of his wife (Gemma Chan), is recruited to hunt down and kill the Creator, the elusive architect of advanced AI who has developed a mysterious weapon with the power to end the war\u2026and mankind itself. Joshua and his team of elite operatives journey across enemy lines, into the dark heart of AI-occupied territory, only to discover the world-ending weapon he\u2019s been instructed to destroy is an AI in the form of a young child (Madeleine Yuma Voyles).",
+            "Screenings": []
+        },
+        {
+            "title": "Asterix & Obelix: The Middle Kingdom",
+            "language": "French",
+            "genre": "Family",
+            "country": "France",
+            "release_date": "2023-10-04",
+            "duration": "112",
+            "description": "The only daughter of the Chinese emperor Han Xuandi, escapes from a strict prince and seeks help from the Gauls and the two brave warriors Asterix and Obelix.",
+            "Screenings": []
+
+        }
+    ]
+}

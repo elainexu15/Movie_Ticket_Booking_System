@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from datetime import date, datetime
+from datetime import date, datetime, time
 
 
 class General(ABC):
@@ -295,6 +295,52 @@ class Customer(User):
     def password(self):
         return self._password
     
+
+    def search_movie_title(self, title: str, movies):
+        # Implement search by movie title for guests
+        matching_movies = []
+
+        for movie in movies:  # Assuming you have a list of movies in the General class
+            if title.lower() in movie.title.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+    
+
+    def search_movie_lang(self, selected_language: str, filtered_movies):
+        # Implement search by movie language for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_language.lower() in movie.language.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_genre(self, selected_genre: str, filtered_movies):
+        # Implement search by movie genre for guests
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_genre.lower() in movie.genre.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+
+    def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
+        # Implement search by movie release date for guests
+        matching_movies = []   
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if movie.release_date >= date_from and movie.release_date <= date_to:
+                matching_movies.append(movie)
+        return matching_movies
+
+    def view_movie_details(self, a_movie):
+        # Implement viewing movie details for guests
+        pass
+    
     def __repr__(self):
         return f'<Customer: {self.name}>'
     
@@ -364,59 +410,30 @@ class Movie:
         self.__screenings.append(screening_object)
         self.__screenings.sort(key=lambda x: x.screening_date)
         
-    
-    def search_movie_title(self, title: str, movies):
-        # Implement search by movie title for guests
-        matching_movies = []
+        
+    def get_screening_date_list(self):
+        # Get the current date
+        current_date = date.today()
+        
+        # Create a set of unique dates that are after the current date
+        unique_dates = set()
+        for screening in self.screenings:
+            # Assuming that screening.screening_date is in the format "YYYY-MM-DD" without a time component
+            screening_date = datetime.strptime(screening.screening_date, "%Y-%m-%d").date()
+            if screening_date >= current_date:
+                unique_dates.add(screening_date)
 
-        for movie in movies:  # Assuming you have a list of movies in the General class
-            if title.lower() in movie.title.lower():
-                matching_movies.append(movie)
+        # Convert the set back to a list
+        screening_date_list = sorted(list(unique_dates))
+        return screening_date_list
 
-        return matching_movies
-    
-
-    def search_movie_lang(self, selected_language: str, filtered_movies):
-        # Implement search by movie language for guests
-        matching_movies = []
-
-        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-            if selected_language.lower() in movie.language.lower():
-                matching_movies.append(movie)
-
-        return matching_movies
-
-
-    def search_movie_genre(self, selected_genre: str, filtered_movies):
-        # Implement search by movie genre for guests
-        matching_movies = []
-
-        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-            if selected_genre.lower() in movie.genre.lower():
-                matching_movies.append(movie)
-
-        return matching_movies
-
-
-    def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
-        # Implement search by movie release date for guests
-        matching_movies = []   
-        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-            if movie.release_date >= date_from and movie.release_date <= date_to:
-                matching_movies.append(movie)
-        return matching_movies
-
-
-    def view_movie_details(self, a_movie):
-        # Implement viewing movie details for guests
-        pass
     
     def __str__(self):
         return f"Movie ID: {self.__id}\nTitle: {self.__title}\nLanguage: {self.__language}\nGenre: {self.__genre}\nCountry: {self.__country}\nRelease Date: {self.__release_date}\nDuration (mins): {self.__duration_in_mins}\nDescription: {self.__description}"
 
 
 class CinemaHallSeat:
-    def __init__(self, seat_number, row_number, is_reserved, seat_price=None):
+    def __init__(self, seat_number, row_number, is_reserved, seat_price):
         self.__seat_number = seat_number
         self.__row_number = row_number
         self.__is_reserved = is_reserved
@@ -429,6 +446,15 @@ class CinemaHallSeat:
     @seat_price.setter
     def seat_price(self, price):
         self.__seat_price = price
+    
+    def to_json(self):
+        # Return a dictionary representation of the seat
+        return {
+            "seat_number": self.__seat_number,
+            "row_number": self.__row_number,
+            "is_reserved": self.__is_reserved,
+            "seat_prive": self.__seat_price,
+        }
 
     def __str__(self):
         return f"Seat {self.seat_number} in Row {self.row_number} - {'Reserved' if self.is_reserved else 'Available'}"
@@ -443,7 +469,6 @@ class CinemaHall:
         """
         self.__hall_name = hall_name  # Name of the hall
         self.__capacity = capacity    # Seating capacity of the hall
-        self.__seats = []
 
     @property
     def hall_name(self):
@@ -452,12 +477,6 @@ class CinemaHall:
     @property
     def capacity(self):
         return self.__capacity
-
-    def add_seats(self):        # Initialize seats for the hall
-        for row_number in range(1, self.__capacity // 10 + 1):  # Assuming 10 seats per row
-            for seat_number in range(1, 11):  # 10 seats per row
-                seat = CinemaHallSeat(seat_number, row_number, False)  # Initialize seats
-                self.__seats.append(seat)  # Add seats to the hall
 
     @property
     def seats(self):
@@ -468,12 +487,13 @@ class CinemaHall:
 
 
 class Screening:
-    def __init__(self, screening_date, start_time, end_time, hall: CinemaHall, seat_price) -> None:
+    def __init__(self, screening_date, start_time, end_time, hall: CinemaHall, seats) -> None:
         self.__screening_date = screening_date
         self.__start_time = start_time
         self.__end_time = end_time
-        self.__hall = hall  # An instance of CinemaHall
-        self.__seat_price = seat_price
+        self.__hall = hall  
+        self.__seats = seats
+
 
     @property
     def screening_date(self):
@@ -492,12 +512,12 @@ class Screening:
         return self.__hall
     
     @property
-    def seat_price(self):
-        return self.__seat_price
-    
+    def seats(self):
+        return self.__seats
+
     def __str__(self):
         return f"Screening Date: {self.screening_date}\n" \
                f"Start Time: {self.start_time}\n" \
                f"End Time: {self.end_time}\n" \
                f"Hall: {self.hall}\n" \
-               f"Price: {self.seat_price}"
+           
