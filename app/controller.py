@@ -295,3 +295,19 @@ class CinemaController:
             filtered_movies = customer.search_movie_date(date_from, date_to, filtered_movies)
         return filtered_movies
 
+
+# ====== filter screenings ========
+    def find_screening_by_date_and_time(self, movie, screening_date, start_time):
+        # Convert the input values to datetime objects
+        print(type(screening_date))
+        print(type(start_time))
+        # Iterate through the movie's screenings to find a matching screening
+        for screening in movie.screenings:
+            if (
+                screening.screening_date == screening_date and
+                screening.start_time == start_time
+            ):
+                return screening
+
+        # If no matching screening is found, return None
+        return None

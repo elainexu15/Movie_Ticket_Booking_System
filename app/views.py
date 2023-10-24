@@ -377,4 +377,25 @@ def customer_filter_movies(customer_username):
                            genre_list = genre_list)
 
     # If the method is GET, initially display the form
-    return redirect(url_for('views.customer_home'))
+    return redirect(url_for('views.customer_home/<screening>'))
+
+
+@views.route('/customer_select_seats/<movie_id>/<screening_date>/<start_time>', methods=['GET'])
+def customer_select_seats(movie_id, screening_date, start_time):
+    # Find the screening based on screening_date and start_time
+    movie = LincolnCinema.find_movie(int(movie_id))
+    screening = LincolnCinema.find_screening_by_date_and_time(movie, screening_date, start_time)
+
+    if screening is None:
+        # Handle the case where no matching screening is found
+        flash('Screening not found', 'error')
+        return redirect(url_for('views.customer_view_movie_details', movie_id=movie.id))
+
+    # Pass the screening object to the seat selection page
+    return render_template('cus_select_seats.html', screening=screening, movie=movie)
+
+
+@views.route('customer_book_seats/<movie_id>/<screening_date>/<start_time>')
+def customer_book_seats(movie_id, screening_date, start_time):
+
+    return render_template('cus_confirm_book.html')

@@ -440,6 +440,18 @@ class CinemaHallSeat:
         self.__seat_price = seat_price  # Optional seat price
 
     @property
+    def seat_number(self):
+        return self.__seat_number
+    
+    @property
+    def row_number(self):
+        return self.__row_number
+    
+    @property
+    def is_reserved(self):
+        return self.__is_reserved
+
+    @property
     def seat_price(self):
         return self.__seat_price
     

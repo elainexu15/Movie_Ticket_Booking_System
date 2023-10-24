@@ -1,12 +1,26 @@
 {% extends 'cus_home.html' %}
 
 {% block content %}
-<style>
-    .start-time-container {
+    <style>
+        .start-time-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .start-time {
+            display: block;
+            border: 2px solid #007bff;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .start-time-container {
         position: relative;
         display: inline-block;
     }
-    
+
     .start-time {
         display: block;
         border: 2px solid #007bff;
@@ -15,42 +29,34 @@
         font-weight: bold;
         cursor: pointer;
     }
-    
-    .start-time-container {
-    position: relative;
-    display: inline-block;
-}
 
-.start-time {
-    display: block;
-    border: 2px solid #007bff;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-    cursor: pointer;
-}
+    .book-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(0, 123, 255);
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+    }
 
-.book-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(0, 123, 255);
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-    opacity: 0;
-}
+    .start-time-container:hover .book-overlay {
+        opacity: 1;
+    }
 
-.start-time-container:hover .book-overlay {
-    opacity: 1;
-}
+    /* make the "BOOK" text white when hovering */
+    .book-overlay a {
+        color: white;
+        text-decoration: none; 
+    }
     </style>
     
 <h2 align="center" class="mb-5">MOVIE DETIALS</h2>
@@ -77,31 +83,35 @@
 
 <div class="col-lg-3 mb-3">
     <h4 class="text-center">SCREENINGS</h4>
-    <div class="accordion" id="screeningAccordion">
-        {% for screening_date in screening_date_list %}
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="screening{{ screening_date }}Heading">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#screening{{ screening_date }}" aria-expanded="true" aria-controls="screening{{ screening_date }}">
-                        {{ screening_date }}
-                    </button>
-                </h2>
-                <div id="screening{{ screening_date }}" class="accordion-collapse" aria-labelledby="screening{{ screening_date }}Heading" data-bs-parent="#screeningAccordion">
-                    <div class="accordion-body">
-                        {% for screening in movie.screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d")  %}
-                            <div class="start-time-container">
-                                <div class="start-time">{{ screening.start_time }}</div>
-                                <div class="book-overlay">
-                                    <a href="{{ url_for('select_seats', movie_id = movie.id, screening_date=screening.screening_date, start_time = screening.start_time) }}" class="book-overlay">
-                                        BOOK
-                                    </a>
+    {% if movie.screenings %}
+        <div class="accordion" id="screeningAccordion">
+            {% for screening_date in screening_date_list %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="screening{{ screening_date }}Heading">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#screening{{ screening_date }}" aria-expanded="true" aria-controls="screening{{ screening_date }}">
+                            {{ screening_date }}
+                        </button>
+                    </h2>
+                    <div id="screening{{ screening_date }}" class="accordion-collapse" aria-labelledby="screening{{ screening_date }}Heading" data-bs-parent="#screeningAccordion">
+                        <div class="accordion-body">
+                            {% for screening in movie.screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d")  %}
+                                <div class="start-time-container">
+                                    <div class="start-time">{{ screening.start_time }}</div>
+                                    <div class="book-overlay">
+                                        <a href="{{ url_for('views.customer_select_seats', movie_id = movie.id, screening_date=screening.screening_date, start_time = screening.start_time) }}" class="book-overlay">
+                                            BOOK
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
+    {% else %}
+    <p class="text-center mt-4" >No Screenings Available.</p>
+    {% endif %}
 </div>
 
 
