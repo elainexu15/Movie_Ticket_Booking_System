@@ -171,7 +171,8 @@ class CinemaController:
 
     # Initialize seats for the screening
     def initialise_seats(self, hall, price):  
-        seats = []      
+        seats = []    
+        print(price)  
         for row_number in range(1, hall.capacity // 10 + 1):  # Assuming 10 seats per row
             for seat_number in range(1, 11):  # 10 seats per row
                 seat = CinemaHallSeat(seat_number, row_number, False, price)  # Initialize seats
@@ -311,3 +312,5 @@ class CinemaController:
 
         # If no matching screening is found, return None
         return None
+    
+

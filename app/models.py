@@ -434,10 +434,15 @@ class Movie:
 
 class CinemaHallSeat:
     def __init__(self, seat_number, row_number, is_reserved, seat_price):
+        self.__seat_id = str(row_number) + str(seat_number)
         self.__seat_number = seat_number
         self.__row_number = row_number
         self.__is_reserved = is_reserved
         self.__seat_price = seat_price  # Optional seat price
+
+    @property
+    def seat_id(self):
+        return self.__seat_id
 
     @property
     def seat_number(self):
@@ -459,17 +464,23 @@ class CinemaHallSeat:
     def seat_price(self, price):
         self.__seat_price = price
     
+    def reserve_seat(self):
+        self.__is_reserved = True
+
+    def unreserve_seat(self):
+        self.__is_reserved = False
+
     def to_json(self):
         # Return a dictionary representation of the seat
         return {
             "seat_number": self.__seat_number,
             "row_number": self.__row_number,
             "is_reserved": self.__is_reserved,
-            "seat_prive": self.__seat_price,
+            "seat_price": self.__seat_price,
         }
 
     def __str__(self):
-        return f"Seat {self.seat_number} in Row {self.row_number} - {'Reserved' if self.is_reserved else 'Available'}"
+        return f"Seat {self.seat_id} - {'Reserved' if self.is_reserved else 'Available'} - Price {self.seat_price}"
 
 
 class CinemaHall:
@@ -526,7 +537,14 @@ class Screening:
     @property
     def seats(self):
         return self.__seats
-
+    
+    # Method to find a seat by its row and seat number
+    def find_seat_by_identifier(self, row_number, seat_number):
+        # Iterate through the seats in the hall and find the seat with matching row_number and seat_number
+        for seat in self.seats:
+            if seat.row_number == row_number and seat.seat_number == seat_number:
+                return seat  # Return the seat object if found
+        return None  # Return None if the seat is not found
     def __str__(self):
         return f"Screening Date: {self.screening_date}\n" \
                f"Start Time: {self.start_time}\n" \

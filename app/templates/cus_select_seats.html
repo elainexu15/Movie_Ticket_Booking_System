@@ -76,9 +76,8 @@
 </style>
 
 
-
-
 <div class="container">
+    <form action="{{url_for('views.customer_select_seats', movie_id = movie.id, screening_date = screening.screening_date, start_time = screening.start_time)}}" method="post" enctype="multipart/form-data" class="row g-3">
     <div class="row">
         <div class="col-1"></div>
         <div class="col-3 mt-5">
@@ -95,13 +94,24 @@
                 <div class="screen">
                     Screen
                 </div>
-                <!-- Loop through the seats and display them here -->
-                {% for seat in screening.seats %}
-                    <div class="seat" id="seat-{{ seat.seat_number }}-{{ seat.row_number }}"
-                         data-seat-number="{{ seat.seat_number }}" data-row-number="{{ seat.row_number }}">
-                        {{ seat.seat_number }}
-                    </div>
-                {% endfor %}
+                <!-- Loop through the seats and display them here -->        
+                <!-- Loop through the seats and display them here -->        
+                    {% for seat in screening.seats %}
+                    {% if seat.is_reserved %}
+                        <div class="seat reserved" id="seat-{{ seat.seat_number }}-{{ seat.row_number }}"
+                            data-seat-number="{{ seat.seat_number }}" data-row-number="{{ seat.row_number }}">
+                            {{ seat.seat_number }}
+                        </div>
+                    {% else %}
+                        <div class="seat" id="seat-{{ seat.seat_number }}-{{ seat.row_number }}"
+                            data-seat-number="{{ seat.seat_number }}" data-row-number="{{ seat.row_number }}">
+                            {{ seat.seat_number }}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+
+                <!-- Hidden input field for selected seats -->
+                <input type="hidden" id="selectedSeatsInput" name="selected_seats">
             </div>
         
         
@@ -123,8 +133,7 @@
             </div>
         
             <div class="container text-center">
-                <a href="{{url_for('views.customer_book_seats', movie_id = movie.id, screening_date = screening.screening_date, start_time = screening.start_time)}}" class="btn btn-primary mt-5 rounded-0 me-5">
-                    Book Selected Seats</a>
+                    <input type="submit" value="PROCEED" class="btn btn-primary mt-5 rounded-0 me-5">
             </div>
 
         </div>
@@ -150,6 +159,10 @@
             } else {
                 selectedSeats.splice(index, 1);
             }
+
+            // Update the hidden input field
+            const selectedSeatsInput = document.getElementById('selectedSeatsInput');
+            selectedSeatsInput.value = JSON.stringify(selectedSeats);
         });
     });
 
@@ -159,4 +172,5 @@
         console.log('Selected Seats:', selectedSeats);
     });
 </script>
+
 {% endblock %}

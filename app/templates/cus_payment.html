@@ -1,0 +1,67 @@
+{% extends "cus_home.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container ">
+    <h2 align="center" class="mb-3">CREDIT CARD DETAILS</h2>
+
+    <div class="row justify-content-center">    
+        <div class="col-md-6" style="background:white;">
+        
+        <form class="border rounded p-4 needs-validation" action="#" method="POST">
+            <div class="mb-3">
+                <label for="card_holder_name" class="form-label">Cardholder Name</label>
+                <input type="text" id="card_holder_name" name="card_holder_name" class="form-control is-valid" aria-describedby="inputGroupPrepend2" required>
+                <div class="invalid-feedback">
+                    Please enter cardholder's name.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="card_number" class="form-label">Card Number</label>
+                <input type="text" id="card_number" name="card_number" class="form-control" pattern="[0-9]{16}" title="Please enter a 16-digit card number" required>
+                <div class="invalid-feedback">
+                    Please enter a valid 16-digit card number.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="expire_month" class="form-label">Expiry Month (MM)</label>
+                <input type="text" id="expire_month" name="expire_month" class="form-control" pattern="(0[1-9]|1[0-2])" title="Please enter a valid expiry month in MM format" required>
+                <div class="invalid-feedback">
+                    Please enter expiry month.
+                </div>
+            </div>
+          
+            <div class="mb-3">
+                <label for="expire_year" class="form-label">Expiry Year (YYYY)</label>
+                <input type="text" id="expire_year" name="expire_year" class="form-control" pattern="[0-9]{4}" title="Please enter a valid expiry year in YYYY format" required>
+                <div class="invalid-feedback">
+                    Please enter expiry year.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="cvc" class="form-label">CVC</label>
+                <input type="text" id="cvc" name="cvc" class="form-control" pattern="[0-9]{3}" title="Please enter a 3-digit CVV code" required>
+                <div class="invalid-feedback">
+                    Please enter valid cvc.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="amount" class="form-label">Amount</label>
+                <input type="text" id="amount" name="amount" class="form-control" pattern="^[0-9]+(\.[0-9]{1,2})?$" title="Please enter a valid amount (e.g. 10.99)" value = ${{total_price}} readonly>
+            </div>
+            <hr>
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary" style="width: 150px;" value="Pay Now">
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
