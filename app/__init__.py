@@ -22,9 +22,7 @@ print(LincolnCinema.all_front_desk_staffs)
 print(LincolnCinema.all_movies)
 for movie in LincolnCinema.all_movies:
     print(type(movie.id))
-# for hall in LincolnCinema.all_halls:
-#     for seat in hall.seats:
-#         print(seat)
+print(LincolnCinema.all_coupons)
 
 from app.views import views
 

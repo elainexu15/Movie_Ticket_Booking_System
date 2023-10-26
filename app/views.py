@@ -394,6 +394,7 @@ def customer_select_seats(movie_id, screening_date, start_time):
 
     if request.method == 'POST':
         # Handle seat selection by customers
+        current_date = datetime.now().date()
         selected_seats = request.form.get('selected_seats')
         if not selected_seats:
             flash('Please select at least one seat.', 'error')
@@ -408,21 +409,66 @@ def customer_select_seats(movie_id, screening_date, start_time):
                 for seat_id in selected_seats_id_list:
                     if seat.seat_id == seat_id:
                         seat_objects.append(seat)
-
+            num_of_seats = len(seat_objects)
             # caculate total_price
             total_price = 0
             for seat in seat_objects:
                 total_price += int(seat.seat_price)
-            return render_template('cus_checkout.html', movie=movie, screening=screening,
-                                    seat_objects=seat_objects, total_price=total_price)
+
+            username = g.user.username
+            print(username)
+            customer = LincolnCinema.find_customer(username)
+    
+            status = 'pending'
+            # create book object
+            new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status)
+            customer.add_booking(new_booking)
+            print(new_booking)
+            print(new_booking.booking_id)
+            return render_template('cus_checkout.html', booking=new_booking)
 
     # Pass the screening object to the seat selection page
     return render_template('cus_select_seats.html', screening=screening, movie=movie)
 
 
+@views.route('/validate_coupon/<booking_id>', methods=['POST'])
+def validate_coupon(booking_id):
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(booking_id)
+    coupon_code = request.form.get('coupon_code')
+    if booking.coupon:
+        flash("Coupon has already been applied!", 'error')
+    else:
+        # get valid coupon codes
+        valid_coupon_codes = []  
+        for coupon in LincolnCinema.all_coupons:
+            valid_coupon_codes.append(coupon.coupon_code)
+        coupon = LincolnCinema.find_coupon(coupon_code)
+        # Check if the coupon code is valid and exists in the dummy_coupons dictionary
+        if coupon_code in valid_coupon_codes:
+            discount_percentage = coupon.discount_percentage
+            discounted_price = booking.total_amount * (100 - discount_percentage)/100
+            booking.total_amount = discounted_price
+            booking.coupon = coupon
+            # Redirect to the payment page with the valid coupon
+            flash("Coupon is applied successfully!", 'success')
+            return redirect(url_for('views.customer_payment', booking_id=booking_id))
+        else:
+            # Invalid coupon code, flash an error message and redirect back to the checkout page
+            flash('Invalid coupon code. Please try again.', 'error')
+            return redirect(url_for('views.customer_apply_coupon', booking_id=booking_id))
+    return redirect(url_for('views.customer_apply_coupon', booking_id=booking_id))
 
-@views.route('customer_payment/<total_price>')
-def customer_payment(total_price):
+@views.route('customer_apply_coupon/<booking_id>')
+def customer_apply_coupon(booking_id):
+    print(booking_id)
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(booking_id)
+    return render_template('cus_checkout.html', booking=booking)
 
-    return render_template('cus_payment.html', total_price = total_price)
-    
+
+@views.route('/customer_payment/<booking_id>', methods=['GET', 'POST'])
+def customer_payment(booking_id):
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(booking_id)
+    return render_template('cus_payment.html', booking=booking)

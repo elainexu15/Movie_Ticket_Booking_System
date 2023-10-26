@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import date, datetime, time
+from typing import List, Optional, Union
 
 
 class General(ABC):
@@ -295,6 +296,23 @@ class Customer(User):
     def password(self):
         return self._password
     
+    def bookings(self):
+        return self.__bookings
+
+    def add_booking(self, new_booking):
+        for booking in self.bookings():
+            if new_booking.movie.title == booking.movie.title and new_booking.screening == booking.screening and booking.status != 'canceled':
+                return 0
+                print('You have already booked this screening. please cancel your previous booking before proceed')
+        self.__bookings.append(new_booking)
+    
+    def find_booking(self, booking_id):
+        for booking in self.bookings():
+            if int(booking_id) == booking.booking_id:
+                return booking
+        else:
+            return None
+
 
     def search_movie_title(self, title: str, movies):
         # Implement search by movie title for guests
@@ -550,4 +568,172 @@ class Screening:
                f"Start Time: {self.start_time}\n" \
                f"End Time: {self.end_time}\n" \
                f"Hall: {self.hall}\n" \
-           
+
+
+class Coupon:
+    """! The Coupon class: Represents a coupon with a unique code and discount."""
+    def __init__(self, coupon_code: str, discount_percentage: float, expiration_date: date) -> None:
+        """! Constructor for the Coupon class.
+        @param coupon_code (str): The coupon code.
+        @param discount_percentage (float): The discount percentage.
+        @param expiration_date (date): The expiration date of the coupon.
+        """
+        self.__coupon_code = coupon_code           # The coupon code
+        self.__discount_percentage = discount_percentage  # The discount percentage
+        self.__expiration_date = expiration_date   # The expiration date of the coupon
+
+
+    @property
+    def coupon_code(self) -> str:
+        """! Get the coupon code.
+        @return (str): The coupon code.
+        """
+        return self.__coupon_code
+    
+    @property
+    def discount_percentage(self) -> float:
+        """! Get the discount percentage.
+        @return (float): The discount percentage.
+        """
+        return self.__discount_percentage
+
+    @property
+    def expiration_date(self) -> str:
+        """! Get the expiration date of the coupon.
+        @return (str): The expiration date (format: "YYYY-MM-DD").
+        """
+        return self.__expiration_date
+
+    def is_valid(self) -> bool:
+        """Check if the coupon is valid (not expired).
+        Returns:
+            bool: True if the coupon is valid, otherwise False.
+        """
+        # Get the current date
+        current_date = date.today()
+
+        # Compare the current date with the expiration date
+        if self.__expiration_date >= current_date:
+            return True
+        else:
+            return False
+
+    def __str__(self) -> str:
+        """Get a string representation of the Coupon object.
+        Returns:
+            str: A string containing coupon details.
+        """
+        coupon_info = f"Coupon Code: {self.__coupon_code}\n"
+        coupon_info += f"Discount Percentage: {self.__discount_percentage}%\n"
+        coupon_info += f"Expiration Date: {self.__expiration_date}"
+
+        return coupon_info
+
+
+class Payment(ABC):
+    def __init__(self, payment_id: int, amount: float, created_on: datetime, coupon: Optional[Coupon]):
+        self.__payment_id = payment_id
+        self.__amount = amount
+        self.__created_on = created_on
+        self.__coupon = coupon
+
+    @abstractmethod
+    def process_payment(self):
+        pass
+
+class CreditCard(Payment):
+    def __init__(self, payment_id: int, amount: float, created_on: datetime, coupon: Optional[Coupon],
+                 credit_card_number: str, card_type: str, expiry_date: datetime, name_on_card: str):
+        super().__init__(payment_id, amount, created_on, coupon)
+        self.__credit_card_number = credit_card_number
+        self.__card_type = card_type
+        self.__expiry_date = expiry_date
+        self.__name_on_card = name_on_card
+
+    def process_payment(self):
+        # Add logic to process payment using a credit card
+        pass
+
+class DebitCard(Payment):
+    def __init__(self, payment_id: int, amount: float, created_on: datetime, coupon: Optional[Coupon],
+                 card_number: str, bank_name: str, name_on_card: str):
+        super().__init__(payment_id, amount, created_on, coupon)
+        self.__card_number = card_number
+        self.__bank_name = bank_name
+        self.__name_on_card = name_on_card
+
+    def process_payment(self):
+        # Add logic to process payment using a debit card
+        pass
+
+
+class Booking:
+    next_id = 1
+    def __init__(self, customer: Customer, movie: Movie, screening: Screening, num_of_seats: int, selected_seats: List[CinemaHallSeat], created_on: date, total_amount: float, status: str, payment = None) -> None:
+        self.__booking_id = Booking.next_id
+        self.__customer = customer
+        self.__movie = movie
+        self.__screening = screening
+        self.__num_of_seats = num_of_seats
+        self.__selected_seats = selected_seats
+        self.__created_on = created_on
+        self.__total_amount = total_amount
+        self.__status = status
+        self.__payment = payment
+        self.__coupon = None
+        Booking.next_id += 1
+    
+    @property
+    def booking_id(self):
+        return self.__booking_id
+    
+    @property
+    def movie(self):
+        return self.__movie
+    
+    @property
+    def screening(self):
+        return self.__screening
+    
+    @property
+    def num_of_seats(self):
+        return self.__num_of_seats
+
+    @property
+    def selected_seats(self):
+        return self.__selected_seats
+    
+    @property
+    def created_on(self):
+        return self.__created_on
+    
+    @property
+    def total_amount(self):
+        return self.__total_amount
+    
+    @property
+    def status(self):
+        return self.__status
+    
+    @property
+    def coupon(self):
+        return self.__coupon
+    
+    @coupon.setter
+    def coupon(self, coupon):
+        self.__coupon = coupon
+
+    @total_amount.setter
+    def total_amount(self, total_amount):
+        self.__total_amount = total_amount
+
+    def __str__(self):
+        return f"Booking ID: {self.__booking_id}\n" \
+               f"Customer: {self.__customer}\n" \
+               f"Screening: {self.__screening}\n" \
+               f"Number of Seats: {self.__num_of_seats}\n" \
+               f"Selected Seats: {', '.join(map(str, self.__selected_seats))}\n" \
+               f"Created On: {self.__created_on}\n" \
+               f"Total Amount: {self.__total_amount}\n" \
+               f"Payment: {self.__payment}\n" \
+               f"Status: {self.__status}"

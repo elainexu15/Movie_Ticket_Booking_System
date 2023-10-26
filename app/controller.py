@@ -9,6 +9,7 @@ class CinemaController:
         self.__front_desk_staffs = []
         self.__movies = []
         self.__halls = []
+        self.__coupons = []
 
     @property
     def all_customers(self):
@@ -30,6 +31,9 @@ class CinemaController:
     def all_halls(self):
         return self.__halls
     
+    @property
+    def all_coupons(self):
+        return self.__coupons
 
     def find_customer(self, username):
         for customer in self.__customers:
@@ -48,7 +52,13 @@ class CinemaController:
             if hall.hall_name == hall_name:
                 return hall
         return None
-
+    
+    def find_coupon(self, coupon_code):
+        for coupon in self.all_coupons:
+            if coupon.coupon_code == coupon_code:
+                return coupon 
+        return None
+    
     def add_customer(self, customer):
         self.__customers.append(customer)
     
@@ -227,6 +237,27 @@ class CinemaController:
             print(f"JSON decoding error: {e}")
 
 
+    def read_coupons_from_json(self, json_file):        
+        try:
+            with open(json_file, 'r') as file:
+                data = json.load(file)
+                for item in data:
+                    coupon_code = item.get('coupon_code', '')
+                    discount = item.get('discount_percentage', 0.0)
+                    expiry_date_str = item.get('expiration_date', '')
+                    print(coupon_code)
+                    # Parse the date string into a datetime object
+                    expiry_date = datetime.strptime(expiry_date_str, '%Y-%m-%d')
+                    
+                    # Create a Coupon object and add it to the list
+                    coupon = Coupon(coupon_code, discount, expiry_date)
+                    self.__coupons.append(coupon)
+        
+        except FileNotFoundError:
+            print(f"File '{json_file}' not found.")
+        except json.JSONDecodeError:
+            print(f"Error decoding JSON from file '{json_file}'.")
+        
 
     def load_database(self):
         self.add_customers_from_file('app/database/customers.txt')
@@ -236,6 +267,7 @@ class CinemaController:
         self.add_hall_from_file('app/database/cinema_hall.txt')
         for movie in self.all_movies:
             self.add_screening_from_file(movie.id)
+        self.read_coupons_from_json('app/database/coupons.json')
 
 
     # ======== get movie details ========
