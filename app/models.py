@@ -314,6 +314,7 @@ class Customer(User):
             return None
 
 
+
     def search_movie_title(self, title: str, movies):
         # Implement search by movie title for guests
         matching_movies = []
@@ -358,6 +359,12 @@ class Customer(User):
     def view_movie_details(self, a_movie):
         # Implement viewing movie details for guests
         pass
+
+    def to_dict(self):
+        customer_dict = {
+            "username": self.username,
+        }
+        return customer_dict
     
     def __repr__(self):
         return f'<Customer: {self.name}>'
@@ -427,7 +434,15 @@ class Movie:
     def add_screening(self, screening_object):
         self.__screenings.append(screening_object)
         self.__screenings.sort(key=lambda x: x.screening_date)
+
         
+    def find_screening(self, screening_id):
+        for screening in self.screenings:
+            if screening.screening_id == screening_id:
+                return screening
+            else:
+                return None
+    
         
     def get_screening_date_list(self):
         # Get the current date
@@ -445,7 +460,7 @@ class Movie:
         screening_date_list = sorted(list(unique_dates))
         return screening_date_list
 
-    
+
     def __str__(self):
         return f"Movie ID: {self.__id}\nTitle: {self.__title}\nLanguage: {self.__language}\nGenre: {self.__genre}\nCountry: {self.__country}\nRelease Date: {self.__release_date}\nDuration (mins): {self.__duration_in_mins}\nDescription: {self.__description}"
 
@@ -456,7 +471,7 @@ class CinemaHallSeat:
         self.__seat_number = seat_number
         self.__row_number = row_number
         self.__is_reserved = is_reserved
-        self.__seat_price = seat_price  # Optional seat price
+        self.__seat_price = seat_price
 
     @property
     def seat_id(self):
@@ -528,13 +543,19 @@ class CinemaHall:
 
 
 class Screening:
+    next_id = 100
     def __init__(self, screening_date, start_time, end_time, hall: CinemaHall, seats) -> None:
+        self.__screening_id = Screening.next_id
         self.__screening_date = screening_date
         self.__start_time = start_time
         self.__end_time = end_time
         self.__hall = hall  
         self.__seats = seats
+        Screening.next_id += 1
 
+    @property
+    def screening_id(self):
+        return self.__screening_id
 
     @property
     def screening_date(self):
@@ -563,6 +584,18 @@ class Screening:
             if seat.row_number == row_number and seat.seat_number == seat_number:
                 return seat  # Return the seat object if found
         return None  # Return None if the seat is not found
+    
+        # Method to find a seat by its row and seat number
+    def find_seat_by_id(self, seat_id):
+        # Iterate through the seats in the hall and find the seat with matching row_number and seat_number
+        for seat in self.seats:
+            if seat.seat_id == seat_id:
+                return seat  # Return the seat object if found
+        return None  # Return None if the seat is not found
+    
+
+
+
     def __str__(self):
         return f"Screening Date: {self.screening_date}\n" \
                f"Start Time: {self.start_time}\n" \
@@ -669,7 +702,7 @@ class DebitCard(Payment):
 
 class Booking:
     next_id = 1
-    def __init__(self, customer: Customer, movie: Movie, screening: Screening, num_of_seats: int, selected_seats: List[CinemaHallSeat], created_on: date, total_amount: float, status: str, payment = None) -> None:
+    def __init__(self, customer: Customer, movie: Movie, screening: Screening, num_of_seats: int, selected_seats: List[CinemaHallSeat], created_on: date, total_amount: float, status: str, payment = None, coupon = None) -> None:
         self.__booking_id = Booking.next_id
         self.__customer = customer
         self.__movie = movie
@@ -726,6 +759,27 @@ class Booking:
     @total_amount.setter
     def total_amount(self, total_amount):
         self.__total_amount = total_amount
+
+    def add_payment(self, payment):
+        self.__payment = payment
+
+    def to_dict(self):
+        booking_dict = {
+            "booking_id": self.__booking_id,
+            "customer_username": self.__customer.username,
+            "movie_id": self.__movie.id,
+            "screening_id": self.__screening.screening_id,
+            "num_of_seats": self.__num_of_seats,
+            "selected_seats": [seat.seat_id for seat in self.__selected_seats],
+            "created_on": self.__created_on.isoformat(),
+            "total_amount": self.__total_amount,
+            "status": self.__status,
+        }
+        if self.__payment:
+            booking_dict["payment"] = self.__payment.payment_id
+        if self.__coupon:
+            booking_dict["coupon"] = self.__coupon.coupon_code
+        return booking_dict
 
     def __str__(self):
         return f"Booking ID: {self.__booking_id}\n" \

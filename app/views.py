@@ -113,6 +113,7 @@ def admin_cancel_movie(movie_id):
 def admin_add_screening(movie_id):
     # Get the movie based on its ID
     movie = LincolnCinema.find_movie(movie_id)
+    movie_duration = movie.duration_in_mins
     hall_name_list = [hall.hall_name for hall in LincolnCinema.all_halls]
     
     if request.method == 'POST':
@@ -120,7 +121,9 @@ def admin_add_screening(movie_id):
         start_time = request.form['start_time']
         end_time = request.form['end_time']
         hall_name = request.form['hall_name']
-        price = request.form['price']
+        print(hall_name)
+        price = float(request.form['price'])
+        print(price)
 
         # convert time to 24-hour format
         start_time = datetime.strptime(start_time, '%H:%M').strftime('%H:%M')
@@ -133,7 +136,7 @@ def admin_add_screening(movie_id):
         calculated_end_time = start_datetime + timedelta(minutes=movie_duration_in_mins)
         selected_end_datetime = datetime.strptime(end_time, '%H:%M')
 
-        if selected_end_datetime <= calculated_end_time:
+        if selected_end_datetime <  calculated_end_time:
             flash('Invalid end time. Show time should be no shorter than Movie duration.', 'error')
             return render_template('admin_add_screening.html', movie=movie, hall_name_list=hall_name_list)
         
@@ -151,6 +154,7 @@ def admin_add_screening(movie_id):
         seats = [seat.to_json() for seat in screening.seats]
 
         screening_data = {
+        "screening_id":screening.screening_id,
         "screening_date": screening_date,
         "start_time": start_time,
         "end_time": end_time,
@@ -160,7 +164,7 @@ def admin_add_screening(movie_id):
     }
 
         # Define the filename based on the movie ID
-        filename = f'app/database/screenings_{movie_id}.json'
+        filename = f'app/database/screenings/screenings_{movie_id}.json'
 
         if os.path.exists(filename):
             # File exists, so let's read the existing data
@@ -169,7 +173,6 @@ def admin_add_screening(movie_id):
         else:
             # File doesn't exist, create an empty list
             existing_data = []
-
         # Append the new screening data to the existing data
         existing_data.append(screening_data)
 
@@ -181,7 +184,7 @@ def admin_add_screening(movie_id):
         screening_date_list = movie.get_screening_date_list()
 
         return render_template('admin_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
-    return render_template('admin_add_screening.html', movie=movie, hall_name_list=hall_name_list)
+    return render_template('admin_add_screening.html', movie=movie, movie_duration=movie_duration, hall_name_list=hall_name_list)
 
 
 
@@ -385,8 +388,6 @@ def customer_select_seats(movie_id, screening_date, start_time):
     # Find the screening based on screening_date and start_time
     movie = LincolnCinema.find_movie(int(movie_id))
     screening = LincolnCinema.find_screening_by_date_and_time(movie, screening_date, start_time)
-    for seat in screening.seats:
-        print(seat)
     if screening is None:
         # Handle the case where no matching screening is found
         flash('Screening not found', 'error')
@@ -413,7 +414,7 @@ def customer_select_seats(movie_id, screening_date, start_time):
             # caculate total_price
             total_price = 0
             for seat in seat_objects:
-                total_price += int(seat.seat_price)
+                total_price += float(seat.seat_price)
 
             username = g.user.username
             print(username)
@@ -423,6 +424,7 @@ def customer_select_seats(movie_id, screening_date, start_time):
             # create book object
             new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status)
             customer.add_booking(new_booking)
+            LincolnCinema.save_bookings_to_json(customer, new_booking)
             print(new_booking)
             print(new_booking.booking_id)
             return render_template('cus_checkout.html', booking=new_booking)
@@ -433,8 +435,9 @@ def customer_select_seats(movie_id, screening_date, start_time):
 
 @views.route('/validate_coupon/<booking_id>', methods=['POST'])
 def validate_coupon(booking_id):
+    today_date = datetime.now()
     customer = LincolnCinema.find_customer(g.user.username)
-    booking = customer.find_booking(booking_id)
+    booking = customer.find_booking(int(booking_id))
     coupon_code = request.form.get('coupon_code')
     if booking.coupon:
         flash("Coupon has already been applied!", 'error')
@@ -442,7 +445,10 @@ def validate_coupon(booking_id):
         # get valid coupon codes
         valid_coupon_codes = []  
         for coupon in LincolnCinema.all_coupons:
-            valid_coupon_codes.append(coupon.coupon_code)
+            if coupon.expiration_date.date() >= today_date.date():
+                print(coupon.expiration_date.date())
+                print(today_date.date())
+                valid_coupon_codes.append(coupon.coupon_code)
         coupon = LincolnCinema.find_coupon(coupon_code)
         # Check if the coupon code is valid and exists in the dummy_coupons dictionary
         if coupon_code in valid_coupon_codes:
@@ -455,7 +461,7 @@ def validate_coupon(booking_id):
             return redirect(url_for('views.customer_payment', booking_id=booking_id))
         else:
             # Invalid coupon code, flash an error message and redirect back to the checkout page
-            flash('Invalid coupon code. Please try again.', 'error')
+            flash('Invalid or expired coupon code. Please try again.', 'error')
             return redirect(url_for('views.customer_apply_coupon', booking_id=booking_id))
     return redirect(url_for('views.customer_apply_coupon', booking_id=booking_id))
 
@@ -472,3 +478,12 @@ def customer_payment(booking_id):
     customer = LincolnCinema.find_customer(g.user.username)
     booking = customer.find_booking(booking_id)
     return render_template('cus_payment.html', booking=booking)
+
+@views.route('customer_bookings')
+def customer_bookings():
+    customer = LincolnCinema.find_customer(g.user.username)
+    bookings = customer.bookings()
+    for booking in bookings:
+        for seat in booking.selected_seats:
+            print(seat.seat_number)
+    return render_template('cus_bookings.html', bookings = bookings)

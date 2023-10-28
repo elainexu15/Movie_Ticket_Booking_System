@@ -44,6 +44,8 @@ class CinemaController:
     def find_movie(self, id):
         for movie in self.__movies:
             if movie.id == id:
+                print(type(movie.id))
+                print(type(id))
                 return movie
         return None
     
@@ -58,6 +60,7 @@ class CinemaController:
             if coupon.coupon_code == coupon_code:
                 return coupon 
         return None
+
     
     def add_customer(self, customer):
         self.__customers.append(customer)
@@ -193,7 +196,7 @@ class CinemaController:
     # ======= read screenings data =======
     def add_screening_from_file(self, movie_id):
         # Read the JSON file for the given movie_id
-        filename = f'app/database/screenings_{movie_id}.json'
+        filename = f'app/database/screenings/screenings_{movie_id}.json'
         # find movie objec
         movie = self.find_movie(movie_id)
         try:
@@ -259,6 +262,70 @@ class CinemaController:
             print(f"Error decoding JSON from file '{json_file}'.")
         
 
+    def read_bookings_from_json_file(self, json_filename):
+        bookings = []
+        
+        try:
+            with open(json_filename, 'r') as json_file:
+                booking_info = json.load(json_file)
+                print(booking_info)
+                selected_seats_id_list = booking_info["selected_seats"]
+               # Convert the movie_id from string to integer
+                movie_id = int(booking_info["movie_id"])
+                movie = self.find_movie(movie_id)
+                if movie is not None:
+                    print(f"Movie with ID {movie_id} found.")
+                else:
+                    print(f"Movie with ID {movie_id} not found.")
+                screening_id = int(booking_info["screening_id"])
+
+                screening=movie.find_screening(booking_info["screening_id"])
+                if screening is not None:
+                    print(f"screening with ID {screening_id} not found.")
+        
+
+
+                customer=self.find_customer(booking_info["customer_username"])
+                num_of_seats=booking_info["num_of_seats"]
+                
+                selected_seats=[]
+                for seat_id in selected_seats_id_list:
+                    seat = screening.find_seat_by_id(seat_id) 
+                    selected_seats.append(seat)
+                    print(seat)
+                
+                created_on=date.fromisoformat(booking_info["created_on"])
+                total_amount=float(booking_info["total_amount"])
+                status=booking_info["status"]
+
+                for booking_info in booking_info:
+                    booking = Booking(
+                        customer=customer,
+                        movie=movie,
+                        screening=screening,
+                        num_of_seats=num_of_seats,
+                        selected_seats=selected_seats,
+                        created_on=created_on,
+                        total_amount=total_amount,
+                        status=status)
+                    bookings.append(booking)
+                    
+        except FileNotFoundError:
+            print(f"File not found: {json_filename}")
+        except Exception as e:
+            print(f"An error occurred while reading the JSON file: {str(e)}")
+        
+        return bookings
+
+
+    def add_booking_to_customer(self, customer):
+        filename = f'app/database/bookings/{customer.username}_bookings.json'
+        print(f'app/database/bookings/{customer.username}_bookings.json')
+        bookings = self.read_bookings_from_json_file(filename)
+        print(bookings)
+        for booking in bookings:
+            customer.add_booking(booking)
+
     def load_database(self):
         self.add_customers_from_file('app/database/customers.txt')
         self.add_admins_from_file('app/database/admins.txt')
@@ -268,7 +335,8 @@ class CinemaController:
         for movie in self.all_movies:
             self.add_screening_from_file(movie.id)
         self.read_coupons_from_json('app/database/coupons.json')
-
+        for customer in self.all_customers:
+            self.add_booking_to_customer(customer)
 
     # ======== get movie details ========
     def get_language_list(self):
@@ -345,4 +413,21 @@ class CinemaController:
         # If no matching screening is found, return None
         return None
     
+
+# ====== save booking =======
+    def save_bookings_to_json(self, customer, booking):
+        if customer is None:
+            return
+        try:
+            # Use the customer's username as the filename
+            filename = f"app/database/bookings/{customer.username}_bookings.json"
+            
+            bookings_data = booking.to_dict()  
+            with open(filename, 'w') as json_file:
+                json.dump(bookings_data, json_file, default=str, indent=4)
+
+            print(f"Bookings for {customer.username} have been saved to {filename}")
+        except Exception as e:
+            print(f"An error occurred while saving bookings: {str(e)}")
+
 
