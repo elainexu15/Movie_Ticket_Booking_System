@@ -1,0 +1,10 @@
+{% extends 'cus_home.html' %}
+
+{% block content %}
+<section style="background-color: #f8f9fa; padding: 50px; color:#8170d6">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h1 style="font-size: 48px; font-weight: bold; margin-bottom: 24px;">Congratulations, {{message}}!</h1>
+      <a href="{{url_for('views.customer_home')}}" class="btn btn-outline-primary">Back to Homepage</a>
+    </div>
+</section>
+{% endblock %}

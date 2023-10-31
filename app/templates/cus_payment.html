@@ -11,8 +11,9 @@
     <div class="row justify-content-center">    
         <div class="col-md-6" style="background:white;">
         
-        <form class="border rounded p-4 needs-validation" action="#" method="POST">
+        <form class="border rounded p-4 needs-validation" action="{{url_for('views.customer_payment', booking_id = booking.booking_id)}}" method="POST">
             <div class="mb-3">
+                <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
                 <label for="card_holder_name" class="form-label">Cardholder Name</label>
                 <input type="text" id="card_holder_name" name="card_holder_name" class="form-control is-valid" aria-describedby="inputGroupPrepend2" required>
                 <div class="invalid-feedback">
@@ -29,20 +30,13 @@
             </div>
 
             <div class="mb-3">
-                <label for="expire_month" class="form-label">Expiry Month (MM)</label>
-                <input type="text" id="expire_month" name="expire_month" class="form-control" pattern="(0[1-9]|1[0-2])" title="Please enter a valid expiry month in MM format" required>
+                <label for="expire_date" class="form-label">Expiry Date (MM/YYYY)</label>
+                <input type="text" id="expire_date" name="expire_date" class="form-control" required>
                 <div class="invalid-feedback">
-                    Please enter expiry month.
+                    Please enter a valid expiry date in MM/YYYY format.
                 </div>
             </div>
-          
-            <div class="mb-3">
-                <label for="expire_year" class="form-label">Expiry Year (YYYY)</label>
-                <input type="text" id="expire_year" name="expire_year" class="form-control" pattern="[0-9]{4}" title="Please enter a valid expiry year in YYYY format" required>
-                <div class="invalid-feedback">
-                    Please enter expiry year.
-                </div>
-            </div>
+            
 
             <div class="mb-3">
                 <label for="cvc" class="form-label">CVC</label>
@@ -64,4 +58,22 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var expireDateInput = document.getElementById('expire_date');
+        
+        expireDateInput.addEventListener('input', function () {
+            var inputValue = expireDateInput.value;
+            var pattern = /^(0[1-9]|1[0-2])\/\d{4}$/; // MM/YYYY format
+            var isValid = pattern.test(inputValue);
+
+            if (isValid) {
+                expireDateInput.classList.remove('is-invalid');
+            } else {
+                expireDateInput.classList.add('is-invalid');
+            }
+        });
+    });
+</script>
+
 {% endblock %}

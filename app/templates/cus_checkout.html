@@ -5,7 +5,7 @@
     <div class="row mt-2">
         <div class="col-2"></div>
         <div class="col-8">
-            <h2 class="mb-4">Checkout</h2>
+            <h2 class="mb-4 text-center">CHECKOUT</h2>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title mb-4">Movie Information</h5>
@@ -34,6 +34,7 @@
                 </div>
             </div>
             <form method="POST" action="{{ url_for('views.validate_coupon', booking_id = booking.booking_id) }}">
+                <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
                 <div class="card mt-3">
                     <div class="card-body">
                         <h5 class="card-title">Apply Coupon</h5>

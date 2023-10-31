@@ -1,4 +1,2 @@
 Elaine Xu,62,admin@lu.com,1234567892,elaine,sha256$NtXYIeqdNG8r4uEd$261651808e5a4dd03ebc15023118ad956d8e2e8589e227b84496c5c841c1917c
 Leo Wu,62,admin@lu.com,1234567892,manager,sha256$ztMWMCDyoth19y9B$5fab1e61ec99fa5a47e75a0f601dca2dcee3a099c78171e7975d7c6ccea522cf
-leoo,62,admin@lu.com,1234567892,manager1,sha256$n5pSIweoNxzqxZbU$df0cf1efcb36fcdbc006aefa8af204f959872a30e8d6c70cef3ce494ae80e265
-elaine1,62,admin@lu.com,1234567892,elaine1,sha256$1oJuyM4PU16tLpEv$4eed8b6175a57612be956ae45084c244f7c5e0f75fd072fde7d3ecb870ea09d1

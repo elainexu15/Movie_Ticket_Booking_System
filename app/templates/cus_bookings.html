@@ -2,43 +2,70 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="mb-4">Your Bookings</h2>
+    <h2 class="mb-4 text-center">YOUR BOOKINGS</h2>
+    {% if bookings %}
+
     <table class="table table-bordered">
         <thead class="table-info">
             <tr>
                 <th>Booking ID</th>
                 <th>Screening Date</th>
-                <th>Start Time</th>
-                <th>End Time</th>
+                <th>Start Time(24h)</th>
+                <th>End Time(24h)</th>
                 <th>Hall</th>
                 <th>Number of Seats</th>
                 <th>Selected Seats</th>
                 <th>Total Amount</th>
                 <th>Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            {% for booking in bookings %}
-            <tr>
-                <td>{{ booking.booking_id }}</td>
-                <td>{{ booking.screening.screening_date }}</td>
-                <td>{{ booking.screening.start_time }}</td>
-                <td>{{ booking.screening.end_time }}</td>
-                <td>{{ booking.screening.hall.hall_name }}</td>
-                <td>{{ booking.num_of_seats }}</td>
-                <td>
-                    <ul>
-                        {% for seat in booking.selected_seats %}
-                            <li>
-                                Row {{ seat.row_number }}, Seat {{ seat.seat_number }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </td>
-                <td>${{ booking.total_amount }}</td>
-                <td>{{ booking.status }}</td>
-            </tr>
-            {% endfor %}
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.screening.screening_date }}</td>
+                    <td>{{ booking.screening.start_time }}</td>
+                    <td>{{ booking.screening.end_time }}</td>
+                    <td>{{ booking.screening.hall.hall_name }}</td>
+                    <td>{{ booking.num_of_seats }}</td>
+                    <td>
+                        <ul>
+                            {% for seat in booking.selected_seats %}
+                                <li>
+                                    Row {{ seat.row_number }}, Seat {{ seat.seat_number }}
+                                    <span class="float-right">Price: ${{ seat.seat_price }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        {% if booking.payment %}
+                            ${{ booking.payment.amount }}
+                            {% if booking.coupon %}
+                                <br>(Coupon applied)
+                            {% endif %}
+                        {% else %}
+                            {{ booking.total_amount }}
+                        {% endif %}
+
+                    </td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                    {% if booking.status == 'Pending' %}
+                        <a href="{{url_for('views.customer_apply_coupon', booking_id = booking.booking_id)}}" class="btn btn-sm btn-primary">Pay</a>
+                        <a href="{{url_for('views.customer_cancel_booking', booking_id = booking.booking_id)}}" class="btn btn-sm btn-primary">Cancel</a>
+                    {% elif booking.status == 'Canceled' %}
+                        <p>Canceled</p>
+                    {% elif booking.status == 'Paid' %}
+                        <a href="{{url_for('views.customer_confirm_booking', booking_id = booking.booking_id)}}" class="btn btn-sm btn-primary">Ticket Details</a>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+            <h4 class="mb-4 text-center">No Bookings Found</h4>
+            {% endif %}
         </tbody>
     </table>
 </div>

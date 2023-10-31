@@ -21,7 +21,7 @@ print(LincolnCinema.all_admins)
 print(LincolnCinema.all_front_desk_staffs)
 print(LincolnCinema.all_movies)
 for movie in LincolnCinema.all_movies:
-    print(movie.id)
+    print(movie.screenings)
 print(LincolnCinema.all_coupons)
 for customer in LincolnCinema.all_customers:
     print(customer.bookings())
