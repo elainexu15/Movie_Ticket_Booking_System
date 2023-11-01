@@ -32,13 +32,13 @@ import os
 def admin_add_movie():
     if request.method == 'POST':
         # Get movie information from the form
-        title = request.form.get('title')
-        genre = request.form.get('genre')
+        title = request.form.get('title').upper()
+        genre = request.form.get('genre').title()
         release_date = request.form.get('release_date')
-        country = request.form.get('country')
+        country = request.form.get('country').title()
         duration = request.form.get('duration')
-        language = request.form.get('language')
-        description = request.form.get('description')
+        language = request.form.get('language').title()
+        description = request.form.get('description').title()
 
         # Create a Movie object
         movie = Movie(title, language, genre, country, release_date, duration, description)
@@ -53,7 +53,7 @@ def admin_add_movie():
             flash('No image selected for uploading')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(str(movie.id) + os.path.splitext(file.filename)[1])            
+            filename = secure_filename(movie.title + os.path.splitext(file.filename)[1])            
             destination_folder = app.config['UPLOAD_FOLDER']
             os.makedirs(destination_folder, exist_ok=True)  # Create the folder if it doesn't exist
             file.save(os.path.join(destination_folder, filename))
@@ -82,7 +82,12 @@ def admin_view_movie_details(movie_id):
 
 @views.route('/admin_cancel_movie/<int:movie_id>', methods=['GET', 'POST'])
 def admin_cancel_movie(movie_id):
-
+    movie_id = int(movie_id)
+    movie = LincolnCinema.find_movie(movie_id)
+    if movie.screenings:
+        flash('Please cancel screening first.', 'error')
+    else:
+        LincolnCinema.cancel_movie(movie_id)
     return redirect(url_for("views.admin_home"))
 
 @views.route('/admin_add_screening/<int:movie_id>', methods=['GET', 'POST'])
@@ -425,7 +430,7 @@ def customer_apply_coupon(booking_id):
 @views.route('/customer_payment/<booking_id>', methods=['GET', 'POST'])
 def customer_payment(booking_id):
     customer = LincolnCinema.find_customer(g.user.username)
-    booking = customer.find_booking(booking_id)
+    booking = customer.find_booking(int(booking_id))
     coupon = booking.coupon
     if request.method == 'POST':
         # Check seat availability
@@ -450,7 +455,7 @@ def customer_payment(booking_id):
                         print('step1 is done')            
                         print('step2 is done')                 
                         # Create a CreditCard object
-                        credit_card = CreditCard(
+                        credit_card_payment = CreditCard(
                             payment_id=booking.booking_id,  # Use booking ID as payment ID, or provide a unique ID
                             amount=booking.total_amount,
                             created_on=datetime.now(),
@@ -462,13 +467,11 @@ def customer_payment(booking_id):
                         )
                         
                         # Process the payment (you may add this logic in CreditCard.process_payment)
-                        payment_successful = credit_card.process_payment()
-                        LincolnCinema.add_payment(credit_card)
-                        LincolnCinema.save_payment_to_json(credit_card)  
-                        print(f'new credit card: {credit_card}')         
+                        payment_successful = credit_card_payment.process_payment()
+                        print(f'new credit card: {credit_card_payment}')         
                         if payment_successful == True:
                             # Assign the CreditCard object to the booking's payment attribute
-                            booking.payment = credit_card
+                            booking.payment = credit_card_payment
                             # You may also update the booking status here
                             booking.status = 'Paid'
                             reserved_seats_id = []
@@ -480,14 +483,13 @@ def customer_payment(booking_id):
                                         print('seat reserved successfully!')
                             movie_id = booking.movie.id
                             screening_id = booking.screening.screening_id
-                            LincolnCinema.add_payment(credit_card)
+                            LincolnCinema.add_payment(credit_card_payment)
+                            CreditCard.save_payment_to_json(credit_card_payment)  
                             LincolnCinema.save_reserved_seats_to_json(movie_id, screening_id, reserved_seats_id)
                             # In a real application, you might want to save the updated booking information.
                             LincolnCinema.update_booking_payment_and_status(customer, booking, update_payment=True)
-                            print('step4 is done')                 
-                            flash('Payment is successfull! We have send an confirmation email to your inbox.')
                             # Redirect to a success or confirmation page
-                            return render_template('cus_confirm_booking.html', booking=booking)
+                            return redirect(url_for('views.customer_confirm_booking', booking_id=booking_id))
                         else:
                             flash('Payment processing failed. Please verify your payment information and try again. If the issue persists, please contact our customer support for assistance.', 'error')
                     else:
@@ -519,16 +521,55 @@ def customer_cancel_booking(booking_id):
     customer.cancel_booking(booking_id)
     bookings = customer.bookings()
     LincolnCinema.update_booking_payment_and_status(customer, booking, update_payment=False)
+    
+    # Create a confirmation notification
+    confirmation_message = "Your booking has been canceled!"
+    notification = Notification(customer, "Cancel Confirmation", confirmation_message, datetime.now(), booking)
+    customer.add_notification(notification)
+    # Save the confirmation notification to JSON
+    Notification.save_notification_to_json(notification)
+
+    # Use Flask's flash function to send the confirmation message
+    flash("Your booking has been canceled! A confirmation notice has been sent to you!", 'success')  # You can use 'success' or any other category
+    
     return render_template('cus_bookings.html', bookings = bookings)
 
 
-@views.route('customer_confirm_booking/<booking_id>')
+@views.route('/customer_confirm_booking/<booking_id>')
 def customer_confirm_booking(booking_id):
     customer = LincolnCinema.find_customer(g.user.username)
     booking = customer.find_booking(booking_id)
+
+    # Create a confirmation notification
+    confirmation_message = "Your booking has been confirmed! Thank you for choosing Lincoln Cinema."
+    notification = Notification(customer, "Booking Confirmation", confirmation_message, datetime.now(), booking)
+    customer.add_notification(notification)
+    # Save the confirmation notification to JSON
+    Notification.save_notification_to_json(notification)
+
+    # Use Flask's flash function to send the confirmation message
+    flash("Your booking has been confirmed! A confirmation notice has been sent to you!", 'success')  # You can use 'success' or any other category
+    
     return render_template("cus_confirm_booking.html", booking=booking)
 
 
-@views.route('views.customer_notifications')
+@views.route('customer_notifications')
 def customer_notifications():
-    pass
+    customer = LincolnCinema.find_customer(g.user.username)
+    notifications = customer.notifications
+    # Sort the notifications by date_time in descending order
+    notifications = sorted(notifications, key=lambda notification: notification.date_time, reverse=True)
+    return render_template('cus_notifications.html', notifications=notifications)
+
+
+@views.route('customer_booking_details/<booking_id>')
+def customer_booking_details(booking_id):
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(booking_id)    
+    return render_template("cus_booking_details.html", booking=booking)
+
+@views.route('screening_booking_details/<movie_id>/<screening_id>')
+def screening_booking_details(movie_id, screening_id):
+    movie = LincolnCinema.find_movie(int(movie_id))
+    screening = movie.find_screening(screening_id)
+    return render_template('admin_screening_details.html', screening=screening, movie=movie)

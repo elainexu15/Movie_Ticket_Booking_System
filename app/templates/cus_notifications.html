@@ -1,0 +1,37 @@
+{% extends 'cus_home.html' %}
+
+{% block content %}
+  {% if notifications %}
+    <div class="container">
+      <h1 class="mt-4 text-center">NOTIFICATIONS</h1>
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Date and Time</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for notification in notifications %}
+            <tr>
+              <td>{{ notification.subject }}</td>
+              <td>{{ notification.message }}</td>
+              <td>{{ notification.date_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+              <td>
+                {% if notification.booking %}
+                  <a href="{{url_for('views.customer_booking_details', booking_id=notification.booking.booking_id)}}" class="btn btn-primary btn-sm">Ticket Details</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="container">
+      <p class="mt-4">No notifications found</p>
+    </div>
+  {% endif %}
+{% endblock %}

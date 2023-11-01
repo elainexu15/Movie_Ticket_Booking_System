@@ -216,13 +216,71 @@ class CinemaController:
 
     
     def add_booking_to_customer(self):
-        filename = f'app/database/bookings.json'
         all_customers = self.all_customers
-        self.cinema_data_model.read_bookings_from_json_file(filename)
-        for booking in self.cinema_data_model.bookings:
+        bookings = Booking.read_bookings_from_json_file()
+        for booking in bookings:
             for customer in all_customers:
                 if booking.customer == customer:
                     customer.add_booking(booking)
+
+
+    def create_booking_objects_and_add_to_customer(self, username):
+        bookings_info = Booking.read_bookings_from_file()
+        for booking_info in bookings_info:
+            if booking_info["customer_username"] == username:
+                # find customer
+                customer = self.find_customer(booking_info["customer_username"])
+
+                # Convert the movie_id from string to integer
+                movie_id = int(booking_info["movie_id"])
+                movie = self.find_movie(movie_id)
+
+                screening_id = int(booking_info["screening_id"])
+                screening = movie.find_screening(screening_id)
+                if screening is None:
+                    print(f"screening with ID {screening_id} not found.")
+
+                num_of_seats = booking_info["num_of_seats"]
+                selected_seats_id_list = booking_info["selected_seats"]
+                selected_seats = []
+                for seat_id in selected_seats_id_list:
+                    seat = screening.find_seat_by_id(seat_id)
+                    selected_seats.append(seat)
+                    
+                created_on = date.fromisoformat(booking_info["created_on"])
+                total_amount = float(booking_info["total_amount"])
+                status = booking_info["status"]
+                payment_id = booking_info["payment_id"]
+                if payment_id:
+                    payment = self.find_payment(payment_id)
+                else:
+                    payment = None
+
+                booking = Booking(
+                    customer=customer,
+                    movie=movie,
+                    screening=screening,
+                    num_of_seats=num_of_seats,
+                    selected_seats=selected_seats,
+                    created_on=created_on,
+                    total_amount=total_amount,
+                    status=status,
+                    payment=payment)
+                customer.add_booking(booking)
+                
+
+
+
+
+
+    def add_notifications_to_customer(self):
+        filename = f'app/database/notifications.json'
+        all_customers = self.all_customers
+        self.cinema_data_model.retrieve_notifications_from_json(filename)
+        for notification in self.cinema_data_model.notifications:
+            for customer in all_customers:
+                if notification.customer == customer:
+                    customer.add_notification(notification)
 
 
     def save_new_screening_to_json(self, new_screening):
@@ -233,8 +291,35 @@ class CinemaController:
         self.cinema_data_model.save_payment_to_json(payment)
 
 
-    def save_new_movie_to_file(self, new_movie):
-        self.cinema_data_model.save_new_movie_to_file(new_movie)
+    def create_movie_objects_and_add_to_movies_list(self):
+        movies_data = Movie.add_movies_from_json()
+        for movie_info in movies_data:
+            title = movie_info.get("title", "")
+            language = movie_info.get("language", "")
+            genre = movie_info.get("genre", "")
+            country = movie_info.get("country", "")
+            release_date = movie_info.get("release_date", "")
+            duration_in_minutes = movie_info.get("duration", 0)  
+            description = movie_info.get("description", "")
+            movie_object = Movie(title, language, genre, country, release_date, duration_in_minutes, description)
+            self.add_movie(movie_object)
+
+
+    def cancel_movie(self, movie_id):
+        # Find the movie by its ID in the movies list
+        movie_to_cancel = None
+        for movie in self.all_movies:
+            if movie.id == movie_id:
+                movie_to_cancel = movie
+                break
+
+        if movie_to_cancel:
+            # Remove the movie from the movies list
+            self.all_movies.remove(movie_to_cancel)
+
+            # Update the JSON file to remove the canceled movie
+            Movie.update_movies_json(self.all_movies)
+
 
 
     def add_screening_to_movie(self, screenings:List):
@@ -246,6 +331,38 @@ class CinemaController:
 
     def save_notification_to_json(self, customer, notification):
         self.cinema_data_model.save_notification_to_json(customer, notification)
+
+
+    def create_notification_objects_and_add_to_customer(self, username):
+        notification_data = Notification.read_notifications_from_file()
+        for data in notification_data:
+            if data["customer_username"] == username:
+                date_time = datetime.strptime(data["date_time"], '%Y-%m-%d %H:%M:%S.%f')
+                booking_id = data["booking_id"]
+
+                # Find the customer by username
+                customer = self.find_customer(username)
+
+                if customer is None:
+                    print(f"Customer with username {username} not found.")
+                    continue
+
+                # Find the booking by booking_id
+                booking = None
+                if booking_id is not None:
+                    booking = customer.find_booking(booking_id)
+                    if booking is None:
+                        print(f"Booking with ID {booking_id} not found.")
+
+                # Create and add the notification to the customer
+                notification = Notification(
+                    customer=customer,
+                    subject=data["subject"],
+                    message=data["message"],
+                    date_time=date_time,
+                    booking=booking
+                )
+                customer.add_notification(notification)
 
 
     def load_database(self):
@@ -266,9 +383,7 @@ class CinemaController:
         for hall in self.cinema_data_model.halls:
             self.add_hall(hall)
 
-        self.cinema_data_model.add_movies_from_json('app/database/movies.json')
-        for movie in self.cinema_data_model.movies:
-            self.add_movie(movie)
+        self.create_movie_objects_and_add_to_movies_list()
 
         self.cinema_data_model.add_screening_from_file('app/database/screenings.json')
         screenings = self.cinema_data_model.screenings
@@ -279,12 +394,12 @@ class CinemaController:
         for coupon in self.cinema_data_model.coupons:
             self.add_coupon(coupon)
 
-
         # read payments from json file:
         for payment in self.cinema_data_model.payments:
             self.add_payment(payment)
         
+        for customer in self.all_customers:
+            self.create_booking_objects_and_add_to_customer(customer.username)
 
-        self.add_booking_to_customer()
-
-
+        for customer in self.all_customers:
+            self.create_notification_objects_and_add_to_customer(customer.username)

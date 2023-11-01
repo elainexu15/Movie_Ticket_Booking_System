@@ -17,6 +17,9 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 # Create an instance of CinemaController and load the database during application startup
 LincolnCinema = CinemaController()
 LincolnCinema.load_database()
+for cus in LincolnCinema.all_customers:
+    print(cus.notifications)
+
 
 for payment in LincolnCinema.all_payments:
     print(f'coupon code .....................{payment.coupon.coupon_code}')

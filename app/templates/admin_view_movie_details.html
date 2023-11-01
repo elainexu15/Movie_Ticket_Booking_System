@@ -16,7 +16,36 @@
         cursor: pointer;
     }
     
-    </style>
+
+.book-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.start-time-container:hover .book-overlay {
+    opacity: 1;
+}
+
+/* make the "BOOK" text white when hovering */
+.book-overlay a {
+    color: white;
+    text-decoration: none; 
+}
+</style>
+
     
 <h2 align="center" class="mb-5">MOVIE DETIALS</h2>
 
@@ -59,7 +88,12 @@
                         {% for screening in movie.screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d")  %}
                             <div class="start-time-container">
                                 <div class="start-time">{{ screening.start_time }}</div>
-                            </div>
+                                <div class="book-overlay">
+                                    <a href="{{ url_for('views.screening_booking_details', movie_id = movie.id, screening_id=screening.screening_id) }}" class="book-overlay">
+                                        Detail
+                                    </a>
+                                </div>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
