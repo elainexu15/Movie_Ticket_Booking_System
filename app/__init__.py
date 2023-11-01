@@ -17,15 +17,10 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 # Create an instance of CinemaController and load the database during application startup
 LincolnCinema = CinemaController()
 LincolnCinema.load_database()
-print(LincolnCinema.all_admins)
-print(LincolnCinema.all_front_desk_staffs)
-print(LincolnCinema.all_movies)
-for movie in LincolnCinema.all_movies:
-    print(movie.screenings)
-print(LincolnCinema.all_coupons)
-for customer in LincolnCinema.all_customers:
-    print(customer.bookings())
 
+for payment in LincolnCinema.all_payments:
+    print(f'coupon code .....................{payment.coupon.coupon_code}')
+print(LincolnCinema.all_coupons)
 from app.views import views
 
 app.register_blueprint(views, url_prefix='/')

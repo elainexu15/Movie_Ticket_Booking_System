@@ -44,8 +44,10 @@
 
 <div class="col-lg-3 mb-3">
     <h4 class="text-center">SCREENINGS</h4>
+    {% if movie.screenings %}
     <div class="accordion" id="screeningAccordion">
-        {% for screening_date in screening_date_list %}
+
+            {% for screening_date in screening_date_list %}
             <div class="accordion-item">
                 <h2 class="accordion-header" id="screening{{ screening_date }}Heading">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#screening{{ screening_date }}" aria-expanded="true" aria-controls="screening{{ screening_date }}">
@@ -61,9 +63,14 @@
                         {% endfor %}
                     </div>
                 </div>
+    
             </div>
         {% endfor %}
     </div>
+
+    {% else %}
+    <p class="text-center mt-4">No screening added</p>
+    {% endif %}
 </div>
 
 

@@ -603,8 +603,7 @@ class Screening:
             "screening_date": self.screening_date,
             "start_time": self.start_time,
             "end_time": self.end_time,
-            "hall_name": self.hall_name,
-            "price": self.price,
+            "hall_name": self.hall.hall_name,
             "seats": [seat.to_json() for seat in self.seats]
         }
 
@@ -726,12 +725,16 @@ class CreditCard(Payment):
     @property
     def amount(self):
         return self._amount
+    
+    @property
+    def coupon(self):
+        return self._coupon
 
     def to_dict(self):
         return {
             'payment_id': self._payment_id,
             'amount': self._amount,
-            'coupon': self._coupon,
+            'coupon': self.coupon.coupon_code,
             'created_on': self._created_on.strftime('%Y-%m-%d %H:%M:%S'),
             'credit_card_number': self.credit_card_number,  # Using the property method
             'card_type': self.__card_type,
@@ -905,12 +908,17 @@ class CinemaDataModel():
     def screenings(self):
         return self.__screenings
     
+    @property
+    def bookings(self):
+        return self.__bookings
+    
+    @property
+    def payments(self):
+        return self.__payments
 
     def find_movie(self, id):
         for movie in self.movies:
             if movie.id == id:
-                print(type(movie.id))
-                print(type(id))
                 return movie
         return None
     
@@ -919,6 +927,25 @@ class CinemaDataModel():
         for hall in self.halls:
             if hall.hall_name == hall_name:
                 return hall
+        return None
+
+
+    def find_customer(self, username):
+        for customer in self.__customers:
+            if customer.username == username:
+                return customer
+        return None
+    
+    def find_payment(self, new_payment_id):
+        for payment in self.payments:
+            if payment.payment_id == new_payment_id:
+                return payment
+        return None
+    
+    def find_coupon(self, coupon_code):
+        for coupon in self.all_coupons:
+            if coupon.coupon_code == coupon_code:
+                return coupon 
         return None
 
     @property
@@ -996,7 +1023,6 @@ class CinemaDataModel():
     # Initialize seats for the screening
     def initialise_seats(self, hall, price):  
         seats = []    
-        print(price)  
         for row_number in range(1, hall.capacity // 10 + 1):  # Assuming 10 seats per row
             for seat_number in range(1, 11):  # 10 seats per row
                 seat = CinemaHallSeat(seat_number, row_number, False, price)  # Initialize seats
@@ -1027,22 +1053,17 @@ class CinemaDataModel():
     # ======= read screenings data =======
     def add_screening_from_file(self, file_name):
         screening_data_list = self.handle_json_file_errors(file_name)  
-        print(screening_data_list)        
         for screening_data in screening_data_list:
             # Extract screening data
-            movie_id = screening_data.get("movie_id")
-            screening_date = screening_data.get("screening_date")
-            start_time = screening_data.get("start_time")
-            end_time = screening_data.get("end_time")
-            hall_name = screening_data.get("hall_name")
-            price = screening_data.get("price")
+            movie_id = screening_data["movie_id"]
+            screening_date = screening_data["screening_date"]
+            start_time = screening_data["start_time"]
+            end_time = screening_data["end_time"]
+            hall_name = screening_data["hall_name"]
             seats_data = screening_data.get("seats", [])
             
             # Find the hall based on the hall_name
             hall = self.find_hall(hall_name)
-            # Find the movie based on the hall_name
-            movie = self.find_movie(movie_id)
-
             # Create a list to store seat objects
             seats = []
             
@@ -1058,7 +1079,6 @@ class CinemaDataModel():
             screening = Screening(movie_id, screening_date, start_time, end_time, hall, seats)
             self.__screenings.append(screening)
 
-
     def read_coupons_from_json(self, json_file):        
         try:
             with open(json_file, 'r') as file:
@@ -1067,7 +1087,6 @@ class CinemaDataModel():
                     coupon_code = item.get('coupon_code', '')
                     discount = item.get('discount_percentage', 0.0)
                     expiry_date_str = item.get('expiration_date', '')
-                    print(coupon_code)
                     # Parse the date string into a datetime object
                     expiry_date = datetime.strptime(expiry_date_str, '%Y-%m-%d')
                     
@@ -1133,3 +1152,217 @@ class CinemaDataModel():
         # Write the updated data back to the file
         with open(filename, 'w') as json_file:
             json.dump(existing_data, json_file, indent=4)
+
+
+    def read_bookings_from_json_file(self, json_filename):
+        try:
+            with open(json_filename, 'r') as json_file:
+                bookings_info = json.load(json_file)
+
+                for booking_info in bookings_info:
+                    selected_seats_id_list = booking_info["selected_seats"]
+                    # Convert the movie_id from string to integer
+                    movie_id = int(booking_info["movie_id"])
+                    movie = self.find_movie(movie_id)
+                    if movie is not None:
+                        print(f"Movie with ID {movie_id} found.")
+                    else:
+                        print(f"Movie with ID {movie_id} not found.")
+                    screening_id = int(booking_info["screening_id"])
+                    print(f'here is screening id {screening_id}')
+                    screening = movie.find_screening(screening_id)
+                    print(f'here is screening {screening}')
+                    if screening is None:
+                        print(f"screening with ID {screening_id} not found.")
+
+                    customer = self.find_customer(booking_info["customer_username"])
+                    num_of_seats = booking_info["num_of_seats"]
+
+                    selected_seats = []
+                    for seat_id in selected_seats_id_list:
+                        seat = screening.find_seat_by_id(seat_id)
+                        selected_seats.append(seat)
+                        
+                    created_on = date.fromisoformat(booking_info["created_on"])
+                    total_amount = float(booking_info["total_amount"])
+                    status = booking_info["status"]
+                    payment_id = booking_info["payment_id"]
+                    if payment_id:
+                        payment = self.find_payment(payment_id)
+
+                    booking = Booking(
+                        customer=customer,
+                        movie=movie,
+                        screening=screening,
+                        num_of_seats=num_of_seats,
+                        selected_seats=selected_seats,
+                        created_on=created_on,
+                        total_amount=total_amount,
+                        status=status,
+                        payment=payment)
+                    self.__bookings.append(booking)
+                    print('bookings reading successful')
+
+        except FileNotFoundError:
+            print(f"File not found: {json_filename}")
+        except Exception as e:
+            print(f"An error occurred while reading the JSON file: {str(e)}")
+
+
+    def save_payment_to_json(self, payment):
+        # Define the filename
+        filename = 'app/database/payments.json'
+        try:
+            if os.path.exists(filename):
+                # File exists, so let's read the existing data
+                with open(filename, 'r') as json_file:
+                    existing_data = json.load(json_file)
+            else:
+                # File doesn't exist, create an empty list
+                existing_data = []
+
+            # Append the credit_card data to the existing data
+            existing_data.append(payment.to_dict())
+
+            # Write the updated data back to the file
+            with open(filename, 'w') as json_file:
+                json.dump(existing_data, json_file, indent=4)
+
+            return True
+
+        except Exception as e:
+            print(f"An error occurred while saving the credit card data: {str(e)}")
+            return False
+        
+
+    
+    def save_new_bookings_to_json(self, booking):
+        filename = f"app/database/bookings.json"
+        existing_data = []
+
+        if os.path.exists(filename) and os.path.getsize(filename) > 0:
+            # File exists and is not empty, so let's read the existing data
+            with open(filename, 'r') as json_file:
+                existing_data = json.load(json_file)
+
+        # Append the new screening data to the existing data
+        existing_data.append(booking.to_dict())
+
+        # Write the updated data back to the file
+        with open(filename, 'w') as json_file:
+            json.dump(existing_data, json_file, default=str, indent=4)
+
+
+
+    def read_payments_from_json(self, json_file):        
+        try:
+            with open(json_file, 'r') as file:
+                payments_data = json.load(file)
+                
+                for item in payments_data:
+                    payment_id = item.get('payment_id')
+                    amount = item.get('amount')
+                    coupon_data = item.get('coupon')
+                    created_on_str = item.get('created_on')
+                    credit_card_number = item.get('credit_card_number')
+                    card_type = item.get('card_type')
+                    expiry_date_str = item.get('expiry_date')
+                    name_on_card = item.get('name_on_card')
+                    
+                    # Convert strings to appropriate data types
+                    created_on = datetime.strptime(created_on_str, '%Y-%m-%d %H:%M:%S')
+                    expiry_date = datetime.strptime(expiry_date_str, '%Y-%m')
+                    
+                    # Create a Coupon object if coupon data is provided
+                    coupon = None
+                    if coupon_data:
+                        coupon_code = coupon_data.get('coupon_code', '')
+                        coupon = self.find_coupon(coupon_code)
+                    
+                    # Create a Payment object and add it to the list
+                    payment = Payment(payment_id, amount, coupon, created_on, credit_card_number, card_type, expiry_date, name_on_card)
+                    self.__payments.append(payment)
+
+        except FileNotFoundError:
+            print(f"File '{json_file}' not found.")
+        except json.JSONDecodeError:
+            print(f"Error decoding JSON from file '{json_file}'.")
+
+
+    def save_new_screening_to_json(self, new_screening):
+        # Define the filename based on the movie ID
+        filename = 'app/database/screenings.json'
+
+        try:
+            if os.path.exists(filename):
+                # File exists, so let's read the existing data
+                with open(filename, 'r') as json_file:
+                    existing_data = json.load(json_file)
+            else:
+                # File doesn't exist, create an empty list
+                existing_data = []
+
+            # Append the new screening data to the existing data
+            existing_data.append(new_screening.to_dict())
+
+            # Write the updated data back to the file
+            with open(filename, 'w') as json_file:
+                json.dump(existing_data, json_file, default=str, indent=4)
+
+            return True  # Successfully saved
+
+        except Exception as e:
+            print(f"An error occurred while saving the screening data: {str(e)}")
+            return False  # Failed to save
+
+
+    def update_booking_payment_and_status(self, customer, booking, update_payment=False):
+        if customer is None or booking is None:
+            return
+
+        filename = f"app/database/bookings.json"
+
+        # Create a list to store existing bookings
+        existing_data = []
+
+        # Check if the file exists and is not empty
+        if os.path.exists(filename) and os.path.getsize(filename) > 0:
+            # File exists and is not empty, so let's read the existing data
+            with open(filename, 'r') as json_file:
+                existing_data = json.load(json_file)
+
+        # Find the specific booking to update
+        for existing_booking in existing_data:
+            if existing_booking["booking_id"] == booking.booking_id:
+                # Update payment and/or status fields based on the update_payment flag
+                if update_payment:
+                    existing_booking["payment_id"] = booking.payment.payment_id
+                existing_booking["status"] = booking.status
+
+        # Write the updated data back to the file
+        with open(filename, 'w') as json_file:
+            json.dump(existing_data, json_file, default=str, indent=4)
+
+        print(f"Booking {booking.booking_id} has been updated in {filename}")
+
+
+    def save_notification_to_json(self, customer, notification):
+        if customer is None or notification is None:
+            return
+
+        filename = f"app/database/notifications.json"
+        existing_data = []
+
+        if os.path.exists(filename) and os.path.getsize(filename) > 0:
+            # File exists and is not empty, so let's read the existing data
+            with open(filename, 'r') as json_file:
+                existing_data = json.load(json_file)
+
+        # Append the new notification to the existing data
+        existing_data.append(notification)
+
+        # Write the updated data back to the file
+        with open(filename, 'w') as json_file:
+            json.dump(existing_data, json_file, default=str, indent=4)
+
+        print(f"Notification for {customer.username} has been saved to {filename}")

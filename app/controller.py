@@ -55,8 +55,6 @@ class CinemaController:
     def find_movie(self, id):
         for movie in self.__movies:
             if movie.id == id:
-                print(type(movie.id))
-                print(type(id))
                 return movie
         return None
     
@@ -111,13 +109,6 @@ class CinemaController:
         return True
 
 
-
-
-
-        
-
-
-    # ======== get movie details ========
     def get_language_list(self):
         language_list = []
         for movie in self.all_movies:
@@ -176,11 +167,8 @@ class CinemaController:
         return filtered_movies
 
 
-# ====== filter screenings ========
     def find_screening_by_date_and_time(self, movie, screening_date, start_time):
         # Convert the input values to datetime objects
-        print(type(screening_date))
-        print(type(start_time))
         # Iterate through the movie's screenings to find a matching screening
         for screening in movie.screenings:
             if (
@@ -193,57 +181,23 @@ class CinemaController:
         return None
     
 
-
-
-    def save_notification_to_json(self, customer, notification):
-        if customer is None or notification is None:
-            return
-
-        filename = f"app/database/notifications.json"
-        existing_data = []
-
-        if os.path.exists(filename) and os.path.getsize(filename) > 0:
-            # File exists and is not empty, so let's read the existing data
-            with open(filename, 'r') as json_file:
-                existing_data = json.load(json_file)
-
-        # Append the new notification to the existing data
-        existing_data.append(notification)
-
-        # Write the updated data back to the file
-        with open(filename, 'w') as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
-        print(f"Notification for {customer.username} has been saved to {filename}")
-
-
-
     def validate_coupon(self, coupon_code):
         today_date = datetime.now()        
         # get valid coupon codes
         valid_coupon_codes = []  
         for coupon in self.all_coupons:
             if coupon.expiration_date.date() >= today_date.date():
-                print(coupon.expiration_date.date())
-                print(today_date.date())
                 valid_coupon_codes.append(coupon.coupon_code)
         coupon = self.find_coupon(coupon_code)
-        # Check if the coupon code is valid and exists in the dummy_coupons dictionary
 
 
     def check_seat_availability(self, booking):
         selected_seats = booking.selected_seats
         screening = booking.screening
         reserved_seats = [seat.seat_id for seat in screening.seats if seat.is_reserved == True]
-        
-        print("Selected Seats:", selected_seats)
-        print("Reserved Seats:", reserved_seats)
-
+    
         for selected_seat in selected_seats:
             if selected_seat.seat_id in reserved_seats:
-                print(selected_seat.seat_id)
-                print(type(selected_seat.seat_id))
-
                 return False
         
         return True
@@ -253,119 +207,30 @@ class CinemaController:
         self.cinema_data_model.save_reserved_seats_to_json(movie_id, screening_id, reserved_seats_id)
 
 
-
-# =========== booking =============
     def update_booking_payment_and_status(self, customer, booking, update_payment=False):
-        if customer is None or booking is None:
-            return
-
-        filename = f"app/database/bookings.json"
-
-        # Create a list to store existing bookings
-        existing_data = []
-
-        # Check if the file exists and is not empty
-        if os.path.exists(filename) and os.path.getsize(filename) > 0:
-            # File exists and is not empty, so let's read the existing data
-            with open(filename, 'r') as json_file:
-                existing_data = json.load(json_file)
-
-        # Find the specific booking to update
-        for existing_booking in existing_data:
-            if existing_booking["booking_id"] == booking.booking_id:
-                # Update payment and/or status fields based on the update_payment flag
-                if update_payment:
-                    existing_booking["payment_id"] = booking.payment.payment_id
-                existing_booking["status"] = booking.status
-
-        # Write the updated data back to the file
-        with open(filename, 'w') as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
-        print(f"Booking {booking.booking_id} has been updated in {filename}")
+        self.cinema_data_model.update_booking_payment_and_status(customer, booking, update_payment=False)
 
 
-    def save_new_bookings_to_json(self, customer, booking):
-        filename = f"app/database/bookings.json"
-        existing_data = []
-
-        if os.path.exists(filename) and os.path.getsize(filename) > 0:
-            # File exists and is not empty, so let's read the existing data
-            with open(filename, 'r') as json_file:
-                existing_data = json.load(json_file)
-
-        # Append the new screening data to the existing data
-        existing_data.append(booking.to_dict())
-
-        # Write the updated data back to the file
-        with open(filename, 'w') as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
+    def save_new_bookings_to_json(self, booking):
+        self.cinema_data_model.save_new_bookings_to_json(booking)
 
     
-
-
     def add_booking_to_customer(self):
         filename = f'app/database/bookings.json'
         all_customers = self.all_customers
-        bookings = self.read_bookings_from_json_file(filename)
-        for booking in bookings:
+        self.cinema_data_model.read_bookings_from_json_file(filename)
+        for booking in self.cinema_data_model.bookings:
             for customer in all_customers:
                 if booking.customer == customer:
                     customer.add_booking(booking)
 
 
     def save_new_screening_to_json(self, new_screening):
-        # Define the filename based on the movie ID
-        filename = 'app/database/screenings.json'
-
-        try:
-            if os.path.exists(filename):
-                # File exists, so let's read the existing data
-                with open(filename, 'r') as json_file:
-                    existing_data = json.load(json_file)
-            else:
-                # File doesn't exist, create an empty list
-                existing_data = []
-
-            # Append the new screening data to the existing data
-            existing_data.append(new_screening.to_dict())
-
-            # Write the updated data back to the file
-            with open(filename, 'w') as json_file:
-                json.dump(existing_data, json_file, default=str, indent=4)
-
-            return True  # Successfully saved
-
-        except Exception as e:
-            print(f"An error occurred while saving the screening data: {str(e)}")
-            return False  # Failed to save
+        self.cinema_data_model.save_new_screening_to_json(new_screening)
 
 
     def save_payment_to_json(self, payment):
-        # Define the filename
-        filename = 'app/database/payments.json'
-        try:
-            if os.path.exists(filename):
-                # File exists, so let's read the existing data
-                with open(filename, 'r') as json_file:
-                    existing_data = json.load(json_file)
-            else:
-                # File doesn't exist, create an empty list
-                existing_data = []
-
-            # Append the credit_card data to the existing data
-            existing_data.append(payment.to_dict())
-
-            # Write the updated data back to the file
-            with open(filename, 'w') as json_file:
-                json.dump(existing_data, json_file, indent=4)
-
-            return True
-
-        except Exception as e:
-            print(f"An error occurred while saving the credit card data: {str(e)}")
-            return False
+        self.cinema_data_model.save_payment_to_json(payment)
 
 
     def save_new_movie_to_file(self, new_movie):
@@ -377,7 +242,10 @@ class CinemaController:
             for movie in self.all_movies:
                 if movie.id == screening.movie_id:
                     movie.add_screening(screening)
-    
+
+
+    def save_notification_to_json(self, customer, notification):
+        self.cinema_data_model.save_notification_to_json(customer, notification)
 
 
     def load_database(self):
@@ -394,20 +262,29 @@ class CinemaController:
         for front_desk_staff in self.cinema_data_model.front_desk_staffs:
             self.add_front_desk_staff(front_desk_staff)
 
-        self.cinema_data_model.add_movies_from_json('app/database/movies.json')
-        for movie in self.cinema_data_model.movies:
-            self.add_movie(movie)
-        
-        screenings = self.cinema_data_model.screenings
-        self.add_screening_to_movie(screenings)
-
         self.cinema_data_model.add_hall_from_file('app/database/cinema_hall.txt')
         for hall in self.cinema_data_model.halls:
             self.add_hall(hall)
 
+        self.cinema_data_model.add_movies_from_json('app/database/movies.json')
+        for movie in self.cinema_data_model.movies:
+            self.add_movie(movie)
+
+        self.cinema_data_model.add_screening_from_file('app/database/screenings.json')
+        screenings = self.cinema_data_model.screenings
+        self.add_screening_to_movie(screenings)
+
         self.cinema_data_model.read_coupons_from_json('app/database/coupons.json')
+
         for coupon in self.cinema_data_model.coupons:
             self.add_coupon(coupon)
+
+
+        # read payments from json file:
+        for payment in self.cinema_data_model.payments:
+            self.add_payment(payment)
+        
+
         self.add_booking_to_customer()
 
-       
+

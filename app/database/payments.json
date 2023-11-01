@@ -1,25 +1,22 @@
 [
     {
         "payment_id": 1,
-        "amount": 26.0,
-        "coupon": null,
-        "created_on": "2023-10-31 23:08:40",
-        "credit_card_number": "1111222233334444",
-        "card_type": "Card Type Here",
-        "expiry_date": "2024-12",
-        "name_on_card": "E XU"
-    },
-    {
-        "payment_id": 1,
-        "amount": 46.0,
-        "coupon": null,
-        "created_on": "2023-11-01 00:24:14",
+        "amount": 43.35,
+        "coupon": "GET15OFF",
+        "created_on": "2023-11-01 14:07:30",
         "credit_card_number": "1111222233334444",
         "card_type": "Card Type Here",
         "expiry_date": "2023-12",
         "name_on_card": "E XU"
     },
     {
-        "payment_id": 1,
-        "amount": 23.8,
-        "coupon": 
+        "payment_id": 2,
+        "amount": 43.35,
+        "coupon": "GET15OFF",
+        "created_on": "2023-11-01 14:23:02",
+        "credit_card_number": "1111222233334444",
+        "card_type": "Card Type Here",
+        "expiry_date": "2023-12",
+        "name_on_card": "E XU"
+    }
+]

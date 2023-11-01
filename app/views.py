@@ -75,6 +75,8 @@ def admin_view_movie_details(movie_id):
     movie_id = int(movie_id)
     movie = LincolnCinema.find_movie(movie_id)
     screening_date_list = movie.get_screening_date_list()
+    print(movie.screenings)
+    print(screening_date_list)
     return render_template('admin_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
 
 
@@ -364,7 +366,7 @@ def customer_select_seats(movie_id, screening_date, start_time):
             new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status)
             is_booking_repeated = customer.add_booking(new_booking)
             if is_booking_repeated:
-                LincolnCinema.save_new_bookings_to_json(customer, new_booking)
+                LincolnCinema.save_new_bookings_to_json(new_booking)
             else:
                 flash('You have unpaid booking for this screening', 'error')
                 return redirect(url_for('views.customer_select_seats', movie_id=movie_id, screening_date = screening_date,start_time=start_time ))                
@@ -461,7 +463,9 @@ def customer_payment(booking_id):
                         
                         # Process the payment (you may add this logic in CreditCard.process_payment)
                         payment_successful = credit_card.process_payment()
-                        LincolnCinema.save_payment_to_json(credit_card)           
+                        LincolnCinema.add_payment(credit_card)
+                        LincolnCinema.save_payment_to_json(credit_card)  
+                        print(f'new credit card: {credit_card}')         
                         if payment_successful == True:
                             # Assign the CreditCard object to the booking's payment attribute
                             booking.payment = credit_card
