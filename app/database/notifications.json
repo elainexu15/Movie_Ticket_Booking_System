@@ -4,31 +4,15 @@
         "customer_username": "elaine",
         "subject": "Booking Confirmation",
         "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
-        "date_time": "2023-11-01 16:59:48.007",
+        "date_time": "2023-11-02 13:05:02.408",
         "booking_id": 1
     },
     {
         "notification_id": 101,
         "customer_username": "elaine",
-        "subject": "Booking Confirmation",
-        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
-        "date_time": "2023-11-01 17:57:04.506",
+        "subject": "Refund Confirmation",
+        "message": "Due to the screening cancellation, your booking has been refunded. We apologize for any inconvenience caused.",
+        "date_time": "2023-11-02 13:07:42.240",
         "booking_id": 1
-    },
-    {
-        "notification_id": 102,
-        "customer_username": "elaine",
-        "subject": "Booking Confirmation",
-        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
-        "date_time": "2023-11-01 18:24:20.008",
-        "booking_id": 1
-    },
-    {
-        "notification_id": 103,
-        "customer_username": "elaine",
-        "subject": "Cancel Confirmation",
-        "message": "Your booking has been canceled!",
-        "date_time": "2023-11-01 20:01:25.502",
-        "booking_id": 3
     }
 ]

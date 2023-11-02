@@ -73,7 +73,7 @@
 
 <div class="col-lg-3 mb-3">
     <h4 class="text-center">SCREENINGS</h4>
-    {% if movie.screenings %}
+    {% if active_screenings %}
     <div class="accordion" id="screeningAccordion">
 
             {% for screening_date in screening_date_list %}
@@ -85,8 +85,8 @@
                 </h2>
                 <div id="screening{{ screening_date }}" class="accordion-collapse" aria-labelledby="screening{{ screening_date }}Heading" data-bs-parent="#screeningAccordion">
                     <div class="accordion-body">
-                        {% for screening in movie.screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d")  %}
-                            <div class="start-time-container">
+                        {% for screening in active_screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d")  %}
+                        <div class="start-time-container">
                                 <div class="start-time">{{ screening.start_time }}</div>
                                 <div class="book-overlay">
                                     <a href="{{ url_for('views.screening_booking_details', movie_id = movie.id, screening_id=screening.screening_id) }}" class="book-overlay">

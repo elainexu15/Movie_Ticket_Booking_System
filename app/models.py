@@ -8,7 +8,9 @@ import os
 PAYMENT_FILENAME = 'app/database/payments.json'
 NOTIFICATION_FILENAME = "app/database/notifications.json"
 BOOKINGS_FILENAME = "app/database/bookings.json"
-MOVIES_FILENAME = "app/database/MOVIES.json"
+MOVIES_FILENAME = "app/database/movies.json"
+SCREENINGS_FILENAME = "app/database/screenings.json"
+PAYMENTS_FILENAME = "app/database/payments.json"
 
 
 
@@ -463,10 +465,11 @@ class Movie:
         
     def find_screening(self, screening_id):
         for screening in self.screenings:
-            if screening.screening_id == screening_id:
+            print(f'debug{screening}')
+            if screening.screening_id == int(screening_id):
+                print(f"debug {screening.screening_id}")
                 return screening
-            else:
-                return None
+        return None
     
         
     def get_screening_date_list(self):
@@ -478,7 +481,7 @@ class Movie:
         for screening in self.screenings:
             # Assuming that screening.screening_date is in the format "YYYY-MM-DD" without a time component
             screening_date = datetime.strptime(screening.screening_date, "%Y-%m-%d").date()
-            if screening_date >= current_date:
+            if screening_date >= current_date and screening.is_active == True:
                 unique_dates.add(screening_date)
 
         # Convert the set back to a list
@@ -512,6 +515,33 @@ class Movie:
 
         with open(MOVIES_FILENAME, 'w') as file:
             json.dump(movies_data, file, indent=4)
+
+    @classmethod
+    def save_new_movie_to_file(self, movie):
+        # Load existing movie data from movies.json if it exists
+        movie_data = []
+        try:
+            with open('app/database/movies.json', 'r') as json_file:
+                movie_data = json.load(json_file)
+        except FileNotFoundError:
+            print(f"Error: File not found.")
+
+        # Append the new movie data to the existing data
+        movie_data.append({
+            "title": movie.title,
+            "language": movie.language,
+            "genre": movie.genre,
+            "country": movie.country,
+            "release_date": movie.release_date,
+            "duration": movie.duration_in_mins,
+            "description": movie.description,
+            "screenings": []
+        })
+
+        # Save the updated movie data back to movies.json
+        with open('app/database/movies.json', 'w') as json_file:
+            json.dump(movie_data, json_file, default=str, indent=4)
+
 
 
     def __str__(self):
@@ -601,7 +631,7 @@ class CinemaHall:
 
 class Screening:
     next_id = 100
-    def __init__(self, movie_id, screening_date, start_time, end_time, hall: CinemaHall, seats) -> None:
+    def __init__(self, movie_id, screening_date, start_time, end_time, hall: CinemaHall, seats, is_active=True) -> None:
         self.__screening_id = Screening.next_id
         self.__movie_id = movie_id
         self.__screening_date = screening_date
@@ -609,6 +639,7 @@ class Screening:
         self.__end_time = end_time
         self.__hall = hall  
         self.__seats = seats
+        self.__is_active = is_active
         Screening.next_id += 1
 
     @property
@@ -639,6 +670,14 @@ class Screening:
     def seats(self):
         return self.__seats
     
+    @property
+    def is_active(self):
+        return self.__is_active
+    
+    @is_active.setter
+    def is_active(self, status):
+        self.__is_active = False
+    
     def to_dict(self):
         return {
             "screening_id": self.screening_id,
@@ -647,7 +686,8 @@ class Screening:
             "start_time": self.start_time,
             "end_time": self.end_time,
             "hall_name": self.hall.hall_name,
-            "seats": [seat.to_json() for seat in self.seats]
+            "seats": [seat.to_json() for seat in self.seats],
+            "is_active": self.is_active
         }
 
 
@@ -668,10 +708,81 @@ class Screening:
         return None  # Return None if the seat is not found
     
 
+    @classmethod
+    def save_new_screening_to_json(self, new_screening):
+        try:
+            if os.path.exists(SCREENINGS_FILENAME):
+                # File exists, so let's read the existing data
+                with open(SCREENINGS_FILENAME, 'r') as json_file:
+                    existing_data = json.load(json_file)
+            else:
+                # File doesn't exist, create an empty list
+                existing_data = []
+
+            # Append the new screening data to the existing data
+            existing_data.append(new_screening.to_dict())
+
+            # Write the updated data back to the file
+            with open(SCREENINGS_FILENAME, 'w') as json_file:
+                json.dump(existing_data, json_file, default=str, indent=4)
+
+        except Exception as e:
+            print(f"An error occurred while saving the screening data: {str(e)}")
+
+
+    @classmethod
+    def read_screening_data_from_file(cls):
+        try:
+            with open(SCREENINGS_FILENAME, 'r') as file:
+                data = json.load(file)
+                return data
+        except FileNotFoundError:
+            print(f"File not found: {SCREENINGS_FILENAME}")
+            return []
+
+
+    @classmethod
+    def update_screening_status_to_inactive_to_json(cls, screening_id):
+        try:
+            # Read the existing screening data from the file
+            screening_data_list = cls.read_screening_data_from_file()
+
+            for screening_data in screening_data_list:
+                if screening_data["screening_id"] == screening_id:
+                    screening_data["is_active"] = False
+
+            # Write the updated data back to the file
+            with open(SCREENINGS_FILENAME, 'w') as json_file:
+                json.dump(screening_data_list, json_file, default=str, indent=4)
+
+        except Exception as e:
+            print(f"An error occurred while updating the screening status: {str(e)}")
+            
+
+    @classmethod
+    def update_reserved_seats_to_json(cls, screening_id, reserved_seats_id, is_reserved):
+        try:
+            # Read the existing screening data from the file
+            screening_data_list = cls.read_screening_data_from_file()
+
+            for screening_data in screening_data_list:
+                if screening_data["screening_id"] == screening_id:
+                    # Update the seat reservation status for this screening
+                    for reserved_seat_id in reserved_seats_id:
+                        for seat_data in screening_data["seats"]:
+                            if reserved_seat_id == str(seat_data["row_number"]) + str(seat_data["seat_number"]):
+                                seat_data["is_reserved"] = is_reserved
+
+            # Write the updated data back to the file
+            with open(SCREENINGS_FILENAME, 'w') as json_file:
+                json.dump(screening_data_list, json_file, default=str, indent=4)
+
+        except Exception as e:
+            print(f"An error occurred while updating the screening status: {str(e)}")
 
 
     def __str__(self):
-        return f"Screening Date: {self.screening_date}\n" \
+        return f"Screening id: {self.screening_id}\n" \
                f"Start Time: {self.start_time}\n" \
                f"End Time: {self.end_time}\n" \
                f"Hall: {self.hall}\n" \
@@ -748,6 +859,18 @@ class Payment(ABC):
     def process_payment(self):
         pass
 
+
+    @classmethod
+    def read_payments_from_file(cls):
+        try:
+            with open(PAYMENTS_FILENAME, 'r') as file:
+                data = json.load(file)
+                return data
+        except FileNotFoundError:
+            print(f"File not found: {PAYMENTS_FILENAME}")
+            return []
+        
+
 class CreditCard(Payment):
     def __init__(self, payment_id:int, amount: float, created_on: datetime, coupon: Optional[Coupon],
                  credit_card_number: str, card_type: str, expiry_date: datetime, name_on_card: str):
@@ -791,6 +914,13 @@ class CreditCard(Payment):
         print(f"Processing a payment using credit card ending in {self.credit_card_number[-4:]}")
         return True
     
+    def process_refund(self):
+        # In a real application, I would use a payment gateway or service (e.g., Stripe, PayPal).
+        # This is a simplified example, so I'll just print a success message.
+        print(f"Processing a refund payment using credit card ending in {self.credit_card_number[-4:]}")
+        return True
+
+
     
     @classmethod
     def save_payment_to_json(cls, payment):
@@ -932,6 +1062,50 @@ class Booking:
         except FileNotFoundError:
             print(f"File not found: {BOOKINGS_FILENAME}")
             return []
+
+
+    @classmethod
+    def update_payment_and_status(cls, booking_id, payment_id, new_status):
+        bookings_info = cls.read_bookings_from_file()
+
+        for booking_info in bookings_info:
+            if booking_info["booking_id"] == int(booking_id):
+                booking_info["payment_id"] = payment_id
+                booking_info["status"] = new_status
+
+        cls.save_bookings_to_file(bookings_info)
+
+
+    @classmethod
+    def update_status_to_canceled(cls, booking_id, new_status):
+        bookings_info = cls.read_bookings_from_file()
+        print(f"allllllll booking info {bookings_info}")
+        for booking_info in bookings_info:
+            if booking_info["booking_id"] == int(booking_id):
+                print(booking_info["status"])
+                booking_info["status"] = new_status
+                print(booking_info["status"])
+
+        cls.save_bookings_to_file(bookings_info)
+
+
+    @classmethod
+    def update_status_to_refund(cls, booking_id, new_status):
+        bookings_info = cls.read_bookings_from_file()
+        print(f"allllllll booking info {bookings_info}")
+        for booking_info in bookings_info:
+            if booking_info["booking_id"] == int(booking_id):
+                print(booking_info["status"])
+                booking_info["status"] = new_status
+                print(booking_info["status"])
+
+        cls.save_bookings_to_file(bookings_info)
+
+
+    @classmethod
+    def save_bookings_to_file(cls, bookings_info):
+        with open(BOOKINGS_FILENAME, 'w') as file:
+            json.dump(bookings_info, file, indent=4)
 
 
 
@@ -1202,36 +1376,6 @@ class CinemaDataModel():
 
 
 
-
-    # ======= read screenings data =======
-    def add_screening_from_file(self, file_name):
-        screening_data_list = self.handle_json_file_errors(file_name)  
-        for screening_data in screening_data_list:
-            # Extract screening data
-            movie_id = screening_data["movie_id"]
-            screening_date = screening_data["screening_date"]
-            start_time = screening_data["start_time"]
-            end_time = screening_data["end_time"]
-            hall_name = screening_data["hall_name"]
-            seats_data = screening_data.get("seats", [])
-            
-            # Find the hall based on the hall_name
-            hall = self.find_hall(hall_name)
-            # Create a list to store seat objects
-            seats = []
-            
-            # Loop through the seats data and create seat objects
-            for seat_data in seats_data:
-                seat_number = seat_data.get("seat_number")
-                row_number = seat_data.get("row_number")
-                is_reserved = seat_data.get("is_reserved")
-                seat_price = seat_data.get("seat_price")
-                
-                seat = CinemaHallSeat(seat_number, row_number, is_reserved, seat_price)
-                seats.append(seat)
-            screening = Screening(movie_id, screening_date, start_time, end_time, hall, seats)
-            self.__screenings.append(screening)
-
     def read_coupons_from_json(self, json_file):        
         try:
             with open(json_file, 'r') as file:
@@ -1253,59 +1397,6 @@ class CinemaDataModel():
             print(f"Error decoding JSON from file '{json_file}'.")
 
 
-    def save_new_movie_to_file(self, movie):
-        # Load existing movie data from movies.json if it exists
-        movie_data = []
-        try:
-            with open('app/database/movies.json', 'r') as json_file:
-                movie_data = json.load(json_file)
-        except FileNotFoundError:
-            print(f"Error: File not found.")
-
-        # Append the new movie data to the existing data
-        movie_data.append({
-            "title": movie.title,
-            "language": movie.language,
-            "genre": movie.genre,
-            "country": movie.country,
-            "release_date": movie.release_date,
-            "duration": movie.duration_in_mins,
-            "description": movie.description,
-            "screenings": []
-        })
-
-        # Save the updated movie data back to movies.json
-        with open('app/database/movies.json', 'w') as json_file:
-            json.dump(movie_data, json_file, default=str, indent=4)
-
-
-    # Function to save reserved seats to the screening JSON file
-    def save_reserved_seats_to_json(self, movie_id, screening_id, reserved_seats_id):
-        # Define the filename based on the movie ID
-        filename = f'app/database/screenings.json'
-
-        if os.path.exists(filename):
-            # File exists, so let's read the existing data
-            with open(filename, 'r') as json_file:
-                existing_data = json.load(json_file)
-        else:
-            # File doesn't exist, create an empty list
-            existing_data = []
-
-        # Find the screening data in the existing data
-        for screening_data in existing_data:
-            if screening_data['screening_id'] == screening_id:
-                # Update the seat reservation status for this screening
-                for reserved_seat_id in reserved_seats_id:
-                    for seat_data in screening_data['seats']:
-                        if reserved_seat_id == str(seat_data['row_number']) + str(seat_data['seat_number']):
-                            seat_data['is_reserved'] = True
-                            print(f' reserved id: {reserved_seat_id}')
-
-        # Write the updated data back to the file
-        with open(filename, 'w') as json_file:
-            json.dump(existing_data, json_file, indent=4)
-
 
  
     
@@ -1325,41 +1416,6 @@ class CinemaDataModel():
         with open(filename, 'w') as json_file:
             json.dump(existing_data, json_file, default=str, indent=4)
 
-
-
-    def read_payments_from_json(self, json_file):        
-        try:
-            with open(json_file, 'r') as file:
-                payments_data = json.load(file)
-                
-                for item in payments_data:
-                    payment_id = item.get('payment_id')
-                    amount = item.get('amount')
-                    coupon_data = item.get('coupon')
-                    created_on_str = item.get('created_on')
-                    credit_card_number = item.get('credit_card_number')
-                    card_type = item.get('card_type')
-                    expiry_date_str = item.get('expiry_date')
-                    name_on_card = item.get('name_on_card')
-                    
-                    # Convert strings to appropriate data types
-                    created_on = datetime.strptime(created_on_str, '%Y-%m-%d %H:%M:%S')
-                    expiry_date = datetime.strptime(expiry_date_str, '%Y-%m')
-                    
-                    # Create a Coupon object if coupon data is provided
-                    coupon = None
-                    if coupon_data:
-                        coupon_code = coupon_data.get('coupon_code', '')
-                        coupon = self.find_coupon(coupon_code)
-                    
-                    # Create a Payment object and add it to the list
-                    payment = Payment(payment_id, amount, coupon, created_on, credit_card_number, card_type, expiry_date, name_on_card)
-                    self.__payments.append(payment)
-
-        except FileNotFoundError:
-            print(f"File '{json_file}' not found.")
-        except json.JSONDecodeError:
-            print(f"Error decoding JSON from file '{json_file}'.")
 
 
     def save_new_screening_to_json(self, new_screening):
@@ -1387,35 +1443,4 @@ class CinemaDataModel():
         except Exception as e:
             print(f"An error occurred while saving the screening data: {str(e)}")
             return False  # Failed to save
-
-
-    def update_booking_payment_and_status(self, customer, booking, update_payment=False):
-        if customer is None or booking is None:
-            return
-
-        filename = f"app/database/bookings.json"
-
-        # Create a list to store existing bookings
-        existing_data = []
-
-        # Check if the file exists and is not empty
-        if os.path.exists(filename) and os.path.getsize(filename) > 0:
-            # File exists and is not empty, so let's read the existing data
-            with open(filename, 'r') as json_file:
-                existing_data = json.load(json_file)
-
-        # Find the specific booking to update
-        for existing_booking in existing_data:
-            if existing_booking["booking_id"] == booking.booking_id:
-                # Update payment and/or status fields based on the update_payment flag
-                if update_payment:
-                    existing_booking["payment_id"] = booking.payment.payment_id
-                existing_booking["status"] = booking.status
-
-        # Write the updated data back to the file
-        with open(filename, 'w') as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
-        print(f"Booking {booking.booking_id} has been updated in {filename}")
-
 

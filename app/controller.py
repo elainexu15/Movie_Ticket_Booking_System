@@ -201,15 +201,7 @@ class CinemaController:
                 return False
         
         return True
-
-
-    def save_reserved_seats_to_json(self, movie_id, screening_id, reserved_seats_id):
-        self.cinema_data_model.save_reserved_seats_to_json(movie_id, screening_id, reserved_seats_id)
-
-
-    def update_booking_payment_and_status(self, customer, booking, update_payment=False):
-        self.cinema_data_model.update_booking_payment_and_status(customer, booking, update_payment=False)
-
+    
 
     def save_new_bookings_to_json(self, booking):
         self.cinema_data_model.save_new_bookings_to_json(booking)
@@ -244,7 +236,7 @@ class CinemaController:
                 selected_seats_id_list = booking_info["selected_seats"]
                 selected_seats = []
                 for seat_id in selected_seats_id_list:
-                    seat = screening.find_seat_by_id(seat_id)
+                    seat = screening.find_seat_by_id(int(seat_id))
                     selected_seats.append(seat)
                     
                 created_on = date.fromisoformat(booking_info["created_on"])
@@ -252,7 +244,8 @@ class CinemaController:
                 status = booking_info["status"]
                 payment_id = booking_info["payment_id"]
                 if payment_id:
-                    payment = self.find_payment(payment_id)
+                    payment = self.find_payment(int(payment_id))
+                    print(f'payment id found??????{payment}')
                 else:
                     payment = None
 
@@ -269,8 +262,16 @@ class CinemaController:
                 customer.add_booking(booking)
                 
 
+    def update_booking_payment_and_status(self, booking_id, payment_id, new_status):
+        Booking.update_payment_and_status(booking_id, payment_id, new_status)
 
 
+    def update_status_to_canceled(self, booking_id, new_status):
+        Booking.update_status_to_canceled(booking_id, new_status)
+
+        
+    def save_new_screening_to_json(self, new_screening):
+        Screening.save_new_screening_to_json(new_screening)
 
 
     def add_notifications_to_customer(self):
@@ -287,8 +288,30 @@ class CinemaController:
         self.cinema_data_model.save_new_screening_to_json(new_screening)
 
 
-    def save_payment_to_json(self, payment):
-        self.cinema_data_model.save_payment_to_json(payment)
+    def create_payment_objects_and_add_to_payments_list(self):
+        payments_data = Payment.read_payments_from_file()
+        for item in payments_data:
+            payment_id = item.get('payment_id')
+            amount = item.get('amount')
+            coupon_code = item.get('coupon')
+            created_on_str = item.get('created_on')
+            credit_card_number = item.get('credit_card_number')
+            card_type = item.get('card_type')
+            expiry_date_str = item.get('expiry_date')
+            name_on_card = item.get('name_on_card')
+            
+            # Convert strings to appropriate data types
+            created_on = datetime.strptime(created_on_str, '%Y-%m-%d %H:%M:%S')
+            expiry_date = datetime.strptime(expiry_date_str, '%Y-%m')
+            
+            # Create a Coupon object if coupon data is provided
+            coupon = None
+            if coupon_code:
+                coupon = self.find_coupon(coupon_code)
+            
+            # Create a Payment object and add it to the list
+            payment = CreditCard(payment_id, amount, coupon, created_on, credit_card_number, card_type, expiry_date, name_on_card)
+            self.__payments.append(payment)
 
 
     def create_movie_objects_and_add_to_movies_list(self):
@@ -321,12 +344,39 @@ class CinemaController:
             Movie.update_movies_json(self.all_movies)
 
 
+    def add_screening_to_movie(self):
+        screening_data_list = Screening.read_screening_data_from_file()
+        for screening_data in screening_data_list:
+            movie_id = screening_data["movie_id"]
+            movie = self.find_movie(int(movie_id))
 
-    def add_screening_to_movie(self, screenings:List):
-        for screening in self.cinema_data_model.screenings:
-            for movie in self.all_movies:
-                if movie.id == screening.movie_id:
-                    movie.add_screening(screening)
+            if movie:
+                screening_date = screening_data["screening_date"]
+                start_time = screening_data["start_time"]
+                end_time = screening_data["end_time"]
+                hall_name = screening_data["hall_name"]
+                seats_data = screening_data.get("seats", [])
+
+                hall = self.find_hall(hall_name)
+
+                seats = []
+                for seat_data in seats_data:
+                    seat_number = seat_data.get("seat_number")
+                    row_number = seat_data.get("row_number")
+                    is_reserved = seat_data.get("is_reserved")
+                    seat_price = seat_data.get("seat_price")
+
+                    seat = CinemaHallSeat(seat_number, row_number, is_reserved, seat_price)
+                    seats.append(seat)
+
+                is_active = screening_data["is_active"]  # Use the correct attribute name
+                screening = Screening(movie_id, screening_date, start_time, end_time, hall, seats, is_active)
+                movie.add_screening(screening)
+                print(screening.screening_id)
+                print(f'just to check {movie.screenings}')
+            else:
+                print(f"Movie with ID {movie_id} not found.")
+
 
 
     def save_notification_to_json(self, customer, notification):
@@ -385,18 +435,14 @@ class CinemaController:
 
         self.create_movie_objects_and_add_to_movies_list()
 
-        self.cinema_data_model.add_screening_from_file('app/database/screenings.json')
-        screenings = self.cinema_data_model.screenings
-        self.add_screening_to_movie(screenings)
+        self.add_screening_to_movie()
 
         self.cinema_data_model.read_coupons_from_json('app/database/coupons.json')
 
         for coupon in self.cinema_data_model.coupons:
             self.add_coupon(coupon)
 
-        # read payments from json file:
-        for payment in self.cinema_data_model.payments:
-            self.add_payment(payment)
+        self.create_payment_objects_and_add_to_payments_list()
         
         for customer in self.all_customers:
             self.create_booking_objects_and_add_to_customer(customer.username)

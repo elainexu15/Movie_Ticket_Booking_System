@@ -94,7 +94,7 @@
                     </h2>
                     <div id="screening{{ screening_date }}" class="accordion-collapse" aria-labelledby="screening{{ screening_date }}Heading" data-bs-parent="#screeningAccordion">
                         <div class="accordion-body">
-                            {% for screening in movie.screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d")  %}
+                            {% for screening in movie.screenings if screening.screening_date == screening_date.strftime("%Y-%m-%d") and screening.is_active == True  %}
                                 <div class="start-time-container">
                                     <div class="start-time">{{ screening.start_time }}</div>
                                     <div class="book-overlay">
