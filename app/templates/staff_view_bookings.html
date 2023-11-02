@@ -8,10 +8,10 @@
             <button type="submit" class="btn btn-primary">Search</button>
         </div>
     </form>
-    <h2 class="mb-4 text-center">ALL PAID BOOKINGS</h2>
-    {% if all_paid_bookings %}
+    <h2 class="mb-4 text-center">ALL BOOKINGS</h2>
+    {% if all_bookings %}
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
         <thead class="table-info">
             <tr>
                 <th>Booking ID</th>
@@ -20,7 +20,6 @@
                 <th>Start Time(24h)</th>
                 <th>End Time(24h)</th>
                 <th>Hall</th>
-                <th>Number of Seats</th>
                 <th>Selected Seats</th>
                 <th>Total Amount</th>
                 <th>Status</th>
@@ -28,7 +27,7 @@
             </tr>
         </thead>
         <tbody>
-                {% for booking in all_paid_bookings %}
+                {% for booking in all_bookings %}
                 <tr>
                     <td>{{ booking.booking_id }}</td>
                     <td>{{ booking.customer.username }}</td>
@@ -36,7 +35,6 @@
                     <td>{{ booking.screening.start_time }}</td>
                     <td>{{ booking.screening.end_time }}</td>
                     <td>{{ booking.screening.hall.hall_name }}</td>
-                    <td>{{ booking.num_of_seats }}</td>
                     <td>
                         <ul>
                             {% for seat in booking.selected_seats %}
@@ -60,12 +58,18 @@
                     </td>
                     <td>{{ booking.status }}</td>
                     <td>
-                        {% if booking.status == 'Refunded' %}
-                            <p>Refunded</p>
+                        {% if booking.status == 'Pending' %}
+                            <a href="{{url_for('views.staff_apply_coupon', booking_id = booking.booking_id, username=booking.customer.username )}}" class="btn btn-sm btn-primary">Pay</a>
+                            <a href="{{url_for('views.staff_cancel_booking', booking_id = booking.booking_id, username=booking.customer.username )}}" class="btn btn-sm btn-primary">Cancel</a>
+                        {% elif booking.status == 'Canceled' %}
+                            <p>Canceled</p>
                         {% elif booking.status == 'Paid' %}
                             <a href="{{ url_for('views.staff_refund_booking', booking_id=booking.booking_id, username=booking.customer.username, payment_id=booking.payment.payment_id) }}" class="btn btn-sm btn-primary">Refund</a>
+                        {% elif booking.status == 'Refunded' %}
+                            <p>Refunded</p>
+
                         {% endif %}
-                    </td>
+                        </td>
                     
                 </tr>
                 {% endfor %}

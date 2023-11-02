@@ -5,7 +5,6 @@ import os
 
 class CinemaController:
     def __init__(self):
-        self.__cinema_data_model = CinemaDataModel()
         self.__customers = []
         self.__admins = []
         self.__front_desk_staffs = []
@@ -14,10 +13,6 @@ class CinemaController:
         self.__coupons = []
         self.__payments = []
     
-    @property
-    def cinema_data_model(self):
-        return self.__cinema_data_model
-
     @property
     def all_customers(self):
         return self.__customers
@@ -204,7 +199,7 @@ class CinemaController:
     
 
     def save_new_bookings_to_json(self, booking):
-        self.cinema_data_model.save_new_bookings_to_json(booking)
+        self.save_new_bookings_to_json(booking)
 
     
     def add_booking_to_customer(self):
@@ -229,13 +224,11 @@ class CinemaController:
 
                 screening_id = int(booking_info["screening_id"])
                 screening = movie.find_screening(screening_id)
-                print(f'ddddddddddebug{screening}')
                 if screening is None:
                     print(f"screening with ID {screening_id} not found.")
 
                 num_of_seats = booking_info["num_of_seats"]
                 selected_seats_id_list = booking_info["selected_seats"]
-                print(f'ddddddddddebug{selected_seats_id_list}')
                 selected_seats = []
                 for seat_id in selected_seats_id_list:
                     seat = screening.find_seat_by_id(int(seat_id))
@@ -279,20 +272,6 @@ class CinemaController:
         
     def save_new_screening_to_json(self, new_screening):
         Screening.save_new_screening_to_json(new_screening)
-
-
-    def add_notifications_to_customer(self):
-        filename = f'app/database/notifications.json'
-        all_customers = self.all_customers
-        self.cinema_data_model.retrieve_notifications_from_json(filename)
-        for notification in self.cinema_data_model.notifications:
-            for customer in all_customers:
-                if notification.customer == customer:
-                    customer.add_notification(notification)
-
-
-    def save_new_screening_to_json(self, new_screening):
-        self.cinema_data_model.save_new_screening_to_json(new_screening)
 
 
     def create_payment_objects_and_add_to_payments_list(self):
@@ -385,9 +364,10 @@ class CinemaController:
                 print(f"Movie with ID {movie_id} not found.")
 
 
-
-    def save_notification_to_json(self, customer, notification):
-        self.cinema_data_model.save_notification_to_json(customer, notification)
+    def read_coupons_from_file(self):
+        coupons = Coupon.read_coupons_from_json()
+        for coupon in coupons:
+            self.__coupons.append(coupon)
 
 
     def create_notification_objects_and_add_to_customer(self, username):
@@ -421,33 +401,42 @@ class CinemaController:
                 )
                 customer.add_notification(notification)
 
+    def initialise_admins(self):
+        admins = Admin.add_admins_from_file()
+        for admin in admins:
+            self.__admins.append(admin)
+
+
+    def initialise_customers(self):
+        customers = Customer.add_customers_from_file()
+        for cus in customers:
+            self.__admins.append(cus)
+
+
+    def initialise_staff(self):
+        front_desk_staffs = FrontDeskStaff.add_front_desk_staffs_from_file()
+        for staff in front_desk_staffs:
+            self.__front_desk_staffs.append(staff)
+    
+
+    def initialise_halls(self):
+        halls = CinemaHall.add_halls_from_file()
+        for hall in halls:
+            self.__halls.append(hall)
+
+
 
     def load_database(self):
-
-        self.cinema_data_model.add_customers_from_file('app/database/customers.txt')
-        for customer in self.cinema_data_model.customers:
-            self.add_customer(customer)
-
-        self.cinema_data_model.add_admins_from_file('app/database/admins.txt')
-        for admin in self.cinema_data_model.admins:
-            self.add_admin(admin)
-
-        self.cinema_data_model.add_front_desk_staffs_from_file('app/database/front_desk_staffs.txt')
-        for front_desk_staff in self.cinema_data_model.front_desk_staffs:
-            self.add_front_desk_staff(front_desk_staff)
-
-        self.cinema_data_model.add_hall_from_file('app/database/cinema_hall.txt')
-        for hall in self.cinema_data_model.halls:
-            self.add_hall(hall)
+        self.initialise_admins()
+        self.initialise_customers()
+        self.initialise_staff()
+        self.initialise_halls
 
         self.create_movie_objects_and_add_to_movies_list()
 
         self.add_screening_to_movie()
 
-        self.cinema_data_model.read_coupons_from_json('app/database/coupons.json')
-
-        for coupon in self.cinema_data_model.coupons:
-            self.add_coupon(coupon)
+        self.read_coupons_from_file()
 
         self.create_payment_objects_and_add_to_payments_list()
         

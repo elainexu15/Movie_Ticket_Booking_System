@@ -127,7 +127,7 @@ def admin_add_screening(movie_id):
         # get hall object
         hall = LincolnCinema.find_hall(hall_name)
     
-        seats = LincolnCinema.cinema_data_model.initialise_seats(hall, price)
+        seats = CinemaHallSeat.initialise_seats(hall, price)
         
         # Create a Screening object
         screening = Screening(movie_id, screening_date, start_time, end_time, hall, seats)
@@ -379,7 +379,7 @@ def customer_select_seats(movie_id, screening_date, start_time):
             new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status)
             is_booking_repeated = customer.add_booking(new_booking)
             if is_booking_repeated:
-                LincolnCinema.save_new_bookings_to_json(new_booking)
+                Booking.save_new_bookings_to_json(new_booking)
             else:
                 flash('You have unpaid booking for this screening', 'error')
                 return redirect(url_for('views.customer_select_seats', movie_id=movie_id, screening_date = screening_date,start_time=start_time ))                
@@ -420,6 +420,7 @@ def validate_coupon(booking_id):
             return redirect(url_for('views.customer_apply_coupon', booking_id=booking_id))
     return redirect(url_for('views.customer_apply_coupon', booking_id=booking_id))
 
+
 @views.route('customer_apply_coupon/<booking_id>')
 def customer_apply_coupon(booking_id):
     customer = LincolnCinema.find_customer(g.user.username)
@@ -431,8 +432,6 @@ def customer_apply_coupon(booking_id):
         flash('Seats have become unavailable. Please start a new booking and choose your seats again.', 'error')
         bookings = customer.bookings()
         return render_template('cus_bookings.html', bookings = bookings)
-
-
 
 
 @views.route('/customer_payment/<booking_id>', methods=['GET', 'POST'])
@@ -518,6 +517,7 @@ def customer_payment(booking_id):
             bookings = customer.bookings()
             return render_template('cus_bookings.html', bookings = bookings)
     return render_template('cus_payment.html', booking=booking)
+
 
 @views.route('customer_bookings')
 def customer_bookings():
@@ -693,15 +693,12 @@ def staff_home():
 
 @views.route('/staff_view_bookings')
 def staff_view_bookings():
-    all_paid_bookings = []
+    all_bookings = []
     all_customers = LincolnCinema.all_customers
     for customer in all_customers:
         for booking in customer.bookings():
-            print(booking)
-            if booking.status == 'Paid':
-                all_paid_bookings.append(booking)
-        
-    return render_template('staff_view_bookings.html', all_paid_bookings=all_paid_bookings)
+            all_bookings.append(booking)    
+    return render_template('staff_view_bookings.html', all_bookings=all_bookings)
 
 
 @views.route('/staff_refund_booking/<int:booking_id>/<username>')
@@ -763,8 +760,8 @@ def staff_search_customer():
             flash('Customer not found', 'error')
             return redirect(url_for('views.staff_view_bookings'))
 
-        all_paid_bookings = [booking for booking in customer.bookings() if booking.status == 'Paid']
-        return render_template('staff_view_bookings.html', all_paid_bookings=all_paid_bookings)
+        all_bookings = customer.bookings()
+        return render_template('staff_view_bookings.html', all_bookings=all_bookings)
     except Exception as e:
         flash('An error occurred while searching for the customer.', 'error')
         app.logger.error(str(e))
@@ -778,3 +775,234 @@ def staff_view_movie_details(movie_id):
     movie = LincolnCinema.find_movie(movie_id)
     screening_date_list = movie.get_screening_date_list()
     return render_template('staff_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
+
+
+
+@views.route('/staff_select_seats/<movie_id>/<screening_date>/<start_time>', methods=['GET', 'POST'])
+def staff_select_seats(movie_id, screening_date, start_time):
+    # Find the screening based on screening_date and start_time
+    all_customers_username = [customer.username for customer in LincolnCinema.all_customers]
+    movie = LincolnCinema.find_movie(int(movie_id))
+    screening = LincolnCinema.find_screening_by_date_and_time(movie, screening_date, start_time)
+    if request.method == 'POST':
+        # Handle seat selection by customers
+        current_date = datetime.now().date()
+        selected_seats = request.form.get('selected_seats')
+        customer_username = request.form.get('username')
+        customer = LincolnCinema.find_customer(customer_username)
+        print(customer_username)
+        print(customer)
+        if not customer_username:
+            flash('Please select a Customer', 'error')
+            return render_template('staff_select_seats.html', screening=screening, movie=movie,
+                           all_customers_username=all_customers_username)
+
+        if not selected_seats:
+            flash('Please select at least one seat.', 'error')
+        else:
+            # Parse the selected seats
+            selected_seats = json.loads(selected_seats)
+            # Convert the list of dictionaries into a list of lists
+            selected_seats_id_list = [str(seat['rowNumber'])+str(seat['seatNumber']) for seat in selected_seats]
+            # get seat objects
+            seat_objects = []
+            for seat in screening.seats:
+                for seat_id in selected_seats_id_list:
+                    if seat.seat_id == seat_id:
+                        seat_objects.append(seat)
+            num_of_seats = len(seat_objects)
+            # caculate total_price
+            total_price = 0
+            for seat in seat_objects:
+                total_price += float(seat.seat_price)    
+            status = 'Pending'
+            # create book object
+            new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status)
+            is_booking_repeated = customer.add_booking(new_booking)
+            if is_booking_repeated:
+                Booking.save_new_bookings_to_json(new_booking)
+            else:
+                flash(f'{customer.name} have unpaid booking for this screening', 'error')
+                return redirect(url_for('views.staff_select_seats', movie_id=movie_id, screening_date = screening_date,start_time=start_time ))                
+            return render_template('staff_checkout.html', booking=new_booking)
+
+    # Pass the screening object to the seat selection page
+    return render_template('staff_select_seats.html', screening=screening, movie=movie,
+                           all_customers_username=all_customers_username)
+
+
+@views.route('/staff_validate_coupon', methods=['POST'])
+def staff_validate_coupon():
+    today_date = datetime.now()
+    coupon_code = request.form.get('coupon_code')
+    username = request.form.get('username')
+    booking_id = request.form.get('booking_id')
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(int(booking_id))
+    print(customer )
+    if booking.coupon:
+        flash("Coupon has already been applied!", 'error')
+    else:
+        # get valid coupon codes
+        valid_coupon_codes = []  
+        for coupon in LincolnCinema.all_coupons:
+            if coupon.expiration_date.date() >= today_date.date():
+                valid_coupon_codes.append(coupon.coupon_code)
+        coupon = LincolnCinema.find_coupon(coupon_code)
+        # Check if the coupon code is valid and exists in the dummy_coupons dictionary
+        if coupon_code in valid_coupon_codes:
+            discount_percentage = coupon.discount_percentage
+            discounted_price = booking.total_amount * (100 - discount_percentage)/100
+            booking.total_amount = discounted_price
+            booking.coupon = coupon
+            # Redirect to the payment page with the valid coupon
+            flash("Coupon is applied successfully!", 'success')
+            return redirect(url_for('views.staff_apply_coupon', booking_id=booking_id, username = username))
+        else:
+            # Invalid coupon code, flash an error message and redirect back to the checkout page
+            flash('Invalid or expired coupon code. Please try again.', 'error')
+            return redirect(url_for('views.staff_apply_coupon', booking_id=booking_id, username = username))
+    return redirect(url_for('views.staff_apply_coupon', booking_id=booking_id, username = username))
+
+
+
+
+@views.route('staff_apply_coupon/<booking_id>/<username>')
+def staff_apply_coupon(booking_id, username):
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(booking_id)
+    is_seats_available = LincolnCinema.check_seat_availability(booking)
+    if is_seats_available == True: 
+        return render_template('staff_checkout.html', booking=booking, customer=customer)
+    else:
+        flash('Seats have become unavailable. Please choose seats again.', 'error')
+        return redirect(url_for('views.staff_view_bookings'))
+    
+
+
+    
+@views.route('/staff_payment/<booking_id>/<username>', methods=['GET', 'POST'])
+def staff_payment(booking_id, username):
+    print(f"username....{username}")
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(int(booking_id))
+    coupon = booking.coupon
+    if request.method == 'POST':
+        # Check seat availability
+        is_seats_available = LincolnCinema.check_seat_availability(booking)
+        if is_seats_available == True: 
+            card_holder_name = request.form.get('card_holder_name')
+            card_number = request.form.get('card_number')
+            expire_date = request.form.get('expire_date')
+            cvc = request.form.get('cvc')
+            amount = request.form.get('amount')
+            try:
+                # Assuming the date format is MM/YYYY
+                date_parts = expire_date.split('/')
+                if len(date_parts) == 2:
+                    month = int(date_parts[0])
+                    year = int(date_parts[1])
+                    expiry_date = datetime(year, month, 1)  # Set the day to 1 (the first day of the month)
+
+                    # Check if the expiry date is in the future
+                    if expiry_date > datetime.now():
+                        formatted_expiry_date = expiry_date.strftime('%Y-%m')  # Format as 'YYYY-MM'
+                        print('step1 is done')            
+                        print('step2 is done')                 
+                        # Create a CreditCard object
+                        credit_card_payment = CreditCard(
+                            payment_id=booking.booking_id,  # Use booking ID as payment ID, or provide a unique ID
+                            amount=booking.total_amount,
+                            created_on=datetime.now(),
+                            coupon=coupon, 
+                            credit_card_number=card_number,
+                            card_type="Card Type Here",  # You should provide the card type
+                            expiry_date=formatted_expiry_date,
+                            name_on_card=card_holder_name
+                        )
+                        payment_id = credit_card_payment.payment_id
+                        # Process the payment (you may add this logic in CreditCard.process_payment)
+                        payment_successful = credit_card_payment.process_payment()
+                        print(f'new credit card: {credit_card_payment}')         
+                        if payment_successful == True:
+                            # Assign the CreditCard object to the booking's payment attribute
+                            booking.payment = credit_card_payment
+
+                            # You may also update the booking status here
+                            new_status = 'Paid'
+                            movie_id = booking.movie.id
+                            screening_id = booking.screening.screening_id
+                            LincolnCinema.add_payment(credit_card_payment)
+                            CreditCard.save_payment_to_json(credit_card_payment)  
+                            booking.status = new_status
+                            LincolnCinema.update_booking_payment_and_status(booking_id, payment_id, new_status)
+                            
+                            reserved_seats_id = []
+                            for seat in booking.selected_seats:
+                                for screening_seat in booking.screening.seats:
+                                    if seat.seat_id == screening_seat.seat_id:
+                                        screening_seat.is_reserved = True
+                                        reserved_seats_id.append(seat.seat_id)
+                                        print('seat reserved successfully!')
+                            is_reserved = True       
+                            Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
+
+                            # Redirect to a success or confirmation page
+                            return redirect(url_for('views.staff_confirm_booking', booking_id=booking_id, username=username))
+                        else:
+                            flash('Payment processing failed. Please verify your payment information and try again. If the issue persists, please contact our customer support for assistance.', 'error')
+                    else:
+                        flash('Card has expired. Please use a valid card.', 'error')
+                else:
+                    # Handle invalid date format
+                    flash('Please enter a valid expiry date in MM/YYYY format.', 'error')
+
+            except ValueError:
+                # Handle invalid date format or other errors
+                flash('Invalid date format. Please enter a valid expiry date.', 'error')
+        else:
+            flash('Seats have become unavailable. Please start a new booking and choose your seats again.', 'error')
+            return render_template('staff_home.html')
+    return render_template('staff_payment.html', booking=booking, username = username)
+
+
+@views.route('staff_cancel_booking/<booking_id>/<username>')
+def staff_cancel_booking(booking_id, username):
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(booking_id)
+    customer.cancel_booking(booking_id)
+    bookings = customer.bookings()
+    new_status = 'Canceled'
+    LincolnCinema.update_status_to_canceled(booking_id, new_status)
+    
+    # Create a confirmation notification
+    confirmation_message = "Your booking has been canceled!"
+    notification = Notification(customer, "Cancel Confirmation", confirmation_message, datetime.now(), booking)
+    customer.add_notification(notification)
+    # Save the confirmation notification to JSON
+    Notification.save_notification_to_json(notification)
+
+    # Use Flask's flash function to send the confirmation message
+    flash(f"{customer.name}'s booking has been canceled! A confirmation notice has been sent to {customer.name}!", 'success')  # You can use 'success' or any other category
+    
+    return redirect(url_for('views.staff_view_bookings'))
+
+
+
+@views.route('/staff_confirm_booking/<booking_id>/<username>')
+def staff_confirm_booking(booking_id, username):
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(booking_id)
+
+    # Create a confirmation notification
+    confirmation_message = "Your booking has been confirmed! Thank you for choosing Lincoln Cinema."
+    notification = Notification(customer, "Booking Confirmation", confirmation_message, datetime.now(), booking)
+    customer.add_notification(notification)
+    # Save the confirmation notification to JSON
+    Notification.save_notification_to_json(notification)
+
+    # Use Flask's flash function to send the confirmation message
+    flash("Your booking has been confirmed! A confirmation notice has been sent to you!", 'success')  # You can use 'success' or any other category
+    
+    return render_template("staff_confirm_booking.html", booking=booking)
+

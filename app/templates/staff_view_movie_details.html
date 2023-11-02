@@ -98,7 +98,7 @@
                                 <div class="start-time-container">
                                     <div class="start-time">{{ screening.start_time }}</div>
                                     <div class="book-overlay">
-                                        <a href="#" class="book-overlay">
+                                        <a href="{{ url_for('views.staff_select_seats', movie_id = movie.id, screening_date=screening.screening_date, start_time = screening.start_time) }}" class="book-overlay">
                                             BOOK
                                         </a>
                                     </div>

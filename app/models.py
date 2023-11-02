@@ -11,6 +11,11 @@ BOOKINGS_FILENAME = "app/database/bookings.json"
 MOVIES_FILENAME = "app/database/movies.json"
 SCREENINGS_FILENAME = "app/database/screenings.json"
 PAYMENTS_FILENAME = "app/database/payments.json"
+COUPON_FILENAME = "app/database/coupons.json"
+HALL_FILENAME = "app/database/cinema_hall.txt"
+ADMIN_FILENAME = "app/database/admins.txt"
+CUSTOMER_FILENAME = "app/database/customers.txt"
+FRONT_DESK_STAFF_FILENAME = "app/database/front_desk_staffs.txt"
 
 
 
@@ -161,6 +166,27 @@ class Admin(User):
         return self._password
     
 
+    # Method to read hall data from a file and create Cinema Hall objects
+    @classmethod
+    def add_admins_from_file(cls):
+        admins = []
+        try:
+            with open(ADMIN_FILENAME, 'r') as file:             
+                lines = file.readlines()
+                for line in lines:
+                    data = line.strip().split(',')
+                    name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
+                    admin_object = Admin(name, address, email, phone, username, password)
+                    admins.append(admin_object)
+                return admins
+        except FileNotFoundError:
+            print(f"Error: File '{ADMIN_FILENAME}' not found.")
+        except PermissionError:
+            print(f"Error: Permission denied for file '{ADMIN_FILENAME}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred while reading '{ADMIN_FILENAME}': {str(e)}")
+
+    
     @classmethod
     def read_bookings_from_file(cls):
         try:
@@ -279,6 +305,26 @@ class FrontDeskStaff(User):
         with open(BOOKINGS_FILENAME, 'w') as file:
             json.dump(bookings_info, file, indent=4)
 
+
+    @classmethod
+    def add_front_desk_staffs_from_file(cls):
+        front_desk_staffs = []
+        try:
+            with open(FRONT_DESK_STAFF_FILENAME, 'r') as file:             
+                lines = file.readlines()
+                for line in lines:
+                    data = line.strip().split(',')
+                    name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
+                    front_desk_staff_object = FrontDeskStaff(name, address, email, phone, username, password)
+                    front_desk_staffs.append(front_desk_staff_object)
+                return front_desk_staffs
+        except FileNotFoundError:
+            print(f"Error: File '{FRONT_DESK_STAFF_FILENAME}' not found.")
+        except PermissionError:
+            print(f"Error: Permission denied for file '{FRONT_DESK_STAFF_FILENAME}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred while reading '{FRONT_DESK_STAFF_FILENAME}': {str(e)}")
+
     
     def search_movie_title(self, title: str, movies):
         # Implement search by movie title for guests
@@ -368,6 +414,7 @@ class Customer(User):
     
     def bookings(self):
         return self.__bookings
+        
 
     def add_booking(self, new_booking):
         # Iterate through existing bookings
@@ -441,11 +488,32 @@ class Customer(User):
         # Implement viewing movie details for guests
         pass
 
+    @classmethod
+    def add_customers_from_file(cls):
+        customers = []
+        try:
+            with open(CUSTOMER_FILENAME, 'r') as file:             
+                lines = file.readlines()
+                for line in lines:
+                    data = line.strip().split(',')
+                    name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
+                    customer_object = Customer(name, address, email, phone, username, password)
+                    customers.append(customer_object)
+                return customers
+        except FileNotFoundError:
+            print(f"Error: File '{CUSTOMER_FILENAME}' not found.")
+        except PermissionError:
+            print(f"Error: Permission denied for file '{CUSTOMER_FILENAME}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred while reading '{CUSTOMER_FILENAME}': {str(e)}")
+
+
     def to_dict(self):
         customer_dict = {
             "username": self.username,
         }
         return customer_dict
+    
     
     def __repr__(self):
         return f'<Customer: {self.name}>'
@@ -653,6 +721,18 @@ class CinemaHallSeat:
             "seat_price": self.__seat_price,
         }
 
+
+    @classmethod
+    # Initialize seats for the screening
+    def initialise_seats(self, hall, price):  
+        seats = []    
+        for row_number in range(1, hall.capacity // 10 + 1):  # Assuming 10 seats per row
+            for seat_number in range(1, 11):  # 10 seats per row
+                seat = CinemaHallSeat(seat_number, row_number, False, price)  # Initialize seats
+                seats.append(seat)
+        return seats
+
+
     def __str__(self):
         return f"Seat {self.seat_id} - {'Reserved' if self.is_reserved else 'Available'} - Price {self.seat_price}"
 
@@ -679,6 +759,27 @@ class CinemaHall:
     def seats(self):
         return self.__seats
     
+
+    # Method to read hall data from a file and create Cinema Hall objects
+    @classmethod
+    def add_hall_from_file(cls):
+        halls = []
+        try:
+            with open(HALL_FILENAME, 'r') as file:             
+                lines = file.readlines()
+                for line in lines:
+                    data = line.strip().split(',')
+                    hall_name, capacity = data[0], int(data[1])
+                    cinema_hall_object = CinemaHall(hall_name, capacity)
+                    halls.append(cinema_hall_object)
+        except FileNotFoundError:
+            print(f"Error: File '{HALL_FILENAME}' not found.")
+        except PermissionError:
+            print(f"Error: Permission denied for file '{HALL_FILENAME}'.")
+        except Exception as e:
+            print(f"An unexpected error occurred while reading '{HALL_FILENAME}': {str(e)}")
+
+
     def __str__(self):
         return f"Cinema Hall {self.__hall_name}, Total Seats: {self.__capacity}"
 
@@ -889,6 +990,33 @@ class Coupon:
             return True
         else:
             return False
+        
+
+    @classmethod
+    def read_coupons_from_json(self):    
+        coupons = []    
+        try:
+            with open(COUPON_FILENAME, 'r') as file:
+                data = json.load(file)
+                for item in data:
+                    coupon_code = item.get('coupon_code', '')
+                    discount = item.get('discount_percentage', 0.0)
+                    expiry_date_str = item.get('expiration_date', '')
+                    # Parse the date string into a datetime object
+                    expiry_date = datetime.strptime(expiry_date_str, '%Y-%m-%d')
+                    
+                    # Create a Coupon object and add it to the list
+                    coupon = Coupon(coupon_code, discount, expiry_date)
+                    coupons.append(coupon)
+                return coupons
+        
+        except FileNotFoundError:
+            print(f"File '{COUPON_FILENAME}' not found.")
+            return []
+        except json.JSONDecodeError:
+            print(f"Error decoding JSON from file '{COUPON_FILENAME}'.")
+            return []
+
 
     def __str__(self) -> str:
         """Get a string representation of the Coupon object.
@@ -923,7 +1051,7 @@ class Payment(ABC):
         except FileNotFoundError:
             print(f"File not found: {PAYMENTS_FILENAME}")
             return []
-        
+
 
 class CreditCard(Payment):
     def __init__(self, payment_id:int, amount: float, created_on: datetime, coupon: Optional[Coupon],
@@ -1142,7 +1270,21 @@ class Booking:
 
         cls.save_bookings_to_file(bookings_info)
 
+    @classmethod
+    def save_new_bookings_to_json(self, booking):
+        existing_data = []
 
+        if os.path.exists(BOOKINGS_FILENAME) and os.path.getsize(BOOKINGS_FILENAME) > 0:
+            # File exists and is not empty, so let's read the existing data
+            with open(BOOKINGS_FILENAME, 'r') as json_file:
+                existing_data = json.load(json_file)
+
+        # Append the new screening data to the existing data
+        existing_data.append(booking.to_dict())
+
+        # Write the updated data back to the file
+        with open(BOOKINGS_FILENAME, 'w') as json_file:
+            json.dump(existing_data, json_file, default=str, indent=4)
 
 
     @classmethod
@@ -1251,239 +1393,7 @@ class Notification:
             return []
 
     
-class CinemaDataModel():
-    def __init__(self):
-        self.__customers = []
-        self.__admins = []
-        self.__front_desk_staffs = []
-        self.__movies = []
-        self.__halls = []
-        self.__coupons = []
-        self.__payments = []
-        self.__screenings = []
-        self.__bookings = []
-        self.__notifications = []
 
-    @property
-    def admins(self):
-        return self.__admins
-    
-    @property
-    def customers(self):
-        return self.__customers
-    
-    @property
-    def front_desk_staffs(self):
-        return self.__front_desk_staffs
-    
-    @property
-    def movies(self):
-        return self.__movies
-    
-    @property
-    def halls(self):
-        return self.__halls
-    
-    @property
-    def screenings(self):
-        return self.__screenings
-    
-    @property
-    def bookings(self):
-        return self.__bookings
-    
-    @property
-    def payments(self):
-        return self.__payments
-    
-    @property
-    def notifications(self):
-        return self.__notifications
-    
-    def add_payment(self, a_payment):
-        self.__payments.append(a_payment)
-
-    def find_movie(self, id):
-        for movie in self.movies:
-            if movie.id == id:
-                return movie
-        return None
-    
-
-    def find_hall(self, hall_name):
-        for hall in self.halls:
-            if hall.hall_name == hall_name:
-                return hall
-        return None
-
-
-    def find_customer(self, username):
-        for customer in self.__customers:
-            if customer.username == username:
-                return customer
-        return None
-    
-    def find_payment(self, new_payment_id):
-        for payment in self.payments:
-            if payment.payment_id == new_payment_id:
-                return payment
-        return None
-    
-    def find_coupon(self, coupon_code):
-        for coupon in self.all_coupons:
-            if coupon.coupon_code == coupon_code:
-                return coupon 
-        return None
-
-    @property
-    def coupons(self):
-        return self.__coupons
-
-    def handle_json_file_errors(self, file_name):
-        try:
-            if os.path.exists(file_name):
-                with open(file_name, 'r') as json_file:
-                    return json.load(json_file)
-            else:
-                print(f"Error: File '{file_name}' not found.")
-                return None
-        except PermissionError:
-            print(f"Error: Permission denied for file '{file_name}'.")
-        except json.JSONDecodeError as e:
-            print(f"JSON decoding error: {e}")
-            return None
-        except Exception as e:
-            print(f"An unexpected error occurred while reading '{file_name}': {str(e)}")
-            return None
-
-
-
-    def handle_txt_file_errors(self, file_name):
-        try:
-            with open(file_name, 'r') as file:
-                return file.readlines()
-        except FileNotFoundError:
-            print(f"Error: File '{file_name}' not found.")
-        except PermissionError:
-            print(f"Error: Permission denied for file '{file_name}'.")
-        except Exception as e:
-            print(f"An unexpected error occurred while reading '{file_name}': {str(e)}")
-        return []
-        
-    def add_admins_from_file(self, file_name):
-        lines = self.handle_txt_file_errors(file_name)
-        for line in lines:
-            data = line.strip().split(',')
-            name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
-            admin_object = Admin(name, address, email, phone, username, password)
-            self.__admins.append(admin_object)
-
-
-    def add_front_desk_staffs_from_file(self, file_name):
-        lines = self.handle_txt_file_errors(file_name)
-        for line in lines:
-            data = line.strip().split(',')
-            name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
-            front_desk_staff_object = FrontDeskStaff(name, address, email, phone, username, password)
-            self.__front_desk_staffs.append(front_desk_staff_object)
-
-
-    # Method to read customer data from a file and create Customer objects
-    def add_customers_from_file(self, file_name):
-        lines = self.handle_txt_file_errors(file_name)
-        for line in lines:
-            data = line.strip().split(',')
-            name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
-            customer_object = Customer(name, address, email, phone, username, password)
-            self.__customers.append(customer_object)
-
-    # Method to read hall data from a file and create Cinema Hall objects
-    def add_hall_from_file(self, file_name):
-        lines = self.handle_txt_file_errors(file_name)
-        for line in lines:
-            data = line.strip().split(',')
-            hall_name, capacity = data[0], int(data[1])
-            cinema_hall_object = CinemaHall(hall_name, capacity)
-            self.__halls.append(cinema_hall_object)
 
     
-    # Initialize seats for the screening
-    def initialise_seats(self, hall, price):  
-        seats = []    
-        for row_number in range(1, hall.capacity // 10 + 1):  # Assuming 10 seats per row
-            for seat_number in range(1, 11):  # 10 seats per row
-                seat = CinemaHallSeat(seat_number, row_number, False, price)  # Initialize seats
-                seats.append(seat)
-        return seats
-
-
-
-
-    def read_coupons_from_json(self, json_file):        
-        try:
-            with open(json_file, 'r') as file:
-                data = json.load(file)
-                for item in data:
-                    coupon_code = item.get('coupon_code', '')
-                    discount = item.get('discount_percentage', 0.0)
-                    expiry_date_str = item.get('expiration_date', '')
-                    # Parse the date string into a datetime object
-                    expiry_date = datetime.strptime(expiry_date_str, '%Y-%m-%d')
-                    
-                    # Create a Coupon object and add it to the list
-                    coupon = Coupon(coupon_code, discount, expiry_date)
-                    self.__coupons.append(coupon)
-        
-        except FileNotFoundError:
-            print(f"File '{json_file}' not found.")
-        except json.JSONDecodeError:
-            print(f"Error decoding JSON from file '{json_file}'.")
-
-
-
- 
-    
-    def save_new_bookings_to_json(self, booking):
-        filename = f"app/database/bookings.json"
-        existing_data = []
-
-        if os.path.exists(filename) and os.path.getsize(filename) > 0:
-            # File exists and is not empty, so let's read the existing data
-            with open(filename, 'r') as json_file:
-                existing_data = json.load(json_file)
-
-        # Append the new screening data to the existing data
-        existing_data.append(booking.to_dict())
-
-        # Write the updated data back to the file
-        with open(filename, 'w') as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
-
-
-    def save_new_screening_to_json(self, new_screening):
-        # Define the filename based on the movie ID
-        filename = 'app/database/screenings.json'
-
-        try:
-            if os.path.exists(filename):
-                # File exists, so let's read the existing data
-                with open(filename, 'r') as json_file:
-                    existing_data = json.load(json_file)
-            else:
-                # File doesn't exist, create an empty list
-                existing_data = []
-
-            # Append the new screening data to the existing data
-            existing_data.append(new_screening.to_dict())
-
-            # Write the updated data back to the file
-            with open(filename, 'w') as json_file:
-                json.dump(existing_data, json_file, default=str, indent=4)
-
-            return True  # Successfully saved
-
-        except Exception as e:
-            print(f"An error occurred while saving the screening data: {str(e)}")
-            return False  # Failed to save
-
+   

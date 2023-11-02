@@ -2,2745 +2,732 @@
     {
         "screening_id": 100,
         "movie_id": 100,
-        "screening_date": "2023-11-05",
-        "start_time": "13:50",
-        "end_time": "16:50",
-        "hall_name": "Hall 1",
-        "seats": [
-            {
-                "seat_number": 1,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 15.0
-            }
-        ],
-        "is_active": false
-    },
-    {
-        "screening_id": 101,
-        "movie_id": 100,
-        "screening_date": "2023-11-06",
-        "start_time": "12:55",
-        "end_time": "15:55",
-        "hall_name": "Hall 1",
-        "seats": [
-            {
-                "seat_number": 1,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 10,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 11,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 12,
-                "is_reserved": false,
-                "seat_price": 16.0
-            }
-        ],
-        "is_active": false
-    },
-    {
-        "screening_id": 102,
-        "movie_id": 100,
-        "screening_date": "2023-12-09",
+        "screening_date": "2023-11-30",
         "start_time": "13:05",
         "end_time": "16:05",
-        "hall_name": "Hall 2",
-        "seats": [
-            {
-                "seat_number": 1,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 1,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 2,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 3,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 4,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 5,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 6,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 7,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 8,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 1,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 2,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 3,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 4,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 5,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 6,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 7,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 8,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 9,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            },
-            {
-                "seat_number": 10,
-                "row_number": 9,
-                "is_reserved": false,
-                "seat_price": 15.0
-            }
-        ],
-        "is_active": false
-    },
-    {
-        "screening_id": 103,
-        "movie_id": 100,
-        "screening_date": "2023-12-01",
-        "start_time": "13:30",
-        "end_time": "16:30",
         "hall_name": "Hall 1",
         "seats": [
             {
                 "seat_number": 1,
                 "row_number": 1,
-                "is_reserved": true,
-                "seat_price": 15.0
+                "is_reserved": false,
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 1,
-                "is_reserved": true,
-                "seat_price": 15.0
+                "is_reserved": false,
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 1,
-                "is_reserved": true,
-                "seat_price": 15.0
+                "is_reserved": false,
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 1,
-                "is_reserved": true,
-                "seat_price": 15.0
+                "is_reserved": false,
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 1,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 1,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 1,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 1,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 1,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 1,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 2,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 3,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 4,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 5,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 6,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 7,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 8,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 9,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 10,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 11,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 1,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 2,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 3,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 4,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 5,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 6,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 7,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 8,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 9,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             },
             {
                 "seat_number": 10,
                 "row_number": 12,
                 "is_reserved": false,
-                "seat_price": 15.0
+                "seat_price": 12.5
             }
         ],
-        "is_active": true
+        "is_active": false
     }
 ]
