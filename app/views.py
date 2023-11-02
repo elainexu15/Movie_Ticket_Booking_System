@@ -39,20 +39,18 @@ def admin_add_movie():
         duration = request.form.get('duration')
         language = request.form.get('language').title()
         description = request.form.get('description').title()
-
-        # Create a Movie object
-        movie = Movie(title, language, genre, country, release_date, duration, description)
-        LincolnCinema.add_movie(movie)
-        Movie.save_new_movie_to_file(movie)
-
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No image selected for uploading')
+            flash('No image selected for uploading', 'error')
             return redirect(request.url)
         if file and allowed_file(file.filename):
+            # Create a Movie object
+            movie = Movie(title, language, genre, country, release_date, duration, description)
+            LincolnCinema.add_movie(movie)
+            Movie.save_new_movie_to_file(movie)
             filename = secure_filename(str(movie.id) + os.path.splitext(file.filename)[1])            
             destination_folder = app.config['UPLOAD_FOLDER']
             os.makedirs(destination_folder, exist_ok=True)  # Create the folder if it doesn't exist
@@ -60,7 +58,7 @@ def admin_add_movie():
             flash('Image successfully uploaded and displayed below')
             return render_template('movie_details.html', movie=movie, filename=filename)
         else:
-            flash('Allowed image types are - png, jpg, jpeg, gif')
+            flash('Allowed image types are - png, jpg, jpeg, gif. Please try again.', 'error')
             return redirect(request.url)
     return render_template('admin_add_movie.html')
 
