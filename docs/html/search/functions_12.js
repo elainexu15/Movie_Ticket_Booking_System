@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['validate_5fcoupon_0',['validate_coupon',['../classcontroller_1_1_cinema_controller.html#abe4723d5a3f5c3a0d75eb3dba998a1fd',1,'controller::CinemaController']]],
+  ['view_5fmovie_5fdetails_1',['view_movie_details',['../classmodels_1_1_general.html#a4d171272734075cdfc93fe7b785ba5c4',1,'models.General.view_movie_details()'],['../classmodels_1_1_guest.html#a4d171272734075cdfc93fe7b785ba5c4',1,'models.Guest.view_movie_details()'],['../classmodels_1_1_person.html#a4d171272734075cdfc93fe7b785ba5c4',1,'models.Person.view_movie_details()'],['../classmodels_1_1_user.html#a4d171272734075cdfc93fe7b785ba5c4',1,'models.User.view_movie_details()'],['../classmodels_1_1_admin.html#a4d171272734075cdfc93fe7b785ba5c4',1,'models.Admin.view_movie_details()'],['../classmodels_1_1_front_desk_staff.html#a4d171272734075cdfc93fe7b785ba5c4',1,'models.FrontDeskStaff.view_movie_details()'],['../classmodels_1_1_customer.html#a4d171272734075cdfc93fe7b785ba5c4',1,'models.Customer.view_movie_details()']]]
+];
