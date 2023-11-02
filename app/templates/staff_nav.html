@@ -3,12 +3,12 @@
 
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav">
-            <li class="nav-item"><a href="{{url_for('views.admin_home')}}" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="{{url_for('views.admin_add_movie')}}" class="nav-link">Add Movies</a></li>
+            <li class="nav-item"><a href="{{url_for('views.staff_home')}}" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="{{url_for('views.staff_view_bookings')}}" class="nav-link">Bookings</a></li>
         </ul>
     </div>
     <div class="d-lg-flex col-lg-3 justify-content-lg-end">
-        <h5 class="mt-2 me-3 text-white">Hi {{ g.user.name }} (Admin)</h5> 
+        <h5 class="mt-2 me-3 text-white">Hi {{ g.user.name }} (Front Dest Staff)</h5> 
         <a class="btn btn-primary me-2" href=" {{url_for('views.logout')}}">Log Out</a>
     </div>
 </nav>

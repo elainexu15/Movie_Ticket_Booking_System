@@ -612,15 +612,7 @@ def screening_booking_details(movie_id, screening_id):
 @views.route('/admin_refund_booking/<int:booking_id>/<username>')
 def admin_refund_booking(booking_id, username):
     customer = LincolnCinema.find_customer(username)
-    if customer is None:
-        flash("Customer not found", 'error')
-        return redirect(url_for('views.some_error_route'))  # Handle error redirection
-
     booking = customer.find_booking(booking_id)
-    if booking is None:
-        flash("Booking not found", 'error')
-        return redirect(url_for('views.some_error_route'))  # Handle error redirection
-
     movie_id = booking.movie.id
     screening_id = booking.screening.screening_id
     payment_id = booking.payment.payment_id
@@ -628,7 +620,6 @@ def admin_refund_booking(booking_id, username):
 
     if creditcard_payment is None:
         flash("Payment not found", 'error')
-        return redirect(url_for('views.some_error_route'))  # Handle error redirection
 
     is_success = creditcard_payment.process_refund()
     
@@ -645,7 +636,7 @@ def admin_refund_booking(booking_id, username):
 
         new_status = 'Refunded'
         booking.status = new_status
-        Booking.update_status_to_refund(booking_id, new_status)
+        Admin.cancel_booking(booking_id, new_status)
 
         # Create a confirmation notification
         confirmation_message = "Due to the screening cancellation, your booking has been refunded. We apologize for any inconvenience caused."
@@ -700,3 +691,90 @@ def staff_home():
     genre_list = GENRE_LIST
     return render_template('staff_home.html', all_movies=all_movies, language_list=language_list, genre_list=genre_list)
 
+@views.route('/staff_view_bookings')
+def staff_view_bookings():
+    all_paid_bookings = []
+    all_customers = LincolnCinema.all_customers
+    for customer in all_customers:
+        for booking in customer.bookings():
+            print(booking)
+            if booking.status == 'Paid':
+                all_paid_bookings.append(booking)
+        
+    return render_template('staff_view_bookings.html', all_paid_bookings=all_paid_bookings)
+
+
+@views.route('/staff_refund_booking/<int:booking_id>/<username>')
+def staff_refund_booking(booking_id, username):
+    customer = LincolnCinema.find_customer(username)
+    if customer is None:
+        flash("Customer not found", 'error')
+
+    booking = customer.find_booking(booking_id)
+    if booking is None:
+        flash("Booking not found", 'error')
+
+    movie_id = booking.movie.id
+    screening_id = booking.screening.screening_id
+    creditcard_payment = booking.payment
+
+    if creditcard_payment is None:
+        flash("Payment not found", 'error')
+        return redirect(url_for('views.some_error_route'))  # Handle error redirection
+
+    is_success = creditcard_payment.process_refund()
+    
+    if is_success:
+        reserved_seats_id = []
+        for seat in booking.selected_seats:
+            seat_id = seat.seat_id
+            reserved_seats_id.append(seat_id)
+            for screening_seat in booking.screening.seats:
+                if screening_seat.seat_id == seat_id:
+                    screening_seat.is_reserved = False
+        is_reserved = False       
+        Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
+
+        new_status = 'Refunded'
+        booking.status = new_status
+        FrontDeskStaff.cancel_booking(booking_id, new_status)
+
+        # Create a confirmation notification
+        confirmation_message = "Your booking has been refunded successffully."
+        notification = Notification(customer, "Refund Confirmation", confirmation_message, datetime.now(), booking)
+        customer.add_notification(notification)
+
+        # Save the confirmation notification to JSON
+        Notification.save_notification_to_json(notification)
+
+        # Use Flask's flash function to send the confirmation message
+        flash("Booking has been refunded! A confirmation notice has been sent to the customer.", 'success')
+
+    return redirect(url_for('views.staff_view_bookings'))
+
+
+@views.route('/staff_search_customer', methods=['POST'])
+def staff_search_customer():
+    username = request.form.get('username')
+    try:
+        # Implement the search logic here to filter customers by username
+        customer = LincolnCinema.find_customer(username)
+        if customer is None:
+            flash('Customer not found', 'error')
+            return redirect(url_for('views.staff_view_bookings'))
+
+        all_paid_bookings = [booking for booking in customer.bookings() if booking.status == 'Paid']
+        return render_template('staff_view_bookings.html', all_paid_bookings=all_paid_bookings)
+    except Exception as e:
+        flash('An error occurred while searching for the customer.', 'error')
+        app.logger.error(str(e))
+        return redirect(url_for('views.staff_view_bookings'))
+
+
+
+@views.route('/staff_view_movie_details/<movie_id>')
+def staff_view_movie_details(movie_id):
+    movie_id = int(movie_id)
+    movie = LincolnCinema.find_movie(movie_id)
+    screening_date_list = movie.get_screening_date_list()
+    return render_template('staff_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)

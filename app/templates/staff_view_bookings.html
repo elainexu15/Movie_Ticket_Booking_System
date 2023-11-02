@@ -1,0 +1,78 @@
+{% extends 'staff_home.html' %}
+
+{% block content %}
+<div class="container">
+    <form action="{{ url_for('views.staff_search_customer') }}" method="post" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="username" class="form-control" placeholder="Search by username">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+    <h2 class="mb-4 text-center">ALL PAID BOOKINGS</h2>
+    {% if all_paid_bookings %}
+
+    <table class="table table-bordered">
+        <thead class="table-info">
+            <tr>
+                <th>Booking ID</th>
+                <th>Username</th>
+                <th>Screening Date</th>
+                <th>Start Time(24h)</th>
+                <th>End Time(24h)</th>
+                <th>Hall</th>
+                <th>Number of Seats</th>
+                <th>Selected Seats</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% for booking in all_paid_bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.customer.username }}</td>
+                    <td>{{ booking.screening.screening_date }}</td>
+                    <td>{{ booking.screening.start_time }}</td>
+                    <td>{{ booking.screening.end_time }}</td>
+                    <td>{{ booking.screening.hall.hall_name }}</td>
+                    <td>{{ booking.num_of_seats }}</td>
+                    <td>
+                        <ul>
+                            {% for seat in booking.selected_seats %}
+                                <li>
+                                    Row {{ seat.row_number }}, Seat {{ seat.seat_number }}
+                                    <span class="float-right">Price: ${{ seat.seat_price }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        {% if booking.payment %}
+                            ${{ booking.payment.amount }}
+                            {% if booking.coupon %}
+                                <br>(Coupon applied)
+                            {% endif %}
+                        {% else %}
+                            {{ booking.total_amount }}
+                        {% endif %}
+
+                    </td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                        {% if booking.status == 'Refunded' %}
+                            <p>Refunded</p>
+                        {% elif booking.status == 'Paid' %}
+                            <a href="{{ url_for('views.staff_refund_booking', booking_id=booking.booking_id, username=booking.customer.username, payment_id=booking.payment.payment_id) }}" class="btn btn-sm btn-primary">Refund</a>
+                        {% endif %}
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            {% else %}
+            <h4 class="mb-4 text-center">No Bookings Found</h4>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

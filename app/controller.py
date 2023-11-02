@@ -229,16 +229,23 @@ class CinemaController:
 
                 screening_id = int(booking_info["screening_id"])
                 screening = movie.find_screening(screening_id)
+                print(f'ddddddddddebug{screening}')
                 if screening is None:
                     print(f"screening with ID {screening_id} not found.")
 
                 num_of_seats = booking_info["num_of_seats"]
                 selected_seats_id_list = booking_info["selected_seats"]
+                print(f'ddddddddddebug{selected_seats_id_list}')
                 selected_seats = []
                 for seat_id in selected_seats_id_list:
                     seat = screening.find_seat_by_id(int(seat_id))
-                    selected_seats.append(seat)
-                    
+                    if seat:
+                        selected_seats.append(seat)
+                    else:
+                        print(f"Seat with ID {seat_id} not found for booking {booking_info['booking_id']}.")
+
+
+
                 created_on = date.fromisoformat(booking_info["created_on"])
                 total_amount = float(booking_info["total_amount"])
                 status = booking_info["status"]

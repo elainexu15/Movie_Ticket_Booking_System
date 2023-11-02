@@ -160,6 +160,31 @@ class Admin(User):
     def password(self):
         return self._password
     
+
+    @classmethod
+    def read_bookings_from_file(cls):
+        try:
+            with open(BOOKINGS_FILENAME, 'r') as file:
+                data = json.load(file)
+                return data
+        except FileNotFoundError:
+            print(f"File not found: {BOOKINGS_FILENAME}")
+            return []    
+
+
+    @classmethod
+    def cancel_booking(cls, booking_id, new_status):
+        bookings_info = cls.read_bookings_from_file()
+        print(f"allllllll booking info {bookings_info}")
+        for booking_info in bookings_info:
+            if booking_info["booking_id"] == int(booking_id):
+                print(booking_info["status"])
+                booking_info["status"] = new_status
+                print(booking_info["status"])
+
+        cls.save_bookings_to_file(bookings_info)
+
+    
     def search_movie_title(self, title: str, movies):
         # Implement search by movie title for guests
         matching_movies = []
@@ -225,6 +250,35 @@ class FrontDeskStaff(User):
     @property
     def password(self):
         return self._password
+
+    @classmethod
+    def read_bookings_from_file(cls):
+        try:
+            with open(BOOKINGS_FILENAME, 'r') as file:
+                data = json.load(file)
+                return data
+        except FileNotFoundError:
+            print(f"File not found: {BOOKINGS_FILENAME}")
+            return []    
+
+
+    @classmethod
+    def cancel_booking(cls, booking_id, new_status):
+        bookings_info = cls.read_bookings_from_file()
+        print(f"allllllll booking info {bookings_info}")
+        for booking_info in bookings_info:
+            if booking_info["booking_id"] == int(booking_id):
+                print(booking_info["status"])
+                booking_info["status"] = new_status
+                print(booking_info["status"])
+
+        cls.save_bookings_to_file(bookings_info)
+
+    @classmethod
+    def save_bookings_to_file(cls, bookings_info):
+        with open(BOOKINGS_FILENAME, 'w') as file:
+            json.dump(bookings_info, file, indent=4)
+
     
     def search_movie_title(self, title: str, movies):
         # Implement search by movie title for guests
@@ -703,7 +757,7 @@ class Screening:
     def find_seat_by_id(self, seat_id):
         # Iterate through the seats in the hall and find the seat with matching row_number and seat_number
         for seat in self.seats:
-            if seat.seat_id == seat_id:
+            if seat.seat_id == str(seat_id):
                 return seat  # Return the seat object if found
         return None  # Return None if the seat is not found
     
@@ -1089,17 +1143,6 @@ class Booking:
         cls.save_bookings_to_file(bookings_info)
 
 
-    @classmethod
-    def update_status_to_refund(cls, booking_id, new_status):
-        bookings_info = cls.read_bookings_from_file()
-        print(f"allllllll booking info {bookings_info}")
-        for booking_info in bookings_info:
-            if booking_info["booking_id"] == int(booking_id):
-                print(booking_info["status"])
-                booking_info["status"] = new_status
-                print(booking_info["status"])
-
-        cls.save_bookings_to_file(bookings_info)
 
 
     @classmethod
