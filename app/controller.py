@@ -63,8 +63,6 @@
 
 # Imports
 from .models import *
-import json
-import os
 
 
 class CinemaController:
@@ -81,13 +79,8 @@ class CinemaController:
         self.__coupons = []
         self.__payments = []
     
-    @property
-    def all_customers(self):
-        """! Get a list of all customer objects.
-        @return (list): A list of all customer objects.
-        """
-        return self.__customers
-    
+
+    # =========== Methods to get controller object list ==========
     @property
     def all_admins(self):
         """! Get a list of all admin objects.
@@ -95,12 +88,22 @@ class CinemaController:
         """
         return self.__admins
 
+
     @property
     def all_front_desk_staffs(self):
         """! Get a list of all front desk staff objects.
         @return (list): A list of all front desk staff objects.
         """
         return self.__front_desk_staffs
+    
+
+    @property
+    def all_customers(self):
+        """! Get a list of all customer objects.
+        @return (list): A list of all customer objects.
+        """
+        return self.__customers
+
 
     @property
     def all_movies(self):
@@ -109,6 +112,7 @@ class CinemaController:
         """
         return self.__movies
     
+
     @property
     def all_halls(self):
         """! Get a list of all hall objects.
@@ -116,6 +120,7 @@ class CinemaController:
         """
         return self.__halls
     
+
     @property
     def all_coupons(self):
         """! Get a list of all coupon objects.
@@ -123,6 +128,7 @@ class CinemaController:
         """
         return self.__coupons
     
+
     @property
     def all_payments(self):
         """! Get a list of all payment objects.
@@ -130,29 +136,33 @@ class CinemaController:
         """
         return self.__payments
 
-    def check_duplicate_username(self, username):
-        """! Find a customer by their username.
-        @param username (str): The username to search for.
-        @return (Customer): The customer object if found, or None.
-        """
-        for customer in self.__customers:
-            if customer.username == username:
-                return True
-        return False
-    
-    def check_duplicate_email(self, email):
-        """! Find a customer by their username.
-        @param username (str): The username to search for.
-        @return (Customer): The customer object if found, or None.
-        """
-        for customer in self.__customers:
-            if customer.email == email:
-                return True
-        return False
 
+
+    # ============ methods to find objects from controller ============
+    def find_admin(self, username: str):
+        """! Find an admin by its username.
+        @param username (str): The ID to search for.
+        @return (Customer): The admin object if found, or None.
+        """
+        for admin in self.all_admins:
+            if admin.username == username:
+                return admin
+        return None
+    
+
+    def find_staff(self, username: str):
+        """! Find a staff by its username.
+        @param username (str): The ID to search for.
+        @return (Customer): The staff object if found, or None.
+        """
+        for staff in self.all_front_desk_staffs:
+            if staff.username == username:
+                return staff
+        return None
+    
 
     def find_customer(self, username: str):
-        """! Find a movie by its username.
+        """! Find a customer by its username.
         @param username (str): The ID to search for.
         @return (Customer): The customer object if found, or None.
         """
@@ -172,6 +182,7 @@ class CinemaController:
                 return movie
         return None
     
+
     def find_hall(self, hall_name):
         """! Find a hall by its name.
         @param hall_name (str): The name of the hall to search for.
@@ -182,6 +193,7 @@ class CinemaController:
                 return hall
         return None
     
+
     def find_coupon(self, coupon_code):
         """! Find a coupon by its code.
         @param coupon_code (str): The coupon code to search for.
@@ -192,6 +204,7 @@ class CinemaController:
                 return coupon 
         return None
 
+
     def find_payment(self, new_payment_id):
         """! Find a payment by its ID.
         @param new_payment_id (int): The payment ID to search for.
@@ -201,62 +214,8 @@ class CinemaController:
             if payment.payment_id == new_payment_id:
                 return payment
         return None
-
-
-    def add_customer(self, customer):
-        """! Add a customer to the list of customers.
-        @param customer: The customer object to be added.
-        """
-        self.__customers.append(customer)
     
-    def add_admin(self, admin):
-        """! Add an admin to the list of admins.
-        @param admin: The admin object to be added.
-        """
-        self.__admins.append(admin)
-
-    def add_front_desk_staff(self, front_desk_staff):
-        """! Add a front desk staff member to the list of front desk staff.
-        @param front_desk_staff: The front desk staff object to be added.
-        """
-        self.__front_desk_staffs.append(front_desk_staff)
-
-    def add_movie(self, movie_object):
-        """! Add a movie to the list of movies.
-        @param movie_object: The movie object to be added.
-        """
-        self.__movies.append(movie_object)
-
-    def add_hall(self, hall_object):
-        """! Add a hall to the list of halls.
-        @param hall_object: The hall object to be added.
-        """
-        self.__halls.append(hall_object)
-
-    def add_payment(self, a_payment):
-        """! Add a payment to the list of payments.
-        @param a_payment: The payment object to be added.
-        """
-        self.__payments.append(a_payment)
-            
-    def add_coupon(self, coupon):
-        """! Add a coupon to the list of coupons.
-        @param coupon: The coupon object to be added.
-        """
-        self.__coupons.append(coupon)
-
-
-    def register_customer(self, name, address, email, phone, username, hashed_password) -> bool:
-        """! Register a new customer and store their information."""
-        # Check if the username already exists
-        if self.find_customer(username):
-            return False
-        new_customer = Guest.register(name, address, email, phone, username, hashed_password)
-        self.add_customer(new_customer)
-        print(f'new customer{new_customer}')
-        return True
-
-
+        
     def get_language_list(self):
         """! Get a list of unique languages from the movies.
         @return: A list of unique languages used in the movies.
@@ -267,6 +226,7 @@ class CinemaController:
                 language_list.append(movie.language)
         return language_list
     
+
     def get_genre_list(self):
         """! Get a list of unique genres from the movies.
         @return: A list of unique genres used in the movies.
@@ -276,71 +236,6 @@ class CinemaController:
             if movie.genre not in genre_list:
                 genre_list.append(movie.genre)
         return genre_list
-    
-
-    # ======== filter movies ========
-    def filter_movies(self, title, selected_language, selected_genre, date_from, date_to, guest):
-        """! Filter movies based on title, language, genre, and date range.
-        
-        @param title: The title of the movie to filter by.
-        @param selected_language: The selected language to filter by.
-        @param selected_genre: The selected genre to filter by.
-        @param date_from: The start date of the date range to filter by.
-        @param date_to: The end date of the date range to filter by.
-        @param guest: The guest user performing the filtering.
-        
-        @return: A list of filtered movies that match the criteria.
-        """
-        filtered_movies = self.all_movies
-        if title:
-            filtered_movies = guest.search_movie_title(title, filtered_movies)
-        if selected_language:
-            if selected_language == 'all':
-                filtered_movies = filtered_movies
-            else:
-                filtered_movies = guest.search_movie_lang(selected_language, filtered_movies)
-        if selected_genre:
-            if selected_genre == 'all':
-                filtered_movies = filtered_movies
-            else:
-                filtered_movies = guest.search_movie_genre(selected_genre, filtered_movies)
-        if not date_from or not date_to:
-            filtered_movies = filtered_movies
-        else:
-            filtered_movies = guest.search_movie_date(date_from, date_to, filtered_movies)
-        return filtered_movies
-    
-    
-    def customer_filter_movies(self, title, selected_language, selected_genre, date_from, date_to, customer):
-        """! Filter movies for a customer based on title, language, genre, and date range.
-
-        @param title: The title of the movie to filter by.
-        @param selected_language: The selected language to filter by.
-        @param selected_genre: The selected genre to filter by.
-        @param date_from: The start date of the date range to filter by.
-        @param date_to: The end date of the date range to filter by.
-        @param customer: The customer performing the filtering.
-
-        @return: A list of filtered movies that match the criteria.
-        """
-        filtered_movies = self.all_movies
-        if title:
-            filtered_movies = customer.search_movie_title(title, filtered_movies)
-        if selected_language:
-            if selected_language == 'all':
-                filtered_movies = filtered_movies
-            else:
-                filtered_movies = customer.search_movie_lang(selected_language, filtered_movies)
-        if selected_genre:
-            if selected_genre == 'all':
-                filtered_movies = filtered_movies
-            else:
-                filtered_movies = customer.search_movie_genre(selected_genre, filtered_movies)
-        if not date_from or not date_to:
-            filtered_movies = filtered_movies
-        else:
-            filtered_movies = customer.search_movie_date(date_from, date_to, filtered_movies)
-        return filtered_movies
 
 
     def find_screening_by_date_and_time(self, movie, screening_date, start_time):
@@ -365,6 +260,91 @@ class CinemaController:
         return None
     
 
+
+    # ========== methods to append new object ===========
+    def add_customer(self, customer):
+        """! Add a customer to the list of customers.
+        @param customer: The customer object to be added.
+        """
+        self.__customers.append(customer)
+    
+
+    def add_admin(self, admin):
+        """! Add an admin to the list of admins.
+        @param admin: The admin object to be added.
+        """
+        self.__admins.append(admin)
+
+
+    def add_front_desk_staff(self, front_desk_staff):
+        """! Add a front desk staff member to the list of front desk staff.
+        @param front_desk_staff: The front desk staff object to be added.
+        """
+        self.__front_desk_staffs.append(front_desk_staff)
+
+
+    def add_movie(self, movie_object):
+        """! Add a movie to the list of movies.
+        @param movie_object: The movie object to be added.
+        """
+        self.__movies.append(movie_object)
+
+
+    def add_hall(self, hall_object):
+        """! Add a hall to the list of halls.
+        @param hall_object: The hall object to be added.
+        """
+        self.__halls.append(hall_object)
+
+
+    def add_payment(self, a_payment):
+        """! Add a payment to the list of payments.
+        @param a_payment: The payment object to be added.
+        """
+        self.__payments.append(a_payment)
+            
+
+    def add_coupon(self, coupon):
+        """! Add a coupon to the list of coupons.
+        @param coupon: The coupon object to be added.
+        """
+        self.__coupons.append(coupon)
+
+
+    # ============ Other methods ================
+    def register_customer(self, name, address, email, phone, username, hashed_password) -> bool:
+        """! Register a new customer and store their information."""
+        # Check if the username already exists
+        if self.find_customer(username):
+            return False
+        new_customer = Guest.register(name, address, email, phone, username, hashed_password)
+        self.add_customer(new_customer)
+        print(f'new customer{new_customer}')
+        return True
+
+
+    def check_duplicate_username(self, username):
+        """! Find a customer by their username.
+        @param username (str): The username to search for.
+        @return (Customer): The customer object if found, or None.
+        """
+        for customer in self.__customers:
+            if customer.username == username:
+                return True
+        return False
+    
+
+    def check_duplicate_email(self, email):
+        """! Find a customer by their username.
+        @param username (str): The username to search for.
+        @return (Customer): The customer object if found, or None.
+        """
+        for customer in self.__customers:
+            if customer.email == email:
+                return True
+        return False
+
+    
     def validate_coupon(self, coupon_code):
         """! Validate a coupon code and check if it's still valid.
         @param coupon_code: The coupon code to validate.
@@ -395,78 +375,66 @@ class CinemaController:
         return True
     
 
+
+    # ========== filter movies ==========       
+    def filter_movies(self, title, selected_language, selected_genre, date_from, date_to, user):
+        """! Filter movies for a customer based on title, language, genre, and date range.
+
+        @param title: The title of the movie to filter by.
+        @param selected_language: The selected language to filter by.
+        @param selected_genre: The selected genre to filter by.
+        @param date_from: The start date of the date range to filter by.
+        @param date_to: The end date of the date range to filter by.
+        @param customer: The customer performing the filtering.
+
+        @return: A list of filtered movies that match the criteria.
+        """
+        filtered_movies = self.all_movies
+        if title:
+            filtered_movies = user.search_movie_title(title, filtered_movies)
+        if selected_language:
+            if selected_language == 'all':
+                filtered_movies = filtered_movies
+            else:
+                filtered_movies = user.search_movie_lang(selected_language, filtered_movies)
+        if selected_genre:
+            if selected_genre == 'all':
+                filtered_movies = filtered_movies
+            else:
+                filtered_movies = user.search_movie_genre(selected_genre, filtered_movies)
+        if not date_from or not date_to:
+            filtered_movies = filtered_movies
+        else:
+            filtered_movies = user.search_movie_date(date_from, date_to, filtered_movies)
+        return filtered_movies
+
+
+    # ============= update database info ==============
     def save_new_bookings_to_json(self, booking):
         """! Save a new booking to a JSON file.
         @param booking: The booking object to be saved.
         """
         self.save_new_bookings_to_json(booking)
 
-    
-    def add_booking_to_customer(self):
-        """! Add bookings to the corresponding customers.
-        Iterate through the list of customers and add bookings to their records.
+
+    def cancel_movie(self, movie_id:int):
+        """! Cancel a movie based on its ID.
+        @param movie_id (int): The ID of the movie to cancel.
         """
-        all_customers = self.all_customers
-        bookings = Booking.read_bookings_from_json_file()
-        for booking in bookings:
-            for customer in all_customers:
-                if booking.customer == customer:
-                    customer.add_booking(booking)
+        # Find the movie by its ID in the movies list
+        movie_to_cancel = None
+        for movie in self.all_movies:
+            if movie.id == movie_id:
+                movie_to_cancel = movie
+                break
 
+        if movie_to_cancel:
+            # Remove the movie from the movies list
+            movie_to_cancel.deactivate()
 
-    def create_booking_objects_and_add_to_customer(self, username):
-        """! Create booking objects and add them to the corresponding customer records.
-        @param username: The username of the customer to associate the bookings with.
-        """
-        bookings_info = Booking.read_from_file(BOOKINGS_FILENAME)
-        for booking_info in bookings_info:
-            if booking_info["customer_username"] == username:
-                # find customer
-                customer = self.find_customer(booking_info["customer_username"])
+            # Update the JSON file to remove the canceled movie
+            Movie.update_movies_json(self.all_movies)
 
-                # Convert the movie_id from string to integer
-                movie_id = int(booking_info["movie_id"])
-                movie = self.find_movie(movie_id)
-
-                screening_id = int(booking_info["screening_id"])
-                screening = movie.find_screening(screening_id)
-                if screening is None:
-                    print(f"screening with ID {screening_id} not found.")
-
-                num_of_seats = booking_info["num_of_seats"]
-                selected_seats_id_list = booking_info["selected_seats"]
-                selected_seats = []
-                for seat_id in selected_seats_id_list:
-                    seat = screening.find_seat_by_id(int(seat_id))
-                    if seat:
-                        selected_seats.append(seat)
-                    else:
-                        print(f"Seat with ID {seat_id} not found for booking {booking_info['booking_id']}.")
-
-
-
-                created_on = date.fromisoformat(booking_info["created_on"])
-                total_amount = float(booking_info["total_amount"])
-                status = booking_info["status"]
-                payment_id = booking_info["payment_id"]
-                if payment_id:
-                    payment = self.find_payment(int(payment_id))
-                    print(f'payment id found??????{payment}')
-                else:
-                    payment = None
-
-                booking = Booking(
-                    customer=customer,
-                    movie=movie,
-                    screening=screening,
-                    num_of_seats=num_of_seats,
-                    selected_seats=selected_seats,
-                    created_on=created_on,
-                    total_amount=total_amount,
-                    status=status,
-                    payment=payment)
-                customer.add_booking(booking)
-                
 
     def update_booking_payment_and_status(self, booking_id, payment_id, new_status):
         """! Update the payment and status of a booking.
@@ -492,7 +460,62 @@ class CinemaController:
         Screening.save_new_screening_to_json(new_screening)
 
 
-    def create_payment_objects_and_add_to_payments_list(self):
+
+    # ============ Initialise Database =============
+    def initialise_bookings(self):
+        """! Create booking objects and add them to the corresponding customer records.
+        @param username: The username of the customer to associate the bookings with.
+        """
+        bookings_info = Booking.read_from_file(BOOKINGS_FILENAME)
+        for booking_info in bookings_info:
+            for customer in self.all_customers:
+                if booking_info["customer_username"] == customer.username:
+                    # find customer
+                    customer = self.find_customer(booking_info["customer_username"])
+
+                    # Convert the movie_id from string to integer
+                    movie_id = int(booking_info["movie_id"])
+                    movie = self.find_movie(movie_id)
+
+                    screening_id = int(booking_info["screening_id"])
+                    screening = movie.find_screening(screening_id)
+                    if screening is None:
+                        print(f"screening with ID {screening_id} not found.")
+
+                    num_of_seats = booking_info["num_of_seats"]
+                    selected_seats_id_list = booking_info["selected_seats"]
+                    selected_seats = []
+                    for seat_id in selected_seats_id_list:
+                        seat = screening.find_seat_by_id(int(seat_id))
+                        if seat:
+                            selected_seats.append(seat)
+                        else:
+                            print(f"Seat with ID {seat_id} not found for booking {booking_info['booking_id']}.")
+
+                    created_on = date.fromisoformat(booking_info["created_on"])
+                    total_amount = float(booking_info["total_amount"])
+                    status = booking_info["status"]
+                    payment_id = booking_info["payment_id"]
+                    if payment_id:
+                        payment = self.find_payment(int(payment_id))
+                        print(f'payment id found??????{payment}')
+                    else:
+                        payment = None
+
+                    booking = Booking(
+                        customer=customer,
+                        movie=movie,
+                        screening=screening,
+                        num_of_seats=num_of_seats,
+                        selected_seats=selected_seats,
+                        created_on=created_on,
+                        total_amount=total_amount,
+                        status=status,
+                        payment=payment)
+                    customer.add_booking(booking)
+
+
+    def initialise_payments(self):
         """! Create Payment objects from payment data and add them to the list of payments.
         """
         payments_data = Payment.read_payments_from_file()
@@ -536,30 +559,11 @@ class CinemaController:
             self.add_movie(movie_object)
 
 
-    def cancel_movie(self, movie_id:int):
-        """! Cancel a movie based on its ID.
-        @param movie_id (int): The ID of the movie to cancel.
-        """
-        # Find the movie by its ID in the movies list
-        movie_to_cancel = None
-        for movie in self.all_movies:
-            if movie.id == movie_id:
-                movie_to_cancel = movie
-                break
-
-        if movie_to_cancel:
-            # Remove the movie from the movies list
-            movie_to_cancel.deactivate()
-
-            # Update the JSON file to remove the canceled movie
-            Movie.update_movies_json(self.all_movies)
-
-
-    def add_screening_to_movie(self):
+    def initialise_screenings(self):
         """! Add screenings to their respective movies.
         Iterate through screening data and associate screenings with their movies.
         """
-        screening_data_list = Screening.read_screening_data_from_file()
+        screening_data_list = Screening.read_from_file(SCREENINGS_FILENAME)
         for screening_data in screening_data_list:
             movie_id = screening_data["movie_id"]
             movie = self.find_movie(int(movie_id))
@@ -592,7 +596,7 @@ class CinemaController:
                 print(f"Movie with ID {movie_id} not found.")
 
 
-    def read_coupons_from_file(self):
+    def initialise_coupons(self):
         """! Read coupons data from a file and add them to the list of coupons.
         """
         coupons = Coupon.read_coupons_from_json()
@@ -600,42 +604,38 @@ class CinemaController:
             self.__coupons.append(coupon)
 
 
-    def create_notification_objects_and_add_to_customer(self, username):
+    def initialise_notifications(self):
         """! Create Notification objects and add them to the corresponding customer records.
         @param username: The username of the customer to associate notifications with.
         """
-        notification_data = Notification.read_notifications_from_file()
+        notification_data = Notification.read_from_file(NOTIFICATION_FILENAME)
         for data in notification_data:
-            if data["customer_username"] == username:
-                date_time = datetime.strptime(data["date_time"], '%Y-%m-%d %H:%M:%S.%f')
-                booking_id = data["booking_id"]
+            for customer in self.all_customers:
+                if data["customer_username"] == customer.username:
+                    date_time = datetime.strptime(data["date_time"], '%Y-%m-%d %H:%M:%S.%f')
+                    booking_id = data["booking_id"]
 
-                # Find the customer by username
-                customer = self.find_customer(username)
+                    # Find the booking by booking_id
+                    booking = None
+                    if booking_id is not None:
+                        booking = customer.find_booking(booking_id)
+                        if booking is None:
+                            print(f"Booking with ID {booking_id} not found.")
 
-                if customer is None:
-                    print(f"Customer with username {username} not found.")
-                    continue
+                    # Create and add the notification to the customer
+                    notification = Notification(
+                        customer=customer,
+                        subject=data["subject"],
+                        message=data["message"],
+                        date_time=date_time,
+                        booking=booking
+                    )
 
-                # Find the booking by booking_id
-                booking = None
-                if booking_id is not None:
-                    booking = customer.find_booking(booking_id)
-                    if booking is None:
-                        print(f"Booking with ID {booking_id} not found.")
+                    customer.add_notification(notification)
 
-                # Create and add the notification to the customer
-                notification = Notification(
-                    customer=customer,
-                    subject=data["subject"],
-                    message=data["message"],
-                    date_time=date_time,
-                    booking=booking
-                )
-                customer.add_notification(notification)
 
     def initialise_admins(self):
-        """! Initialize the list of admin objects from a file.
+        """! Initialise the list of admin objects from a file.
         """
         admins_data = Admin.read_from_file(ADMIN_FILENAME)
         for admin_data in admins_data:
@@ -648,8 +648,9 @@ class CinemaController:
             admin_object = Admin(name, address, email, phone, username, password)
             self.add_admin(admin_object)
 
+
     def initialise_staffs(self):
-        """! Initialize the list of admin objects from a file.
+        """! Initialise the list of admin objects from a file.
         """
         staffs_data = FrontDeskStaff.read_from_file(FRONT_DESK_STAFF_FILENAME)
         for staff_data in staffs_data:
@@ -664,7 +665,7 @@ class CinemaController:
 
 
     def initialise_customers(self):
-        """! Initialize the list of customer objects from a file.
+        """! Initialise the list of customer objects from a file.
         """
         customers_data = Customer.read_customers_from_file()
         for cus_data in customers_data:
@@ -679,7 +680,7 @@ class CinemaController:
 
 
     def initialise_halls(self):
-        """! Initialize the list of cinema hall objects from a file.
+        """! Initialise the list of cinema hall objects from a file.
         """
         halls_data = CinemaHall.read_from_file(HALL_FILENAME)
         for hall_data in halls_data:
@@ -690,17 +691,15 @@ class CinemaController:
 
 
     def load_database(self):
-        """! Load data from various sources to initialize the system's database.
+        """! Load data from various sources to initialise the system's database.
         """
         self.initialise_admins()
         self.initialise_customers()
         self.initialise_staffs()
         self.initialise_halls()
         self.initialise_movies()
-        self.add_screening_to_movie()
-        self.read_coupons_from_file()
-        self.create_payment_objects_and_add_to_payments_list()
-        for customer in self.all_customers:
-            self.create_booking_objects_and_add_to_customer(customer.username)
-        for customer in self.all_customers:
-            self.create_notification_objects_and_add_to_customer(customer.username)
+        self.initialise_screenings()
+        self.initialise_coupons()
+        self.initialise_payments()
+        self.initialise_bookings()
+        self.initialise_notifications()

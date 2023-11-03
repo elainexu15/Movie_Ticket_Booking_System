@@ -14,5 +14,21 @@
         "message": "Your booking has been canceled!",
         "date_time": "2023-11-03 23:51:05.478",
         "booking_id": 2
+    },
+    {
+        "notification_id": 102,
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-04 00:02:51.188",
+        "booking_id": 3
+    },
+    {
+        "notification_id": 103,
+        "customer_username": "elaine",
+        "subject": "Cancel Confirmation",
+        "message": "Your booking has been canceled!",
+        "date_time": "2023-11-04 00:18:50.580",
+        "booking_id": 4
     }
 ]

@@ -466,38 +466,6 @@ def customer_view_movie_details(movie_id):
     # Get the screening dates for the movie
     screening_date_list = movie.get_screening_date_list()
     return render_template('cus_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
-
-
-# Route for filtering movies based on customer preferences
-@views.route('/customer_filter_movies/<customer_username>', methods=['GET', 'POST'])
-def customer_filter_movies(customer_username):
-     # Find the customer based on the provided username
-    customer = LincolnCinema.find_customer(customer_username)
-    if request.method == 'POST':
-        # Get the customer's selected filters from the form
-        title = request.form.get('title')
-        # Get the customer's selected filters from the form
-        selected_language = request.form.get('language')
-        selected_genre = request.form.get('genre')
-        date_from = request.form.get('date_from')
-        date_to = request.form.get('date_to')
-        # Handle date filtering
-        if date_from and not date_to:
-            date_to = str(date.today())
-        elif date_to and not date_from:
-            date_from = '1900-01-01'
-
-        # Filter movies based on the selected criteria
-        filtered_movies = LincolnCinema.customer_filter_movies(title, selected_language, selected_genre, date_from, date_to, customer)
-        # Get language and genre lists
-        language_list = LANGUAGE_LIST
-        genre_list = GENRE_LIST
-        # Render the customer home page with the filtered movies
-        return render_template('cus_home.html', all_movies=filtered_movies, language_list = language_list, 
-                           genre_list = genre_list)
-
-    # If the method is GET, initially display the form
-    return redirect(url_for('views.customer_home/<screening>'))
         
 
 # Route for selecting seats for a movie screening
@@ -1095,20 +1063,28 @@ def staff_confirm_booking(booking_id, username):
     return render_template("staff_confirm_booking.html", booking=booking)
 
 
-# ========= Movie Views =========
-# Route to display all movies with filtering options
-@views.route('/all_movies')
-def all_movies():
-    all_movies = LincolnCinema.all_movies
-    language_list = LANGUAGE_LIST
-    genre_list = GENRE_LIST
-    return render_template('movies.html', all_movies = all_movies, language_list = language_list, 
-                           genre_list = genre_list)
 
-
-# Route to filter and display movies based on customer-selected filters
+# ============ Filter Movies ============
+# Route for filtering movies based on customer preferences
 @views.route('/filter_movies', methods=['GET', 'POST'])
 def filter_movies():
+    # check if user logged in and find is user a customer, admin or staff
+    if g.user:
+        username = g.user.username
+        customer = LincolnCinema.find_customer(username)
+        admin = LincolnCinema.find_admin(username)
+        staff = LincolnCinema.find_staff(username)
+
+        if customer:
+            user = customer
+        elif admin:
+            user = admin
+        elif staff:
+            user = staff
+    else:
+        # Create a Guest object
+        user = Guest()
+
     if request.method == 'POST':
         # Get the customer's selected filters from the form
         title = request.form.get('title')
@@ -1116,21 +1092,41 @@ def filter_movies():
         selected_genre = request.form.get('genre')
         date_from = request.form.get('date_from')
         date_to = request.form.get('date_to')
+
+        # Handle date filtering
         if date_from and not date_to:
             date_to = str(date.today())
         elif date_to and not date_from:
             date_from = '1900-01-01'
-        guest = Guest()
-        
-        # Filter movies based on selected filters 
-        filtered_movies = LincolnCinema.filter_movies(title, selected_language, selected_genre, date_from, date_to, guest)
-        
+
+        # Filter movies based on the selected criteria
+        filtered_movies = LincolnCinema.filter_movies(title, selected_language, selected_genre, date_from, date_to, user)
         language_list = LANGUAGE_LIST
         genre_list = GENRE_LIST
-        return render_template('admin_home.html', all_movies=filtered_movies, language_list = language_list, 
-                           genre_list = genre_list)
+
+        if isinstance(user, Customer):
+            # Customer
+            return render_template('cus_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
+        elif isinstance(user, FrontDeskStaff):
+            # Front Desk Staff
+            return render_template('staff_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
+        elif isinstance(user, Admin):
+            # Admin
+            return render_template('admin_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
+        elif isinstance(user, Guest):
+            # Admin
+            return render_template('home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
 
     # If the method is GET, initially display the form
-    return redirect(url_for('views.all_movies'))
-
-
+    if isinstance(user, Customer):
+        # Customer
+        return redirect(url_for('views.customer_home'))
+    elif isinstance(user, FrontDeskStaff):
+        # Front Desk Staff
+        return redirect(url_for('views.staff_home'))
+    elif isinstance(user, Admin):
+        # Admin
+        return redirect(url_for('views.admin_home'))
+    elif isinstance(user, Guest):
+        # Guest
+        return redirect(url_for('views.home'))

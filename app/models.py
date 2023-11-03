@@ -68,8 +68,65 @@ class Base:
         with open(filename, 'w') as file:
             json.dump(data, file, indent=4)
 
+    @classmethod
+    def search_movie_title(self, title: str, movies):
+        """! Search for movies by title.
+        @param title (str): The title of the movie to search for.
+        @param movies: List of movies to search in.
+        @return: List of matching movies.
+        """
+        matching_movies = []
+        for movie in movies:  # Assuming you have a list of movies in the General class
+            if title.lower() in movie.title.lower():
+                matching_movies.append(movie)
+        return matching_movies
+    
 
-class General(ABC):
+    @classmethod
+    def search_movie_lang(self, selected_language: str, filtered_movies):
+        """! Search for movies by language.
+        @param selected_language (str): The selected language to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        matching_movies = []
+
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_language.lower() in movie.language.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+    @classmethod
+    def search_movie_genre(self, selected_genre: str, filtered_movies):
+        """! Search for movies by genre.
+        @param selected_genre (str): The selected genre to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        matching_movies = []
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if selected_genre.lower() in movie.genre.lower():
+                matching_movies.append(movie)
+
+        return matching_movies
+
+    @classmethod
+    def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
+        """! Search for movies by release date.
+        @param date_from (date): The starting date for the search.
+        @param date_to (date): The ending date for the search.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        matching_movies = []   
+        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
+            if date_from <= movie.release_date <= date_to:
+                matching_movies.append(movie)
+        return matching_movies
+
+
+class General(ABC, Base):
     """! The General class is an abstract base class that defines methods for searching and viewing movie details."""
 
     @abstractmethod
@@ -90,11 +147,6 @@ class General(ABC):
     @abstractmethod
     def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
         """! Abstractmethod method for searching for movies by date for guest users."""
-        pass
-
-    @abstractmethod
-    def view_movie_details(self, a_movie):
-        """! Abstractmethod method for viewing movie details for guest users."""
         pass
 
 
@@ -131,25 +183,17 @@ class Guest(General, Base):
         @param movies: List of movies to search in.
         @return: List of matching movies.
         """
-        matching_movies = []
-        for movie in movies:  # Assuming you have a list of movies in the General class
-            if title.lower() in movie.title.lower():
-                matching_movies.append(movie)
-        return matching_movies
-    
+        return Base.search_movie_title(title, movies)
+
+
     def search_movie_lang(self, selected_language: str, filtered_movies):
         """! Search for movies by language for guest users.
         @param selected_language (str): The selected language to filter by.
         @param filtered_movies: List of movies to filter.
         @return: List of matching movies.
         """
-        matching_movies = []
+        return Base.search_movie_lang(selected_language, filtered_movies)
 
-        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-            if selected_language.lower() in movie.language.lower():
-                matching_movies.append(movie)
-
-        return matching_movies
 
     def search_movie_genre(self, selected_genre: str, filtered_movies):
         """! Search for movies by genre for guest users.
@@ -157,12 +201,8 @@ class Guest(General, Base):
         @param filtered_movies: List of movies to filter.
         @return: List of matching movies.
         """
-        matching_movies = []
-        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-            if selected_genre.lower() in movie.genre.lower():
-                matching_movies.append(movie)
+        return Base.search_movie_genre(selected_genre, filtered_movies)
 
-        return matching_movies
 
     def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
         """! Search for movies by release date for guest users.
@@ -171,21 +211,10 @@ class Guest(General, Base):
         @param filtered_movies: List of movies to filter.
         @return: List of matching movies.
         """
-        matching_movies = []   
-        for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-            if date_from <= movie.release_date <= date_to:
-                matching_movies.append(movie)
-        return matching_movies
-
-    def view_movie_details(self, a_movie):
-        """! View movie details for guest users.
-        @param a_movie: The movie object to view details for.
-        """
-        # Implement viewing movie details for guests
-        pass
+        return Base.search_movie_date(date_from,date_to, filtered_movies)
 
 
-class Person(General):
+class Person(General, ABC):
     """! The Person class extends the General class and represents a person with a name, address, email, and phone."""
 
     def __init__(self, name: str, address: str, email: str, phone: str) -> None:
@@ -218,11 +247,6 @@ class Person(General):
     @abstractmethod
     def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
         """! Abstractmethod method for searching for movies by date for guest users."""
-        pass
-
-    @abstractmethod
-    def view_movie_details(self, a_movie):
-        """! Abstractmethod method for viewing movie details for guest users."""
         pass
 
 
@@ -259,11 +283,6 @@ class User(Person, ABC):
     @abstractmethod
     def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
         """! Abstractmethod method for searching for movies by date for guest users."""
-        pass
-
-    @abstractmethod
-    def view_movie_details(self, a_movie):
-        """! Abstractmethod method for viewing movie details for guest users."""
         pass
 
 
@@ -326,65 +345,40 @@ class Admin(User, Base):
 
     
     def search_movie_title(self, title: str, movies):
-        """! Search for movies by title.
-        @param title (str): The title to search for.
-        @param movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): A list of matching movies.
+        """! Search for movies by title for guest users.
+        @param title (str): The title of the movie to search for.
+        @param movies: List of movies to search in.
+        @return: List of matching movies.
         """
-        matching_movies = []
+        return Base.search_movie_title(title, movies)
 
-        for movie in movies:  
-            if title.lower() in movie.title.lower():
-                matching_movies.append(movie)
-
-        return matching_movies
-    
 
     def search_movie_lang(self, selected_language: str, filtered_movies):
-        """! Search for movies by language for administrators.
-        @param selected_language (str): The language to search for.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
-        """ 
-        matching_movies = []
-        for movie in filtered_movies: 
-            if selected_language.lower() in movie.language.lower():
-                matching_movies.append(movie)
-        return matching_movies
+        """! Search for movies by language for guest users.
+        @param selected_language (str): The selected language to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        return Base.search_movie_lang(selected_language, filtered_movies)
 
 
     def search_movie_genre(self, selected_genre: str, filtered_movies):
-        """! Search for movies by genre for administrators.
-        @param selected_genre (str): The genre to search for.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
-        """        
-        matching_movies = []
-        for movie in filtered_movies:  
-            if selected_genre.lower() in movie.genre.lower():
-                matching_movies.append(movie)
-        return matching_movies
+        """! Search for movies by genre for guest users.
+        @param selected_genre (str): The selected genre to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        return Base.search_movie_genre(selected_genre, filtered_movies)
 
 
     def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
-        """! Search for movies by release date range for administrators.
-        @param date_from (date): The start date of the range.
-        @param date_to (date): The end date of the range.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
-        """        
-        matching_movies = []   
-        for movie in filtered_movies: 
-            if movie.release_date >= date_from and movie.release_date <= date_to:
-                matching_movies.append(movie)
-        return matching_movies
-
-
-    def view_movie_details(self, a_movie):
-        """! View movie details for administrators.
-        @param a_movie (Movie): The movie object to view details for.
-        """        
-        pass
+        """! Search for movies by release date for guest users.
+        @param date_from (date): The starting date for the search.
+        @param date_to (date): The ending date for the search.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        return Base.search_movie_date(date_from, date_to, filtered_movies)
     
 
 class FrontDeskStaff(User, Base):
@@ -401,11 +395,13 @@ class FrontDeskStaff(User, Base):
         """
         super().__init__(name, address, email, phone, username, password)
     
+
     @property
     def name(self):
         """! Get the name of the FrontDeskStaff.
         @return (str): The name of the FrontDeskStaff."""
         return self._name
+
 
     @property
     def username(self):
@@ -413,6 +409,7 @@ class FrontDeskStaff(User, Base):
         @return (str): The username of the FrontDeskStaff."""
         return self._username
     
+
     @property
     def password(self):
         """! Get the password of the FrontDeskStaff.
@@ -451,64 +448,42 @@ class FrontDeskStaff(User, Base):
         staffs_data = cls.read_from_file(FRONT_DESK_STAFF_FILENAME)
         return staffs_data
     
+
     def search_movie_title(self, title: str, movies):
-        """! Search for movies by title for front desk staff.
-        @param title (str): The title to search for.
-        @param movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
+        """! Search for movies by title for guest users.
+        @param title (str): The title of the movie to search for.
+        @param movies: List of movies to search in.
+        @return: List of matching movies.
         """
-        matching_movies = []
-        for movie in movies:  
-            if title.lower() in movie.title.lower():
-                matching_movies.append(movie)
-        return matching_movies
-    
+        return Base.search_movie_title(title, movies)
+
 
     def search_movie_lang(self, selected_language: str, filtered_movies):
-        """! Search for movies by language for front desk staff.
-        @param selected_language (str): The language to search for.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
-        """        
-        matching_movies = []
-        for movie in filtered_movies: 
-            if selected_language.lower() in movie.language.lower():
-                matching_movies.append(movie)
-        return matching_movies
+        """! Search for movies by language for guest users.
+        @param selected_language (str): The selected language to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        return Base.search_movie_lang(selected_language, filtered_movies)
 
 
     def search_movie_genre(self, selected_genre: str, filtered_movies):
-        """! Search for movies by genre for front desk staff.
-        @param selected_genre (str): The genre to search for.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
-        """        
-        matching_movies = []
-        for movie in filtered_movies:  
-            if selected_genre.lower() in movie.genre.lower():
-                matching_movies.append(movie)
-        return matching_movies
+        """! Search for movies by genre for guest users.
+        @param selected_genre (str): The selected genre to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        return Base.search_movie_genre(selected_genre, filtered_movies)
 
 
     def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
-        """! Search for movies by release date range for front desk staff.
-        @param date_from (date): The start date of the range.
-        @param date_to (date): The end date of the range.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
+        """! Search for movies by release date for guest users.
+        @param date_from (date): The starting date for the search.
+        @param date_to (date): The ending date for the search.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
         """
-        matching_movies = []   
-        for movie in filtered_movies: 
-            if movie.release_date >= date_from and movie.release_date <= date_to:
-                matching_movies.append(movie)
-        return matching_movies
-
-
-    def view_movie_details(self, a_movie):
-        """! View movie details for front desk staff.
-        @param a_movie (Movie): The movie object to view details for.
-        """
-        pass
+        return Base.search_movie_date(date_from,date_to, filtered_movies)
 
 
 class Customer(User, Base):
@@ -576,6 +551,7 @@ class Customer(User, Base):
         """
         return self.__bookings
 
+
     def add_booking(self, new_booking):
         """! Add a new booking for the customer.
         @param new_booking (Booking): The new booking to add.
@@ -587,12 +563,14 @@ class Customer(User, Base):
         self.__bookings.append(new_booking)
         return True
     
+
     def add_notification(self, notification):
         """! Add a notification for the customer.
         @param notification (str): The notification message to add.
         """
         self.__notifications.append(notification)
         
+
     def find_booking(self, booking_id):
         """! Find a booking by its ID.
         @param booking_id (str): The ID of the booking to find.
@@ -604,6 +582,7 @@ class Customer(User, Base):
         else:
             return None
 
+
     def cancel_booking(self, booking_id):
         """! Cancel a booking by its ID.
         @param booking_id (str): The ID of the booking to cancel.
@@ -614,65 +593,41 @@ class Customer(User, Base):
         
 
     def search_movie_title(self, title: str, movies):
-        """! Search for movies by title
-        @param title (str): The title to search for.
-        @param movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
-        """        
-        matching_movies = []
-        for movie in movies:  
-            if title.lower() in movie.title.lower():
-                matching_movies.append(movie)
+        """! Search for movies by title for guest users.
+        @param title (str): The title of the movie to search for.
+        @param movies: List of movies to search in.
+        @return: List of matching movies.
+        """
+        return Base.search_movie_title(title, movies)
 
-        return matching_movies
-    
 
     def search_movie_lang(self, selected_language: str, filtered_movies):
-        """! Search for movies by language.
-        @param selected_language (str): The language to search for.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
+        """! Search for movies by language for guest users.
+        @param selected_language (str): The selected language to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
         """
-        matching_movies = []
-        for movie in filtered_movies:  
-            if selected_language.lower() in movie.language.lower():
-                matching_movies.append(movie)
-
-        return matching_movies
+        return Base.search_movie_lang(selected_language, filtered_movies)
 
 
     def search_movie_genre(self, selected_genre: str, filtered_movies):
-        """! Search for movies by genre.
-        @param selected_genre (str): The genre to search for.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
-        """        
-        matching_movies = []
-        for movie in filtered_movies:  
-            if selected_genre.lower() in movie.genre.lower():
-                matching_movies.append(movie)
-
-        return matching_movies
+        """! Search for movies by genre for guest users.
+        @param selected_genre (str): The selected genre to filter by.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
+        """
+        return Base.search_movie_genre(selected_genre, filtered_movies)
 
 
     def search_movie_date(self, date_from: date, date_to: date, filtered_movies):
-        """! Search for movies by release date range for front desk staff.
-        @param date_from (date): The start date of the range.
-        @param date_to (date): The end date of the range.
-        @param filtered_movies (List[Movie]): The list of movies to search within.
-        @return (List[Movie]): List of matching movies.
+        """! Search for movies by release date for guest users.
+        @param date_from (date): The starting date for the search.
+        @param date_to (date): The ending date for the search.
+        @param filtered_movies: List of movies to filter.
+        @return: List of matching movies.
         """
-        matching_movies = []   
-        for movie in filtered_movies:  
-            if movie.release_date >= date_from and movie.release_date <= date_to:
-                matching_movies.append(movie)
-        return matching_movies
+        return Base.search_movie_date(date_from,date_to, filtered_movies)
 
-    def view_movie_details(self, a_movie):
-        """! View movie details.
-        @param a_movie (Movie): The movie object to view details for.
-        """
-        pass
 
     @classmethod
     def read_customers_from_file(cls):
@@ -1029,7 +984,8 @@ class CinemaHall(Base):
         halls_data = cls.read_from_file(HALL_FILENAME)
         return halls_data
 
-class Screening:
+
+class Screening(Base):
     """! The Screening class: Represents a movie screening with details."""
     next_id = 100
     def __init__(self, movie_id, screening_date, start_time, end_time, hall: CinemaHall, seats, is_active=True) -> None:
@@ -1154,38 +1110,13 @@ class Screening:
     
 
     @classmethod
-    def save_new_screening_to_json(self, new_screening):
+    def save_new_screening_to_json(cls, new_screening):
         """! Save a new screening to a JSON file.
         @param new_screening (Screening): The new screening object to be saved.
         """
-        try:
-            if os.path.exists(SCREENINGS_FILENAME):
-                with open(SCREENINGS_FILENAME, 'r') as json_file:
-                    existing_data = json.load(json_file)
-            else:
-                existing_data = []
-
-            existing_data.append(new_screening.to_dict())
-
-            with open(SCREENINGS_FILENAME, 'w') as json_file:
-                json.dump(existing_data, json_file, default=str, indent=4)
-
-        except Exception as e:
-            print(f"An error occurred while saving the screening data: {str(e)}")
-
-
-    @classmethod
-    def read_screening_data_from_file(cls):
-        """! Read screening data from a JSON file.
-        @return (list): A list of screening data read from the file.
-        """
-        try:
-            with open(SCREENINGS_FILENAME, 'r') as file:
-                data = json.load(file)
-                return data
-        except FileNotFoundError:
-            print(f"File not found: {SCREENINGS_FILENAME}")
-            return []
+        existing_data = cls.read_from_file(SCREENINGS_FILENAME)
+        existing_data.append(new_screening.to_dict())
+        cls.save_to_file(existing_data, SCREENINGS_FILENAME)
 
 
     @classmethod
@@ -1193,19 +1124,14 @@ class Screening:
         """! Update the status of a screening to inactive in the JSON file.
         @param screening_id (int): The ID of the screening to be updated.
         """
-        try:
-            screening_data_list = cls.read_screening_data_from_file()
+        screenings_data = cls.read_from_file(SCREENINGS_FILENAME)
 
-            for screening_data in screening_data_list:
-                if screening_data["screening_id"] == screening_id:
-                    screening_data["is_active"] = False
+        for screening_data in screenings_data:
+            if screening_data["screening_id"] == screening_id:
+                screening_data["is_active"] = False
 
-            with open(SCREENINGS_FILENAME, 'w') as json_file:
-                json.dump(screening_data_list, json_file, default=str, indent=4)
+        cls.save_to_file(screenings_data, SCREENINGS_FILENAME)
 
-        except Exception as e:
-            print(f"An error occurred while updating the screening status: {str(e)}")
-            
 
     @classmethod
     def update_reserved_seats_to_json(cls, screening_id, reserved_seats_id, is_reserved):
@@ -1214,21 +1140,16 @@ class Screening:
         @param reserved_seats_id (list): List of seat IDs to be updated.
         @param is_reserved (bool): The reservation status to be set for the seats.
         """
-        try:
-            screening_data_list = cls.read_screening_data_from_file()
+        screening_data_list = cls.read_from_file(SCREENINGS_FILENAME)
 
-            for screening_data in screening_data_list:
-                if screening_data["screening_id"] == screening_id:
-                    for reserved_seat_id in reserved_seats_id:
-                        for seat_data in screening_data["seats"]:
-                            if reserved_seat_id == str(seat_data["row_number"]) + str(seat_data["seat_number"]):
-                                seat_data["is_reserved"] = is_reserved
+        for screening_data in screening_data_list:
+            if screening_data["screening_id"] == screening_id:
+                for reserved_seat_id in reserved_seats_id:
+                    for seat_data in screening_data["seats"]:
+                        if reserved_seat_id == str(seat_data["row_number"]) + str(seat_data["seat_number"]):
+                            seat_data["is_reserved"] = is_reserved
 
-            with open(SCREENINGS_FILENAME, 'w') as json_file:
-                json.dump(screening_data_list, json_file, default=str, indent=4)
-
-        except Exception as e:
-            print(f"An error occurred while updating the screening status: {str(e)}")
+        cls.save_to_file(screening_data_list, SCREENINGS_FILENAME)
 
 
     def __str__(self):
@@ -1241,7 +1162,7 @@ class Screening:
                f"Hall: {self.hall}\n" \
 
 
-class Coupon:
+class Coupon(Base):
     """! The Coupon class: Represents a coupon with a unique code and discount."""
     def __init__(self, coupon_code: str, discount_percentage: float, expiration_date: date) -> None:
         """! Constructor for the Coupon class.
@@ -1287,32 +1208,23 @@ class Coupon:
         
 
     @classmethod
-    def read_coupons_from_json(self):  
+    def read_coupons_from_json(cls):  
         """! Read coupon data from a JSON file and create Coupon objects.
         @return (list): A list of Coupon objects.
         """  
         coupons = []    
-        try:
-            with open(COUPON_FILENAME, 'r') as file:
-                data = json.load(file)
-                for item in data:
-                    coupon_code = item.get('coupon_code', '')
-                    discount = item.get('discount_percentage', 0.0)
-                    expiry_date_str = item.get('expiration_date', '')
-                    # Parse the date string into a datetime object
-                    expiry_date = datetime.strptime(expiry_date_str, '%Y-%m-%d')
-                    
-                    # Create a Coupon object and add it to the list
-                    coupon = Coupon(coupon_code, discount, expiry_date)
-                    coupons.append(coupon)
-                return coupons
-        
-        except FileNotFoundError:
-            print(f"File '{COUPON_FILENAME}' not found.")
-            return []
-        except json.JSONDecodeError:
-            print(f"Error decoding JSON from file '{COUPON_FILENAME}'.")
-            return []
+        coupons_data = cls.read_from_file(COUPON_FILENAME)
+        for item in coupons_data:
+            coupon_code = item.get('coupon_code', '')
+            discount = item.get('discount_percentage', 0.0)
+            expiry_date_str = item.get('expiration_date', '')
+            # Parse the date string into a datetime object
+            expiry_date = datetime.strptime(expiry_date_str, '%Y-%m-%d')
+            
+            # Create a Coupon object and add it to the list
+            coupon = Coupon(coupon_code, discount, expiry_date)
+            coupons.append(coupon)
+        return coupons
 
 
 class Payment(ABC):
@@ -1349,7 +1261,7 @@ class Payment(ABC):
             return []
 
 
-class CreditCard(Payment):
+class CreditCard(Payment, Base):
     """! The CreditCard class: Represents a credit card payment with additional attributes."""
     def __init__(self, payment_id:int, amount: float, created_on: datetime, coupon: Optional[Coupon],
                  credit_card_number: str, card_type: str, expiry_date: datetime, name_on_card: str):
@@ -1434,19 +1346,9 @@ class CreditCard(Payment):
         """
         if payment is None:
             return
-
-        existing_data = []
-
-        if os.path.exists(PAYMENT_FILENAME):
-            with open(PAYMENT_FILENAME, "r") as json_file:
-                existing_data = json.load(json_file)
-
+        existing_data = cls.read_from_file(PAYMENTS_FILENAME)
         existing_data.append(payment.to_dict())
-
-        with open(PAYMENT_FILENAME, "w") as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
-        print(f"Payment has been saved to {PAYMENT_FILENAME}")
+        cls.save_to_file(existing_data, PAYMENTS_FILENAME)
 
 
 class DebitCard(Payment):
@@ -1692,8 +1594,7 @@ class Booking(Base):
                f"Status: {self.__status}"
     
 
-
-class Notification:
+class Notification(Base):
     """! The Notification class: Represents a notification sent to a user. """
     next_id = 100
     def __init__(self, customer, subject: str, message: str, date_time: datetime,  booking: Booking = None) -> None:
@@ -1761,7 +1662,7 @@ class Notification:
         return self.__booking
 
     @classmethod
-    def save_notification_to_json(self, notification):
+    def save_notification_to_json(cls, notification):
         """! Save a notification to a JSON file.
         @param notification: The notification object to be saved.
         @type notification: Notification
@@ -1769,12 +1670,7 @@ class Notification:
         if notification is None:
             return
 
-        existing_data = []
-
-        if os.path.exists(NOTIFICATION_FILENAME):
-            # File exists, so let's read the existing data
-            with open(NOTIFICATION_FILENAME, "r") as json_file:
-                existing_data = json.load(json_file)
+        existing_data = cls.read_from_file(NOTIFICATION_FILENAME)
 
         # Format date_time to include only three decimal places
         date_time_formatted = notification.date_time.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
@@ -1790,21 +1686,4 @@ class Notification:
         })
 
         # Write the updated data back to the file
-        with open(NOTIFICATION_FILENAME, "w") as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
-        print(f"Notification for {notification.customer.username} has been saved")
-
-
-    @classmethod
-    def read_notifications_from_file(cls):
-        """! Read notifications from a JSON file.
-        @return: A list of notification data read from the file.
-        """
-        try:
-            with open(NOTIFICATION_FILENAME, 'r') as file:
-                data = json.load(file)
-                return data
-        except FileNotFoundError:
-            print(f"File not found: {NOTIFICATION_FILENAME}")
-            return []
+        cls.save_to_file(existing_data, NOTIFICATION_FILENAME)
