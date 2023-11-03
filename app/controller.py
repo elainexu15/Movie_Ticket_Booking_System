@@ -520,10 +520,10 @@ class CinemaController:
             self.__payments.append(payment)
 
 
-    def create_movie_objects_and_add_to_movies_list(self):
+    def initialise_movies(self):
         """! Create Movie objects from movie data and add them to the list of movies.
         """
-        movies_data = Movie.read_movies_from_json()
+        movies_data = Movie.read_from_file(MOVIES_FILENAME)
         for movie_info in movies_data:
             title = movie_info.get("title", "")
             language = movie_info.get("language", "")
@@ -637,9 +637,30 @@ class CinemaController:
     def initialise_admins(self):
         """! Initialize the list of admin objects from a file.
         """
-        admins = Admin.add_admins_from_file()
-        for admin in admins:
-            self.__admins.append(admin)
+        admins_data = Admin.read_from_file(ADMIN_FILENAME)
+        for admin_data in admins_data:
+            name = admin_data["name"]
+            address = admin_data["address"]
+            email = admin_data["email"]
+            phone = admin_data['phone']
+            username = admin_data["username"]
+            password = admin_data["password"]  
+            admin_object = Admin(name, address, email, phone, username, password)
+            self.add_admin(admin_object)
+
+    def initialise_staffs(self):
+        """! Initialize the list of admin objects from a file.
+        """
+        staffs_data = FrontDeskStaff.read_from_file(FRONT_DESK_STAFF_FILENAME)
+        for staff_data in staffs_data:
+            name = staff_data["name"]
+            address = staff_data["address"]
+            email = staff_data["email"]
+            phone = staff_data['phone']
+            username = staff_data["username"]
+            password = staff_data["password"]  
+            staff_object = FrontDeskStaff(name, address, email, phone, username, password)
+            self.add_front_desk_staff(staff_object)
 
 
     def initialise_customers(self):
@@ -656,20 +677,16 @@ class CinemaController:
             customer_object = Customer(name, address, email, phone, username, password)
             self.add_customer(customer_object)
 
-    def initialise_staff(self):
-        """! Initialize the list of staff objects from a file.
-        """
-        front_desk_staffs = FrontDeskStaff.add_front_desk_staffs_from_file()
-        for staff in front_desk_staffs:
-            self.__front_desk_staffs.append(staff)
-    
 
     def initialise_halls(self):
         """! Initialize the list of cinema hall objects from a file.
         """
-        halls = CinemaHall.read_hall_from_file()
-        for hall in halls:
-            self.__halls.append(hall)
+        halls_data = CinemaHall.read_from_file(HALL_FILENAME)
+        for hall_data in halls_data:
+            hall_name = hall_data["hall_name"]
+            capacity = hall_data["hall_capacity"]
+            hall_object = CinemaHall(hall_name, capacity)
+            self.__halls.append(hall_object)
 
 
     def load_database(self):
@@ -677,9 +694,9 @@ class CinemaController:
         """
         self.initialise_admins()
         self.initialise_customers()
-        self.initialise_staff()
+        self.initialise_staffs()
         self.initialise_halls()
-        self.create_movie_objects_and_add_to_movies_list()
+        self.initialise_movies()
         self.add_screening_to_movie()
         self.read_coupons_from_file()
         self.create_payment_objects_and_add_to_payments_list()

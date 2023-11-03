@@ -1,1 +1,18 @@
-[]
+[
+    {
+        "notification_id": 100,
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-03 23:10:46.719",
+        "booking_id": 1
+    },
+    {
+        "notification_id": 101,
+        "customer_username": "elaine",
+        "subject": "Cancel Confirmation",
+        "message": "Your booking has been canceled!",
+        "date_time": "2023-11-03 23:51:05.478",
+        "booking_id": 2
+    }
+]

@@ -45,10 +45,10 @@ MOVIES_FILENAME = "app/database/movies.json"
 SCREENINGS_FILENAME = "app/database/screenings.json"
 PAYMENTS_FILENAME = "app/database/payments.json"
 COUPON_FILENAME = "app/database/coupons.json"
-HALL_FILENAME = "app/database/cinema_hall.txt"
-ADMIN_FILENAME = "app/database/admins.txt"
+HALL_FILENAME = "app/database/cinema_hall.json"
+ADMIN_FILENAME = "app/database/admins.json"
 CUSTOMER_FILENAME = "app/database/customers.json"
-FRONT_DESK_STAFF_FILENAME = "app/database/front_desk_staffs.txt"
+FRONT_DESK_STAFF_FILENAME = "app/database/front_desk_staffs.json"
 
 
 class Base:
@@ -67,7 +67,6 @@ class Base:
         """Save data to a file in JSON format."""
         with open(filename, 'w') as file:
             json.dump(data, file, indent=4)
-
 
 
 class General(ABC):
@@ -268,7 +267,7 @@ class User(Person, ABC):
         pass
 
 
-class Admin(User):
+class Admin(User, Base):
     """! The Admin class extends the User class and represents an administrator with privileges to manage system features."""
     """! Constructor for the Admin class.
         @param name (str): The name of the administrator.
@@ -303,28 +302,13 @@ class Admin(User):
         return self._password
     
     @classmethod
-    def add_admins_from_file(cls):
+    def read_admins_from_file(cls):
         """
         ! Read admin data from a file and create Admin objects.
         @return (str): A list of admin objects.
         """
-        admins = []
-        try:
-            with open(ADMIN_FILENAME, 'r') as file:             
-                lines = file.readlines()
-                for line in lines:
-                    data = line.strip().split(',')
-                    name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
-                    admin_object = Admin(name, address, email, phone, username, password)
-                    admins.append(admin_object)
-                return admins
-        except FileNotFoundError:
-            print(f"Error: File '{ADMIN_FILENAME}' not found.")
-        except PermissionError:
-            print(f"Error: Permission denied for file '{ADMIN_FILENAME}'.")
-        except Exception as e:
-            print(f"An unexpected error occurred while reading '{ADMIN_FILENAME}': {str(e)}")
-
+        admins_data = cls.read_from_file(ADMIN_FILENAME)
+        return admins_data
 
 
     @classmethod
@@ -403,7 +387,7 @@ class Admin(User):
         pass
     
 
-class FrontDeskStaff(User):
+class FrontDeskStaff(User, Base):
     """! The FrontDeskStaff class extends the User class and represents front desk staff with specific privileges.
     """
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
@@ -464,23 +448,8 @@ class FrontDeskStaff(User):
         """! Read front desk staff data from a file and create FrontDeskStaff objects.
         @return (List[FrontDeskStaff]): A list of FrontDeskStaff objects.
         """
-        front_desk_staffs = []
-        try:
-            with open(FRONT_DESK_STAFF_FILENAME, 'r') as file:             
-                lines = file.readlines()
-                for line in lines:
-                    data = line.strip().split(',')
-                    name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
-                    front_desk_staff_object = FrontDeskStaff(name, address, email, phone, username, password)
-                    front_desk_staffs.append(front_desk_staff_object)
-                return front_desk_staffs
-        except FileNotFoundError:
-            print(f"Error: File '{FRONT_DESK_STAFF_FILENAME}' not found.")
-        except PermissionError:
-            print(f"Error: Permission denied for file '{FRONT_DESK_STAFF_FILENAME}'.")
-        except Exception as e:
-            print(f"An unexpected error occurred while reading '{FRONT_DESK_STAFF_FILENAME}': {str(e)}")
-
+        staffs_data = cls.read_from_file(FRONT_DESK_STAFF_FILENAME)
+        return staffs_data
     
     def search_movie_title(self, title: str, movies):
         """! Search for movies by title for front desk staff.
@@ -729,7 +698,7 @@ class Customer(User, Base):
         return customer_dict
 
 
-class Movie:
+class Movie(Base):
     """! The Movie class: Represents a movie with details."""
     next_id = 100
 
@@ -862,90 +831,55 @@ class Movie:
         screening_date_list = sorted(list(unique_dates))
         return screening_date_list
 
+
     @classmethod
     def update_movie_status_to_inactive(cls, movie_id):
         """! Update the status of a movie to inactive in the JSON file.
         @param movie_id (int): The ID of the movie to be updated.
         """
-        try:
-            movie_data_list = cls.read_movies_from_json()
+        movies_data = cls.read_from_json(MOVIES_FILENAME)
+        for movie_data in movies_data:
+            if movie_data["movie_id"] == movie_id:
+                movie_data["is_active"] = False
+        cls.save_to_file(movies_data, MOVIES_FILENAME)
 
-            for movie_data in movie_data_list:
-                if movie_data["movie_id"] == movie_id:
-                    movie_data["is_active"] = False
-
-            with open(MOVIES_FILENAME, 'w') as json_file:
-                json.dump(movie_data_list, json_file, default=str, indent=4)
-
-        except Exception as e:
-            print(f"An error occurred while updating the screening status: {str(e)}")
-            
-
-    @classmethod
-    def read_movies_from_json(cls):
-        """! Load movie data from a JSON file.
-        @return (List[Dict]): A list of movie data in dictionary format.
-        """
-        try:
-            with open(MOVIES_FILENAME, 'r') as file:
-                movies_data = json.load(file)
-                return movies_data
-        except FileNotFoundError:
-            print(f"File not found: {MOVIES_FILENAME}")
-            return []
-        
 
     @classmethod
     def update_movies_json(cls, movies):
         """! Update the JSON file with movie data.
         @param movies (List[Movie]): A list of movie objects to be saved to the JSON file.
         """
-        movies_data = [{"movie_id": movie.id,
-                        "title": movie.title,
-                        "language": movie.language,
-                        "genre": movie.genre,
-                        "country": movie.country,
-                        "release_date": movie.release_date,
-                        "duration": movie.duration_in_mins,
-                        "description": movie.description,
-                        "is_active": movie.is_active,
-                        "screenings": movie.screenings}
-                       for movie in movies]
+        movies_data = [movie.to_dict() for movie in movies]
+        cls.save_to_file(movies_data, MOVIES_FILENAME)
 
-        with open(MOVIES_FILENAME, 'w') as file:
-            json.dump(movies_data, file, indent=4)
 
     @classmethod
-    def save_new_movie_to_file(self, movie):
+    def save_new_movie_to_file(cls, movie):
         """! Save a new movie to a JSON file.
         @param movie (Movie): The movie object to be added to the JSON file.
         """
         # Load existing movie data from movies.json if it exists
-        movie_data = []
-        try:
-            with open('app/database/movies.json', 'r') as json_file:
-                movie_data = json.load(json_file)
-        except FileNotFoundError:
-            print(f"Error: File not found.")
-
+        movies_data = cls.read_from_file(MOVIES_FILENAME)
         # Append the new movie data to the existing data
-        movie_data.append({
-            "movie_id": movie.id,
-            "title": movie.title,
-            "language": movie.language,
-            "genre": movie.genre,
-            "country": movie.country,
-            "release_date": movie.release_date,
-            "duration": movie.duration_in_mins,
-            "description": movie.description,
-            "is_active": True,
-            "screenings": []
-        })
-
+        movies_data.append(movie.to_dict())
         # Save the updated movie data back to movies.json
-        with open('app/database/movies.json', 'w') as json_file:
-            json.dump(movie_data, json_file, default=str, indent=4)
+        cls.save_to_file(movies_data, MOVIES_FILENAME)
 
+
+    def to_dict(self):
+        """Convert Movie object to a dictionary."""
+        return {
+            "movie_id": self.id,
+            "title": self.title,
+            "language": self.language,
+            "genre": self.genre,
+            "country": self.country,
+            "release_date": self.release_date,
+            "duration": self.duration_in_mins,
+            "description": self.description,
+            "is_active": self.is_active,
+            "screenings": self.screenings,
+        }
 
 
     def __str__(self):
@@ -1054,7 +988,7 @@ class CinemaHallSeat:
         return f"Seat {self.seat_id} - {'Reserved' if self.is_reserved else 'Available'} - Price {self.seat_price}"
 
 
-class CinemaHall:
+class CinemaHall(Base):
     """! The CinemaHall class: Represents a movie hall with a name and seating capacity."""
     def __init__(self, hall_name: str, capacity: int) -> None:
         """! Constructor for the Hall class.
@@ -1092,23 +1026,8 @@ class CinemaHall:
         This method reads hall data from a file, creates CinemaHall objects, and appends them to a list.
         @return (list): List of CinemaHall objects created from the file data.
         """
-        halls = []
-        try:
-            with open(HALL_FILENAME, 'r') as file:             
-                lines = file.readlines()
-                for line in lines:
-                    data = line.strip().split(',')
-                    hall_name, capacity = data[0], int(data[1])
-                    cinema_hall_object = CinemaHall(hall_name, capacity)
-                    halls.append(cinema_hall_object)
-                return halls
-        except FileNotFoundError:
-            print(f"Error: File '{HALL_FILENAME}' not found.")
-        except PermissionError:
-            print(f"Error: Permission denied for file '{HALL_FILENAME}'.")
-        except Exception as e:
-            print(f"An unexpected error occurred while reading '{HALL_FILENAME}': {str(e)}")
-
+        halls_data = cls.read_from_file(HALL_FILENAME)
+        return halls_data
 
 class Screening:
     """! The Screening class: Represents a movie screening with details."""

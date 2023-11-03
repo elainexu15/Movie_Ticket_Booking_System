@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Quentin Smith",
+        "address": "62 Koala Drive",
+        "email": "quentin@lu.com",
+        "phone": "1234567892",
+        "username": "quentin",
+        "password": "sha256$UckbbZBueHbuiux6$40f41a94fa5907a7166c1b61232a78080b3b6808b22fda25972dff7f3555bc2f"
+    }
+]
