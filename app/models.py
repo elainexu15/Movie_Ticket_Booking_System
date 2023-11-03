@@ -47,8 +47,27 @@ PAYMENTS_FILENAME = "app/database/payments.json"
 COUPON_FILENAME = "app/database/coupons.json"
 HALL_FILENAME = "app/database/cinema_hall.txt"
 ADMIN_FILENAME = "app/database/admins.txt"
-CUSTOMER_FILENAME = "app/database/customers.txt"
+CUSTOMER_FILENAME = "app/database/customers.json"
 FRONT_DESK_STAFF_FILENAME = "app/database/front_desk_staffs.txt"
+
+
+class Base:
+    @classmethod
+    def read_from_file(cls, filename):
+        """Read data from a file and return it."""
+        try:
+            with open(filename, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print(f"File not found: {filename}")
+            return []
+
+    @classmethod
+    def save_to_file(cls, data, filename):
+        """Save data to a file in JSON format."""
+        with open(filename, 'w') as file:
+            json.dump(data, file, indent=4)
+
 
 
 class General(ABC):
@@ -80,15 +99,33 @@ class General(ABC):
         pass
 
 
-class Guest(General):
+class Guest(General, Base):
     """! The Guest class extends the General class and implements guest-specific movie search and registration logic."""
 
-    def register(self):
-        """! Register a guest user.
+    @classmethod
+    def register(cls, name, address, email, phone, username, hashed_password):
+        """Register a new customer and store their information.
+        @param name: The customer's name.
+        @param address: The customer's address.
+        @param email: The customer's email address.
+        @param phone: The customer's phone number.
+        @param username: The desired username for the customer.
+        @param hashed_password: The hashed password for the customer.
+        @return: Customer object
         """
-        # Implement guest registration logic here
-        pass
+        # Create a new customer object
+        customer = Customer(name, address, email, phone, username, hashed_password)
+        existing_data = cls.read_from_file(CUSTOMER_FILENAME)
 
+        # Append the new customer data to the existing data
+        existing_data.append(customer.to_dict())
+
+        # Write the updated data back to the file
+        cls.save_to_file(existing_data, CUSTOMER_FILENAME)
+
+        return customer
+
+   
     def search_movie_title(self, title: str, movies):
         """! Search for movies by title for guest users.
         @param title (str): The title of the movie to search for.
@@ -288,20 +325,6 @@ class Admin(User):
         except Exception as e:
             print(f"An unexpected error occurred while reading '{ADMIN_FILENAME}': {str(e)}")
 
-    
-    @classmethod
-    def read_bookings_from_file(cls):
-        """! Search for movies by title for administrators.
-        @param title (str): The title of the movie to search for.
-        @return (str): List of matching movies.
-        """
-        try:
-            with open(BOOKINGS_FILENAME, 'r') as file:
-                data = json.load(file)
-                return data
-        except FileNotFoundError:
-            print(f"File not found: {BOOKINGS_FILENAME}")
-            return []    
 
 
     @classmethod
@@ -310,15 +333,12 @@ class Admin(User):
         @param booking_id (str): The ID of the booking to cancel.
         @param new_status (str): The new status to set for the booking.
         """
-        bookings_info = cls.read_bookings_from_file()
-        print(f"allllllll booking info {bookings_info}")
+        bookings_info = cls.read_from_file(BOOKINGS_FILENAME)
         for booking_info in bookings_info:
             if booking_info["booking_id"] == int(booking_id):
-                print(booking_info["status"])
                 booking_info["status"] = new_status
-                print(booking_info["status"])
 
-        cls.save_bookings_to_file(bookings_info)
+        cls.save_to_file(bookings_info, BOOKINGS_FILENAME)
 
     
     def search_movie_title(self, title: str, movies):
@@ -413,20 +433,7 @@ class FrontDeskStaff(User):
     def password(self):
         """! Get the password of the FrontDeskStaff.
         @return (str): The password of the FrontDeskStaff."""
-        return self._password
-
-    @classmethod
-    def read_bookings_from_file(cls):
-        """! Read booking data from a file.
-        @return (List[Dict]): A list of booking information.
-        """
-        try:
-            with open(BOOKINGS_FILENAME, 'r') as file:
-                data = json.load(file)
-                return data
-        except FileNotFoundError:
-            print(f"File not found: {BOOKINGS_FILENAME}")
-            return []    
+        return self._password 
 
 
     @classmethod
@@ -435,15 +442,13 @@ class FrontDeskStaff(User):
         @param booking_id (str): The ID of the booking to cancel.
         @param new_status (str): The new status for the booking.
         """
-        bookings_info = cls.read_bookings_from_file()
-        print(f"allllllll booking info {bookings_info}")
+        bookings_info = cls.read_from_file(BOOKINGS_FILENAME)
         for booking_info in bookings_info:
             if booking_info["booking_id"] == int(booking_id):
-                print(booking_info["status"])
                 booking_info["status"] = new_status
-                print(booking_info["status"])
 
-        cls.save_bookings_to_file(bookings_info)
+        cls.save_to_file(bookings_info, BOOKINGS_FILENAME)
+
 
     @classmethod
     def save_bookings_to_file(cls, bookings_info):
@@ -537,7 +542,7 @@ class FrontDeskStaff(User):
         pass
 
 
-class Customer(User):
+class Customer(User, Base):
     """! The Customer class extends the User class and represents a customer with booking and notification features.
     """
     def __init__(self, name: str, address: str, email: str, phone: str, username: str, password: str) -> None:
@@ -564,6 +569,24 @@ class Customer(User):
         """! Get the username of the customer.
         @return (str): The username of the customer."""
         return self._username
+    
+    @property
+    def address(self):
+        """! Get the address of the customer.
+        @return (str): The address of the customer."""
+        return self._address
+    
+    @property
+    def phone(self):
+        """! Get the phone of the customer.
+        @return (str): The phone of the customer."""
+        return self._phone
+    
+    @property
+    def email(self):
+        """! Get the email of the customer.
+        @return (str): The email of the customer."""
+        return self._email
     
     @property
     def password(self):
@@ -683,33 +706,34 @@ class Customer(User):
         pass
 
     @classmethod
-    def add_customers_from_file(cls):
-        """! Read customer data from a file and create Customer objects.
-        @return (List[Customer]): A list of Customer objects.
+    def read_customers_from_file(cls):
+        """! Read customers from a JSON file.
+        @return: A list of customers data read from the file.
         """
-        customers = []
-        try:
-            with open(CUSTOMER_FILENAME, 'r') as file:             
-                lines = file.readlines()
-                for line in lines:
-                    data = line.strip().split(',')
-                    name, address, email, phone, username, password = data[0], data[1], data[2], data[3], data[4], data[5]
-                    customer_object = Customer(name, address, email, phone, username, password)
-                    customers.append(customer_object)
-                return customers
-        except FileNotFoundError:
-            print(f"Error: File '{CUSTOMER_FILENAME}' not found.")
-        except PermissionError:
-            print(f"Error: Permission denied for file '{CUSTOMER_FILENAME}'.")
-        except Exception as e:
-            print(f"An unexpected error occurred while reading '{CUSTOMER_FILENAME}': {str(e)}")
+        customers_data = cls.read_from_file(CUSTOMER_FILENAME)
+        return customers_data
+
+
+    def to_dict(self):
+        """Convert the Customer object to a dictionary.
+        @returns:dict: A dictionary representation of the Customer object.
+        """
+        customer_dict = {
+            "name": self.name,
+            "address": self.address,
+            "email": self.email,
+            "phone": self.phone,
+            "username": self.username,
+            "password": self.password,  # Note: This should not be used in practice for security reasons.
+        }
+        return customer_dict
 
 
 class Movie:
     """! The Movie class: Represents a movie with details."""
     next_id = 100
 
-    def __init__(self, title: str, language: str, genre: str, country: str, release_date: date, duration_in_mins: int, description: str) -> None:
+    def __init__(self, title: str, language: str, genre: str, country: str, release_date: date, duration_in_mins: int, description: str, is_active = True) -> None:
         """! Constructor for the Movie class.
         @param title (str): The title of the movie.
         @param language (str): The language of the movie.
@@ -729,6 +753,7 @@ class Movie:
         self.__duration_in_mins = duration_in_mins  # Duration of the movie in minutes
         self.__description = description   # A description of the movie
         self.__screenings = []             # List of screenings for this movie
+        self.__is_active = True            # Movie status
         Movie.next_id += 1                 # Increment the movie ID counter
 
     @property
@@ -794,6 +819,13 @@ class Movie:
         """
         return self.__screenings
     
+    @property
+    def is_active(self):
+        return self.__is_active
+    
+    def deactivate(self):
+        self.__is_active = False
+    
     def add_screening(self, screening_object):
         """! Add a screening to the movie's list of screenings.
         @param screening_object (Screening): The screening to add.
@@ -830,9 +862,27 @@ class Movie:
         screening_date_list = sorted(list(unique_dates))
         return screening_date_list
 
+    @classmethod
+    def update_movie_status_to_inactive(cls, movie_id):
+        """! Update the status of a movie to inactive in the JSON file.
+        @param movie_id (int): The ID of the movie to be updated.
+        """
+        try:
+            movie_data_list = cls.read_movies_from_json()
+
+            for movie_data in movie_data_list:
+                if movie_data["movie_id"] == movie_id:
+                    movie_data["is_active"] = False
+
+            with open(MOVIES_FILENAME, 'w') as json_file:
+                json.dump(movie_data_list, json_file, default=str, indent=4)
+
+        except Exception as e:
+            print(f"An error occurred while updating the screening status: {str(e)}")
+            
 
     @classmethod
-    def add_movies_from_json(cls):
+    def read_movies_from_json(cls):
         """! Load movie data from a JSON file.
         @return (List[Dict]): A list of movie data in dictionary format.
         """
@@ -857,7 +907,9 @@ class Movie:
                         "country": movie.country,
                         "release_date": movie.release_date,
                         "duration": movie.duration_in_mins,
-                        "description": movie.description}
+                        "description": movie.description,
+                        "is_active": movie.is_active,
+                        "screenings": movie.screenings}
                        for movie in movies]
 
         with open(MOVIES_FILENAME, 'w') as file:
@@ -878,6 +930,7 @@ class Movie:
 
         # Append the new movie data to the existing data
         movie_data.append({
+            "movie_id": movie.id,
             "title": movie.title,
             "language": movie.language,
             "genre": movie.genre,
@@ -885,6 +938,7 @@ class Movie:
             "release_date": movie.release_date,
             "duration": movie.duration_in_mins,
             "description": movie.description,
+            "is_active": True,
             "screenings": []
         })
 
@@ -1033,7 +1087,7 @@ class CinemaHall:
 
 
     @classmethod
-    def add_hall_from_file(cls):
+    def read_hall_from_file(cls):
         """! Create CinemaHall objects by reading data from a file.
         This method reads hall data from a file, creates CinemaHall objects, and appends them to a list.
         @return (list): List of CinemaHall objects created from the file data.
@@ -1047,6 +1101,7 @@ class CinemaHall:
                     hall_name, capacity = data[0], int(data[1])
                     cinema_hall_object = CinemaHall(hall_name, capacity)
                     halls.append(cinema_hall_object)
+                return halls
         except FileNotFoundError:
             print(f"Error: File '{HALL_FILENAME}' not found.")
         except PermissionError:
@@ -1500,7 +1555,7 @@ class DebitCard(Payment):
         pass
 
 
-class Booking:
+class Booking(Base):
     """! The Notification class: Represents a notification sent to a user. """
     next_id = 1
     def __init__(self, customer: Customer, movie: Movie, screening: Screening, num_of_seats: int, selected_seats: List[CinemaHallSeat], created_on: date, total_amount: float, status: str, payment = None, coupon = None) -> None:
@@ -1634,11 +1689,6 @@ class Booking:
         """
         self.__payment = apayment
 
-    def add_payment(self, payment):
-        """! Add payment information to the booking.
-        @param payment (Payment): The payment details to add to the booking.
-        """
-        self.__payment = payment
 
     def to_dict(self):
         """! Convert the booking to a dictionary for JSON serialization.
@@ -1664,33 +1714,19 @@ class Booking:
 
 
     @classmethod
-    def read_bookings_from_file(cls):
-        """! Read booking data from a file.
-        @return (List[Dict[str, Any]]): A list of dictionaries representing booking data.
-        """
-        try:
-            with open(BOOKINGS_FILENAME, 'r') as file:
-                data = json.load(file)
-                return data
-        except FileNotFoundError:
-            print(f"File not found: {BOOKINGS_FILENAME}")
-            return []
-
-
-    @classmethod
     def update_payment_and_status(cls, booking_id, payment_id, new_status):
         """! Update payment and status of a booking.
         @param booking_id (int): The ID of the booking to update.
         @param payment_id (int): The ID of the associated payment.
         @param new_status (str): The new status of the booking.
         """
-        bookings_info = cls.read_bookings_from_file()
+        bookings_info = cls.read_from_file(BOOKINGS_FILENAME)
         for booking_info in bookings_info:
             if booking_info["booking_id"] == int(booking_id):
                 booking_info["payment_id"] = payment_id
                 booking_info["status"] = new_status
 
-        cls.save_bookings_to_file(bookings_info)
+        cls.save_to_file(bookings_info, BOOKINGS_FILENAME)
 
 
     @classmethod
@@ -1699,46 +1735,27 @@ class Booking:
         @param booking_id (int): The ID of the booking to update.
         @param new_status (str): The new status to set for the booking.
         """
-        bookings_info = cls.read_bookings_from_file()
-        print(f"allllllll booking info {bookings_info}")
+        bookings_info = cls.read_from_file(BOOKINGS_FILENAME)
         for booking_info in bookings_info:
             if booking_info["booking_id"] == int(booking_id):
-                print(booking_info["status"])
                 booking_info["status"] = new_status
-                print(booking_info["status"])
 
-        cls.save_bookings_to_file(bookings_info)
+        cls.save_to_file(bookings_info, BOOKINGS_FILENAME)
+
 
     @classmethod
-    def save_new_bookings_to_json(self, booking):
+    def save_new_bookings_to_json(cls, booking):
         """! Save a new booking to a JSON file.
         @param booking: The booking object to be saved.
         @type booking: Booking
         """
-        existing_data = []
-
         if os.path.exists(BOOKINGS_FILENAME) and os.path.getsize(BOOKINGS_FILENAME) > 0:
-            # File exists and is not empty, so let's read the existing data
-            with open(BOOKINGS_FILENAME, 'r') as json_file:
-                existing_data = json.load(json_file)
+            existing_data = cls.read_from_file(BOOKINGS_FILENAME)
 
-        # Append the new screening data to the existing data
-        existing_data.append(booking.to_dict())
+            # Append the new booking data to the existing data
+            existing_data.append(booking.to_dict())
 
-        # Write the updated data back to the file
-        with open(BOOKINGS_FILENAME, 'w') as json_file:
-            json.dump(existing_data, json_file, default=str, indent=4)
-
-
-    @classmethod
-    def save_bookings_to_file(cls, bookings_info):
-        """! Save booking information to a file in JSON format.
-        @param bookings_info: The booking information to be saved.
-        @type bookings_info: list
-        """
-        with open(BOOKINGS_FILENAME, 'w') as file:
-            json.dump(bookings_info, file, indent=4)
-
+        cls.save_to_file(existing_data, BOOKINGS_FILENAME)
 
 
     def __str__(self):

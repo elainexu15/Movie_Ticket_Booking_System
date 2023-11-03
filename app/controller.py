@@ -130,23 +130,45 @@ class CinemaController:
         """
         return self.__payments
 
-    def find_customer(self, username):
+    def check_duplicate_username(self, username):
         """! Find a customer by their username.
         @param username (str): The username to search for.
         @return (Customer): The customer object if found, or None.
         """
         for customer in self.__customers:
             if customer.username == username:
+                return True
+        return False
+    
+    def check_duplicate_email(self, email):
+        """! Find a customer by their username.
+        @param username (str): The username to search for.
+        @return (Customer): The customer object if found, or None.
+        """
+        for customer in self.__customers:
+            if customer.email == email:
+                return True
+        return False
+
+
+    def find_customer(self, username: str):
+        """! Find a movie by its username.
+        @param username (str): The ID to search for.
+        @return (Customer): The customer object if found, or None.
+        """
+        for customer in self.all_customers:
+            if customer.username == username:
                 return customer
         return None
 
-    def find_movie(self, id):
+
+    def find_movie(self, movie_id: int):
         """! Find a movie by its ID.
         @param id (int): The ID to search for.
         @return (Movie): The movie object if found, or None.
         """
         for movie in self.__movies:
-            if movie.id == id:
+            if movie.id == movie_id:
                 return movie
         return None
     
@@ -223,23 +245,15 @@ class CinemaController:
         """
         self.__coupons.append(coupon)
 
+
     def register_customer(self, name, address, email, phone, username, hashed_password) -> bool:
-        """! Register a new customer and store their information.
-        @param name: The customer's name.
-        @param address: The customer's address.
-        @param email: The customer's email address.
-        @param phone: The customer's phone number.
-        @param username: The desired username for the customer.
-        @param hashed_password: The hashed password for the customer.
-        @return: True if registration is successful, False if the username already exists.
-        """
+        """! Register a new customer and store their information."""
         # Check if the username already exists
         if self.find_customer(username):
             return False
-        new_customer = Customer(name, address, email, phone, username, hashed_password)
+        new_customer = Guest.register(name, address, email, phone, username, hashed_password)
         self.add_customer(new_customer)
-        with open('app/database/customers.txt', 'a') as file:
-            file.write(f"{new_customer.name},{new_customer.address},{new_customer.email},{new_customer.phone},{new_customer.username},{new_customer.password}\n")
+        print(f'new customer{new_customer}')
         return True
 
 
@@ -404,7 +418,7 @@ class CinemaController:
         """! Create booking objects and add them to the corresponding customer records.
         @param username: The username of the customer to associate the bookings with.
         """
-        bookings_info = Booking.read_bookings_from_file()
+        bookings_info = Booking.read_from_file(BOOKINGS_FILENAME)
         for booking_info in bookings_info:
             if booking_info["customer_username"] == username:
                 # find customer
@@ -509,7 +523,7 @@ class CinemaController:
     def create_movie_objects_and_add_to_movies_list(self):
         """! Create Movie objects from movie data and add them to the list of movies.
         """
-        movies_data = Movie.add_movies_from_json()
+        movies_data = Movie.read_movies_from_json()
         for movie_info in movies_data:
             title = movie_info.get("title", "")
             language = movie_info.get("language", "")
@@ -522,9 +536,9 @@ class CinemaController:
             self.add_movie(movie_object)
 
 
-    def cancel_movie(self, movie_id):
+    def cancel_movie(self, movie_id:int):
         """! Cancel a movie based on its ID.
-        @param movie_id: The ID of the movie to cancel.
+        @param movie_id (int): The ID of the movie to cancel.
         """
         # Find the movie by its ID in the movies list
         movie_to_cancel = None
@@ -535,7 +549,7 @@ class CinemaController:
 
         if movie_to_cancel:
             # Remove the movie from the movies list
-            self.all_movies.remove(movie_to_cancel)
+            movie_to_cancel.deactivate()
 
             # Update the JSON file to remove the canceled movie
             Movie.update_movies_json(self.all_movies)
@@ -631,10 +645,16 @@ class CinemaController:
     def initialise_customers(self):
         """! Initialize the list of customer objects from a file.
         """
-        customers = Customer.add_customers_from_file()
-        for cus in customers:
-            self.__admins.append(cus)
-
+        customers_data = Customer.read_customers_from_file()
+        for cus_data in customers_data:
+            name = cus_data["name"]
+            address = cus_data["address"]
+            email = cus_data["email"]
+            phone = cus_data['phone']
+            username = cus_data["username"]
+            password = cus_data["password"]  
+            customer_object = Customer(name, address, email, phone, username, password)
+            self.add_customer(customer_object)
 
     def initialise_staff(self):
         """! Initialize the list of staff objects from a file.
@@ -647,7 +667,7 @@ class CinemaController:
     def initialise_halls(self):
         """! Initialize the list of cinema hall objects from a file.
         """
-        halls = CinemaHall.add_halls_from_file()
+        halls = CinemaHall.read_hall_from_file()
         for hall in halls:
             self.__halls.append(hall)
 
@@ -658,7 +678,7 @@ class CinemaController:
         self.initialise_admins()
         self.initialise_customers()
         self.initialise_staff()
-        self.initialise_halls
+        self.initialise_halls()
         self.create_movie_objects_and_add_to_movies_list()
         self.add_screening_to_movie()
         self.read_coupons_from_file()

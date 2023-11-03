@@ -1,39 +1,55 @@
+{% extends 'index.html' %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Lincoln Cinema Online Ticket Booking System</title>
-    {% include 'bootstrap.html' %}
-    
-  </head>
-  <body>
-  	{% include 'nav.html' %}
-    {% include 'banner.html' %}
-  	{% include 'flash.html' %}
 
-    <div class="container">
-        <form class="mx-1 mx-md-4" action="{{url_for('views.login')}}" method="post">
+{% block content %}
+<style>
+.background-image {
+  background-image: url('/static/login_background.jpg'); /* Replace 'your-image.jpg' with your actual image file name */
+  background-size: cover;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(5px); /* Adjust the blur amount as needed */
+}
+</style>
 
-        <!-- Input field for user name -->
-        <div class="d-flex flex-row align-items-center mb-4">
-            <div class="form-outline flex-fill mb-0">
-            <input type="text" class="form-control" name="username" placeholder="User Name"/> 
+<section class="vh-100 background-image">
+  {% include 'flash.html' %}
+  <div class="container py-5">
+    <br>
+    <br>
+    <br>
+    <form class="mx-1 mx-md-4" action="{{url_for('views.login')}}" method="post">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card shadow-2-strong" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+
+            <h2 class="mb-5">LOGIN</h2>
+
+            <div class="form-outline mb-4">
+              <input type="text" name='username' id="typeEmailX-2" class="form-control form-control-lg" placeholder="Username" />
             </div>
-        </div>
 
-        <!-- Input field for password -->
-        <div class="d-flex flex-row align-items-center mb-4">
-            <div class="form-outline flex-fill mb-0">
-            <input type="password" class="form-control" name="password" placeholder="Password" /> 
+            <div class="form-outline mb-4">
+              <input type="password" name='password' id="typePasswordX-2" class="form-control form-control-lg" placeholder="Password" />
             </div>
-        </div>
-        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-            <button type="submit" class="btn btn-primary">Login</button>
-        </div>
 
-        </form>
           
+
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+
+            <hr class="my-4">
+            <!-- Register buttons -->
+          <div class="text-center">
+            <p>Not a member? <a href="{{ url_for('views.register') }}">Register</a></p>
+          </div>
+
+
+          </div>
+        </div>
+      </div>
     </div>
-    {% include 'footer.html' %}
-  </body>
-</html>
+  </form>
+  </div>
+</section>
+{% endblock %}
+

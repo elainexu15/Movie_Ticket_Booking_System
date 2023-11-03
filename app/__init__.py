@@ -17,6 +17,8 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 # Create an instance of CinemaController and load the database during application startup
 LincolnCinema = CinemaController()
 LincolnCinema.load_database()
+print(LincolnCinema.all_halls)
+print(LincolnCinema.all_customers)
 
 for movie in LincolnCinema.all_movies:
     for screening in movie.screenings:

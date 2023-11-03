@@ -25,11 +25,19 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+
+
+
+
 # ========= Auth Views =========
 # Define a route for the home page
 @views.route('/')
 def home():
-    return render_template('home.html')
+    # Retrieve a list of all movies, language list, and genre list
+    all_movies = LincolnCinema.all_movies
+    language_list = LANGUAGE_LIST
+    genre_list = GENRE_LIST
+    return render_template('home.html', all_movies=all_movies, language_list=language_list, genre_list=genre_list )
 
 
 # Define a function to be executed before each request
@@ -96,25 +104,38 @@ def login():
 def register():
     if request.method == 'POST':
         # Retrieve user registration information from the form
-        name = request.form['name']
-        address = request.form['address']
+        name = request.form['name'].title()
+        address = request.form['address'].title()
         email = request.form['email']
         phone = request.form['phone']
         username = request.form['username']
         password = request.form['password']
+        password_repeat = request.form['password_repeat']  # Added password_repeat
         
         # Check if the username already exists
-        if LincolnCinema.find_customer(username):
+        if LincolnCinema.check_duplicate_username(username) == True:
             flash("Username already exists. Please choose a different one.", category='error')
+            return redirect(url_for('views.register'))
+        
+        # Check if the email already exists
+        if LincolnCinema.check_duplicate_email(email) == True:
+            flash("This email has already registered.", category='error')
+            return redirect(url_for('views.register'))
+        
+        # Check if the passwords match
+        if password != password_repeat:
+            flash("Passwords do not match. Please try again.", category='error')
             return redirect(url_for('views.register'))
         
         # Hash the password for security
         hashed_password = generate_password_hash(password, method='sha256')
-        
+        # Split the name into words and capitalize the first letter of each word
+        name = ' '.join(word.capitalize() for word in name.split())
         # Attempt to register the user
         registration_result = LincolnCinema.register_customer(name, address, email, phone, username, hashed_password)
    
         if registration_result:
+            print(f'new customer{registration_result}')
             flash("Registration successful. You can now log in.", category='success')
             return redirect(url_for('views.login'))
         else:
@@ -123,7 +144,6 @@ def register():
 
     return render_template('register.html')
 
-
 # Define a route for logging out
 @views.route('/logout')
 def logout():
@@ -131,6 +151,34 @@ def logout():
     if 'user_username' in session:
         session.pop('user_username', None)
     return redirect(url_for('views.home'))
+
+
+
+# ======== guest routes ========
+
+# Route to view movie details for admin
+@views.route('/guest_view_movie_details/<movie_id>')
+def guest_view_movie_details(movie_id):
+    movie_id = int(movie_id)
+    movie = LincolnCinema.find_movie(movie_id)
+    # Filter the list of screenings to include only active screenings
+    active_screenings = [screening for screening in movie.screenings if screening.is_active == True]
+    # Get a list of screening dates for the movie
+    screening_date_list = movie.get_screening_date_list()
+    return render_template('guest_view_movie_details.html', movie=movie, screening_date_list=screening_date_list, active_screenings=active_screenings)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ========= Admin Views =========
@@ -182,7 +230,7 @@ def admin_add_movie():
             file.save(os.path.join(destination_folder, filename))
             flash('Image successfully uploaded and displayed below')
             # Redirect to the movie details page
-            return render_template('movie_details.html', movie=movie, filename=filename)
+            return render_template('admin_view_movie_details.html', movie=movie, filename=filename)
         else:
             flash('Allowed image types are - png, jpg, jpeg, gif. Please try again.', 'error')
             return redirect(request.url)
@@ -218,6 +266,8 @@ def admin_cancel_movie(movie_id):
     else:
         # Cancel the movie by removing it from the list of movies
         LincolnCinema.cancel_movie(movie_id)
+        # update movie status to inactive in movie json file
+        Movie.update_movie_status_to_inactive(movie_id)
     return redirect(url_for("views.admin_home"))
 
 
@@ -236,8 +286,8 @@ def admin_add_screening(movie_id):
         start_time = request.form['start_time']
         end_time = request.form['end_time']
         hall_name = request.form['hall_name']
-        price = float(request.form['price'])
-
+        price = round(float(request.form['price']), 2)
+        print(price)
         # convert time to 24-hour format
         start_time = datetime.strptime(start_time, '%H:%M').strftime('%H:%M')
         end_time = datetime.strptime(end_time, '%H:%M').strftime('%H:%M')        
@@ -281,6 +331,111 @@ def admin_add_screening(movie_id):
     return render_template('admin_add_screening.html', movie=movie, movie_duration=movie_duration, hall_name_list=hall_name_list)
 
 
+# Route for displaying details of a screening, including customer bookings
+@views.route('screening_booking_details/<movie_id>/<screening_id>')
+def screening_booking_details(movie_id, screening_id):
+    movie = LincolnCinema.find_movie(int(movie_id))
+    screening = movie.find_screening(screening_id)
+    all_customers = LincolnCinema.all_customers
+    
+    # Create lists to store customers who booked the screening and their paid bookings
+    customers_who_booked_screening = []
+    paid_bookings = []
+    for customer in all_customers:
+        for booking in customer.bookings():
+            if booking.movie.id == int(movie_id) and booking.screening.screening_id == int(screening_id):
+                customers_who_booked_screening.append(customer)
+                if booking.status == 'Paid':
+                    paid_bookings.append(booking)  # Add paid bookings to the list
+    
+    # Render the admin screening details page with the screening, movie, and related data
+    return render_template('admin_screening_details.html', screening=screening, movie=movie,
+                            customers_who_booked_screening=customers_who_booked_screening,
+                            paid_bookings=paid_bookings)  # Pass the paid bookings to the template
+
+
+# Route for processing a refund by an admin
+@views.route('/admin_refund_booking/<int:booking_id>/<username>')
+def admin_refund_booking(booking_id, username):
+    # Find the customer
+    customer = LincolnCinema.find_customer(username)
+    # Find the booking to refund
+    booking = customer.find_booking(booking_id)
+    movie_id = booking.movie.id
+    screening_id = booking.screening.screening_id
+    payment_id = booking.payment.payment_id
+    # Find the credit card payment associated with the booking
+    creditcard_payment = LincolnCinema.find_payment(payment_id)
+
+    if creditcard_payment is None:
+        flash("Payment not found", 'error')
+
+    # Process the refund and update related information
+    is_success = creditcard_payment.process_refund()
+    
+    if is_success:
+        reserved_seats_id = []
+        for seat in booking.selected_seats:
+            seat_id = seat.seat_id
+            reserved_seats_id.append(seat_id)
+            for screening_seat in booking.screening.seats:
+                if screening_seat.seat_id == seat_id:
+                    screening_seat.is_reserved = False
+        is_reserved = False       
+        Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
+
+        new_status = 'Refunded'
+        booking.status = new_status
+        Admin.cancel_booking(booking_id, new_status)
+
+        # Create a confirmation notification
+        confirmation_message = "Due to the screening cancellation, your booking has been refunded. We apologize for any inconvenience caused."
+        notification = Notification(customer, "Refund Confirmation", confirmation_message, datetime.now(), booking)
+        customer.add_notification(notification)
+
+        # Save the confirmation notification to JSON
+        Notification.save_notification_to_json(notification)
+
+        # Use Flask's flash function to send the confirmation message
+        flash("Booking has been refunded! A confirmation notice has been sent to the customer.", 'success')
+
+    return redirect(url_for('views.screening_booking_details', movie_id=movie_id, screening_id=screening_id))
+
+
+# Route for canceling a screening by an admin
+@views.route('/admin_cancel_screening/<int:screening_id>/<int:movie_id>', methods=['GET', 'POST'])
+def admin_cancel_screening(screening_id, movie_id):
+    # Find the screening to cancel
+    movie = LincolnCinema.find_movie(movie_id)
+
+    # Find the screening to cancel within the movie
+    screening = movie.find_screening(screening_id)
+
+    if screening:
+        # Check if there are reserved seats for the screening
+        has_reserved_seats = any(seat.is_reserved for seat in screening.seats)
+
+        if has_reserved_seats:
+            flash('There are reserved seats for this screening. Please refund booking first.', 'error')
+        else:
+            # Set the screening as inactive and update it in JSON
+            screening.is_active = False
+            Screening.update_screening_status_to_inactive_to_json(screening_id)
+
+            flash(f"Screening ID {screening_id} has been successfully cancelled.", 'success')
+    else:
+        flash(f"Screening with ID {screening_id} not found.", 'error')
+     # Redirect to the movie details page
+    return redirect(url_for('views.admin_view_movie_details', movie_id=movie_id))
+
+
+
+
+
+
+
+
+
 
 
 
@@ -302,6 +457,9 @@ def customer_home():
 # Route for viewing movie details
 @views.route('/customer_view_movie_details/<movie_id>')
 def customer_view_movie_details(movie_id):
+    # Check if there is an authenticated user, otherwise redirect to the login page
+    if not g.user:
+        return redirect(url_for('views.login'))
     movie_id = int(movie_id)
     # Find the movie object
     movie = LincolnCinema.find_movie(movie_id)
@@ -597,102 +755,11 @@ def customer_booking_details(booking_id):
     return render_template("cus_booking_details.html", booking=booking)
     
 
-# Route for displaying details of a screening, including customer bookings
-@views.route('screening_booking_details/<movie_id>/<screening_id>')
-def screening_booking_details(movie_id, screening_id):
-    movie = LincolnCinema.find_movie(int(movie_id))
-    screening = movie.find_screening(screening_id)
-    all_customers = LincolnCinema.all_customers
-    
-    # Create lists to store customers who booked the screening and their paid bookings
-    customers_who_booked_screening = []
-    paid_bookings = []
-    for customer in all_customers:
-        for booking in customer.bookings():
-            if booking.movie.id == int(movie_id) and booking.screening.screening_id == int(screening_id):
-                customers_who_booked_screening.append(customer)
-                if booking.status == 'Paid':
-                    paid_bookings.append(booking)  # Add paid bookings to the list
-    
-    # Render the admin screening details page with the screening, movie, and related data
-    return render_template('admin_screening_details.html', screening=screening, movie=movie,
-                            customers_who_booked_screening=customers_who_booked_screening,
-                            paid_bookings=paid_bookings)  # Pass the paid bookings to the template
 
 
-# Route for processing a refund by an admin
-@views.route('/admin_refund_booking/<int:booking_id>/<username>')
-def admin_refund_booking(booking_id, username):
-    # Find the customer
-    customer = LincolnCinema.find_customer(username)
-    # Find the booking to refund
-    booking = customer.find_booking(booking_id)
-    movie_id = booking.movie.id
-    screening_id = booking.screening.screening_id
-    payment_id = booking.payment.payment_id
-    # Find the credit card payment associated with the booking
-    creditcard_payment = LincolnCinema.find_payment(payment_id)
-
-    if creditcard_payment is None:
-        flash("Payment not found", 'error')
-
-    # Process the refund and update related information
-    is_success = creditcard_payment.process_refund()
-    
-    if is_success:
-        reserved_seats_id = []
-        for seat in booking.selected_seats:
-            seat_id = seat.seat_id
-            reserved_seats_id.append(seat_id)
-            for screening_seat in booking.screening.seats:
-                if screening_seat.seat_id == seat_id:
-                    screening_seat.is_reserved = False
-        is_reserved = False       
-        Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
-
-        new_status = 'Refunded'
-        booking.status = new_status
-        Admin.cancel_booking(booking_id, new_status)
-
-        # Create a confirmation notification
-        confirmation_message = "Due to the screening cancellation, your booking has been refunded. We apologize for any inconvenience caused."
-        notification = Notification(customer, "Refund Confirmation", confirmation_message, datetime.now(), booking)
-        customer.add_notification(notification)
-
-        # Save the confirmation notification to JSON
-        Notification.save_notification_to_json(notification)
-
-        # Use Flask's flash function to send the confirmation message
-        flash("Booking has been refunded! A confirmation notice has been sent to the customer.", 'success')
-
-    return redirect(url_for('views.screening_booking_details', movie_id=movie_id, screening_id=screening_id))
 
 
-# Route for canceling a screening by an admin
-@views.route('/admin_cancel_screening/<int:screening_id>/<int:movie_id>', methods=['GET', 'POST'])
-def admin_cancel_screening(screening_id, movie_id):
-    # Find the screening to cancel
-    movie = LincolnCinema.find_movie(movie_id)
 
-    # Find the screening to cancel within the movie
-    screening = movie.find_screening(screening_id)
-
-    if screening:
-        # Check if there are reserved seats for the screening
-        has_reserved_seats = any(seat.is_reserved for seat in screening.seats)
-
-        if has_reserved_seats:
-            flash('There are reserved seats for this screening. Please refund booking first.', 'error')
-        else:
-            # Set the screening as inactive and update it in JSON
-            screening.is_active = False
-            Screening.update_screening_status_to_inactive_to_json(screening_id)
-
-            flash(f"Screening ID {screening_id} has been successfully cancelled.", 'success')
-    else:
-        flash(f"Screening with ID {screening_id} not found.", 'error')
-     # Redirect to the movie details page
-    return redirect(url_for('views.admin_view_movie_details', movie_id=movie_id))
 
 
 

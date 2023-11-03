@@ -1,7 +1,31 @@
 {% extends 'index.html' %}
 
-{% block content %}
 
-{% include 'search.html' %}
+{% block content %}
+<br>
+<br>
+<div class="container">
+    {% include 'search.html' %}
+</div>
+
+<div class="container">
+    <div class="row">
+        <h2 align="center" class="mb-5">MOVIES ON SHOWING</h2>
+            {% for movie in all_movies %}
+            <div class="col co-sm-4 col-lg-3 mb-3 ">
+                <div class="card" style="width: 18rem;">
+                    <a href="{{url_for('views.guest_view_movie_details', movie_id=movie.id)}}">
+                        <img src="{{ url_for('static', filename='movie_img/' ~ movie.id ~ '.jpg') }}" alt="..." class="card-img-top">
+                    </a>                  
+                    <div class="card-body text-center">
+                        <!-- <h5 class="card-title">{{movie.title}}</h5> -->
+                        <p class="card-text">{{movie.title}}</p>
+                        <a href="{{url_for('views.guest_view_movie_details', movie_id=movie.id)}}" class="btn btn-outline-primary ">Detials</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+</div>
 
 {% endblock %}
