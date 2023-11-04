@@ -1376,13 +1376,13 @@
             {
                 "seat_number": 5,
                 "row_number": 2,
-                "is_reserved": false,
+                "is_reserved": true,
                 "seat_price": 15.8
             },
             {
                 "seat_number": 6,
                 "row_number": 2,
-                "is_reserved": false,
+                "is_reserved": true,
                 "seat_price": 15.8
             },
             {
@@ -1950,6 +1950,6 @@
                 "seat_price": 15.8
             }
         ],
-        "is_active": false
+        "is_active": true
     }
 ]

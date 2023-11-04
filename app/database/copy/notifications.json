@@ -38,13 +38,5 @@
         "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
         "date_time": "2023-11-04 13:06:50.275",
         "booking_id": 5
-    },
-    {
-        "notification_id": 105,
-        "customer_username": "leowu",
-        "subject": "Refund Confirmation",
-        "message": "Due to the screening cancellation, your booking has been refunded. We apologize for any inconvenience caused.",
-        "date_time": "2023-11-05 09:30:01.386",
-        "booking_id": 5
     }
 ]

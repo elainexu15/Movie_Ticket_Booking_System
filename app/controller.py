@@ -81,6 +81,9 @@ class CinemaController:
     
 
     # =========== Methods to get controller object list ==========
+
+    
+
     @property
     def all_admins(self):
         """! Get a list of all admin objects.
@@ -377,7 +380,7 @@ class CinemaController:
 
 
     # ========== filter movies ==========       
-    def filter_movies(self, title, selected_language, selected_genre, date_from, date_to, user):
+    def customer_filter_movies(self, title, selected_language, selected_genre, date_from, date_to, user):
         """! Filter movies for a customer based on title, language, genre, and date range.
 
         @param title: The title of the movie to filter by.

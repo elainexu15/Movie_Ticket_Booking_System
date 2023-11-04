@@ -14,5 +14,13 @@
         "phone": "1234567898",
         "username": "leowu",
         "password": "sha256$1qMjq1ZIDjPMWEEH$3d1b441b1801ac1baa779fee532fa44981f34d870cde59b4d7c90ed99047079f"
+    },
+    {
+        "name": "New Customer",
+        "address": "New Address",
+        "email": "newcustomer@example.com",
+        "phone": "1234567890",
+        "username": "newcustomer",
+        "password": "newpassword"
     }
 ]

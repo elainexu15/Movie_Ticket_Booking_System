@@ -52,6 +52,7 @@ FRONT_DESK_STAFF_FILENAME = "app/database/front_desk_staffs.json"
 
 
 class Base:
+    """The Base class defines common methods and properties for searching and file I/O operations."""
     @classmethod
     def read_from_file(cls, filename):
         """Read data from a file and return it."""
@@ -121,7 +122,7 @@ class Base:
         """
         matching_movies = []   
         for movie in filtered_movies:  # Assuming you have a list of movies in the General class
-            if date_from <= movie.release_date <= date_to:
+            if movie.release_date>= date_from and movie.release_date <= date_to:
                 matching_movies.append(movie)
         return matching_movies
 

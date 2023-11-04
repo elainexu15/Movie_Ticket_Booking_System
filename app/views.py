@@ -499,7 +499,7 @@ def admin_cancel_screening(screening_id, movie_id):
     else:
         flash(f"Screening with ID {screening_id} not found.", 'error')
      # Redirect to the movie details page
-    return redirect(url_for('views.admin_view_movie_details', movie_id=movie_id))
+    return redirect(url_for('views.view_movie_details', movie_id=movie_id))
 
 
 
@@ -880,8 +880,6 @@ def staff_select_seats(movie_id, screening_date, start_time):
         selected_seats = request.form.get('selected_seats')
         customer_username = request.form.get('username')
         customer = LincolnCinema.find_customer(customer_username)
-        print(customer_username)
-        print(customer)
         if not customer_username:
             flash('Please select a Customer', 'error')
             return render_template('staff_select_seats.html', screening=screening, movie=movie,

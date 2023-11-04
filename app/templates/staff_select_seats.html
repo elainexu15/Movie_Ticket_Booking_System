@@ -77,7 +77,7 @@
 
 
 <div class="container">
-    <form action="{{url_for('views.cus_select_seats', movie_id = movie.id, screening_date = screening.screening_date, start_time = screening.start_time)}}" method="post" enctype="multipart/form-data" class="row g-3">
+    <form action="{{url_for('views.staff_select_seats', movie_id = movie.id, screening_date = screening.screening_date, start_time = screening.start_time)}}" method="post" enctype="multipart/form-data" class="row g-3">
     <div class="row">
         <div class="col-1"></div>
         <div class="col-3 mt-5">
@@ -141,10 +141,10 @@
                             {% endfor %}
                         </select>
 
-                </div>
+                
                 
 
-                <input type="submit" value="PROCEED" class="btn btn-primary mt-5 rounded-0 me-5">
+                <input type="submit" value="PROCEED" class="btn btn-primary mt-5 rounded-0 me-5 ">
             </div>
 
         </div>

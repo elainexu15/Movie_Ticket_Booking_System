@@ -1,0 +1,354 @@
+[
+    {
+        "name": "Elaine Xu",
+        "address": "62 Koala Drive",
+        "email": "elaine@lu.com",
+        "phone": "1234567892",
+        "username": "elaine",
+        "password": "sha256$UckbbZBueHbuiux6$40f41a94fa5907a7166c1b61232a78080b3b6808b22fda25972dff7f3555bc2f"
+    },
+    {
+        "name": "Leo Wu",
+        "address": "62 Duckworth Road",
+        "email": "leo@lu.com",
+        "phone": "1234567898",
+        "username": "leowu",
+        "password": "sha256$1qMjq1ZIDjPMWEEH$3d1b441b1801ac1baa779fee532fa44981f34d870cde59b4d7c90ed99047079f"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    },
+    {
+        "name": "John Doe",
+        "address": "123 Main St",
+        "email": "john@example.com",
+        "phone": "555-555-5555",
+        "username": "johndoe",
+        "password": "hashed_password"
+    }
+]

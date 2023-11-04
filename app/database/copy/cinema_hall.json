@@ -1,0 +1,18 @@
+[
+    {
+        "hall_name": "Hall 1",
+        "hall_capacity": 120
+    },
+    {
+        "hall_name": "Hall 2",
+        "hall_capacity": 90
+    },
+    {
+        "hall_name": "Hall 3",
+        "hall_capacity": 110
+    },
+    {
+        "hall_name": "Hall 4",
+        "hall_capacity": 80
+    }
+]

@@ -11,8 +11,8 @@
         ],
         "created_on": "2023-11-03",
         "total_amount": 31.0,
-        "payment_id": 1,
-        "status": "Paid"
+        "payment_id": 100,
+        "status": "confirmed"
     },
     {
         "booking_id": 2,
@@ -25,8 +25,8 @@
         ],
         "created_on": "2023-11-03",
         "total_amount": 15.5,
-        "payment_id": null,
-        "status": "Canceled"
+        "payment_id": 1,
+        "status": "canceled"
     },
     {
         "booking_id": 3,
@@ -57,5 +57,650 @@
         "total_amount": 15.5,
         "payment_id": null,
         "status": "Canceled"
+    },
+    {
+        "booking_id": 5,
+        "customer_username": "leowu",
+        "movie_id": 101,
+        "screening_id": 102,
+        "num_of_seats": 1,
+        "selected_seats": [
+            "25",
+            "26"
+        ],
+        "created_on": "2023-11-04",
+        "total_amount": 15.5,
+        "payment_id": 5,
+        "status": "Refunded"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": 1,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 2,
+        "customer_username": "john_doe",
+        "movie_id": 101,
+        "screening_id": 101,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "john_doe",
+        "movie_id": 108,
+        "screening_id": 103,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "11",
+            "21"
+        ],
+        "created_on": "2023-12-01",
+        "total_amount": 15.0,
+        "payment_id": null,
+        "status": "canceled"
+    },
+    {
+        "booking_id": 6,
+        "customer_username": "elaine",
+        "movie_id": 100,
+        "screening_id": 100,
+        "num_of_seats": 2,
+        "selected_seats": [
+            "15",
+            "16"
+        ],
+        "created_on": "2023-11-05",
+        "total_amount": 31.0,
+        "payment_id": null,
+        "status": "Pending"
     }
 ]
