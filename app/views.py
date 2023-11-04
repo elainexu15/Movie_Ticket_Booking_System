@@ -14,7 +14,8 @@ import json
 # Create a Blueprint named 'views'
 views = Blueprint('views', __name__)
 
-# Lists of available languages and genres
+
+# CONSTANT VARIABLES
 LANGUAGE_LIST = sorted(LincolnCinema.get_language_list())
 GENRE_LIST = sorted(LincolnCinema.get_genre_list())
 ALLOWED_EXTENSIONS = set(['jpg'])
@@ -25,12 +26,8 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-
-
-
-
-# ========= Auth Views =========
-# Define a route for the home page
+# ========= Authentication Routes =========
+# Route for the home page
 @views.route('/')
 def home():
     # Retrieve a list of all movies, language list, and genre list
@@ -56,7 +53,7 @@ def before_request():
             g.user = user
 
 
-# Define a route for the login page
+# Route for the login page
 @views.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -144,7 +141,8 @@ def register():
 
     return render_template('register.html')
 
-# Define a route for logging out
+
+# Route for logging out
 @views.route('/logout')
 def logout():
      # Remove the user's username from the session
@@ -154,34 +152,121 @@ def logout():
 
 
 
-# ======== guest routes ========
-
+# ======== View movie details ========
 # Route to view movie details for admin
-@views.route('/guest_view_movie_details/<movie_id>')
-def guest_view_movie_details(movie_id):
+@views.route('/view_movie_details/<movie_id>')
+def view_movie_details(movie_id):
+    # check if user logged in and find is user a customer, admin or staff
+    if g.user:
+        username = g.user.username
+        customer = LincolnCinema.find_customer(username)
+        admin = LincolnCinema.find_admin(username)
+        staff = LincolnCinema.find_staff(username)
+
+        if customer:
+            user = customer
+        elif admin:
+            user = admin
+        elif staff:
+            user = staff
+    else:
+        # Create a Guest object
+        user = Guest()
+
+    # get movie ID
     movie_id = int(movie_id)
+    # find movie object
     movie = LincolnCinema.find_movie(movie_id)
     # Filter the list of screenings to include only active screenings
     active_screenings = [screening for screening in movie.screenings if screening.is_active == True]
     # Get a list of screening dates for the movie
     screening_date_list = movie.get_screening_date_list()
-    return render_template('guest_view_movie_details.html', movie=movie, screening_date_list=screening_date_list, active_screenings=active_screenings)
+
+    if isinstance(user, Customer):
+        # Customer
+        return render_template('cus_view_movie_details.html', movie=movie, screening_date_list=screening_date_list, active_screenings=active_screenings)
+    elif isinstance(user, FrontDeskStaff):
+        # Front Desk Staff
+        return render_template('staff_view_movie_details.html', movie=movie, screening_date_list=screening_date_list, active_screenings=active_screenings)
+    elif isinstance(user, Admin):
+        # Admin
+        return render_template('admin_view_movie_details.html', movie=movie, screening_date_list=screening_date_list, active_screenings=active_screenings)
+    elif isinstance(user, Guest):
+        # Admin
+        return render_template('guest_view_movie_details.html', movie=movie, screening_date_list=screening_date_list, active_screenings=active_screenings)
 
 
 
+# ============ Filter Movies ============
+# Route for filtering movies based on customer preferences
+@views.route('/filter_movies', methods=['GET', 'POST'])
+def filter_movies():
+    # check if user logged in and find is user a customer, admin or staff
+    if g.user:
+        username = g.user.username
+        customer = LincolnCinema.find_customer(username)
+        admin = LincolnCinema.find_admin(username)
+        staff = LincolnCinema.find_staff(username)
+
+        if customer:
+            user = customer
+        elif admin:
+            user = admin
+        elif staff:
+            user = staff
+    else:
+        # Create a Guest object
+        user = Guest()
+
+    if request.method == 'POST':
+        # Get the customer's selected filters from the form
+        title = request.form.get('title')
+        selected_language = request.form.get('language')
+        selected_genre = request.form.get('genre')
+        date_from = request.form.get('date_from')
+        date_to = request.form.get('date_to')
+
+        # Handle date filtering
+        if date_from and not date_to:
+            date_to = str(date.today())
+        elif date_to and not date_from:
+            date_from = '1900-01-01'
+
+        # Filter movies based on the selected criteria
+        filtered_movies = LincolnCinema.filter_movies(title, selected_language, selected_genre, date_from, date_to, user)
+        language_list = LANGUAGE_LIST
+        genre_list = GENRE_LIST
+
+        if isinstance(user, Customer):
+            # Customer
+            return render_template('cus_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
+        elif isinstance(user, FrontDeskStaff):
+            # Front Desk Staff
+            return render_template('staff_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
+        elif isinstance(user, Admin):
+            # Admin
+            return render_template('admin_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
+        elif isinstance(user, Guest):
+            # Admin
+            return render_template('home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
+
+    # If the method is GET, initially display the form
+    if isinstance(user, Customer):
+        # Customer
+        return redirect(url_for('views.customer_home'))
+    elif isinstance(user, FrontDeskStaff):
+        # Front Desk Staff
+        return redirect(url_for('views.staff_home'))
+    elif isinstance(user, Admin):
+        # Admin
+        return redirect(url_for('views.admin_home'))
+    elif isinstance(user, Guest):
+        # Guest
+        return redirect(url_for('views.home'))
 
 
 
-
-
-
-
-
-
-
-
-
-# ========= Admin Views =========
+# ========= Admin Routes =========
 # route for the admin home page
 @views.route('/admin_home')
 def admin_home():
@@ -242,18 +327,6 @@ def admin_add_movie():
 def display_image(filename):
     # Redirect to the static folder to display an image
     return redirect(url_for('static', filename='movie_img/' + filename), code=301)
-
-
-# Route to view movie details for admin
-@views.route('/admin_view_movie_details/<movie_id>')
-def admin_view_movie_details(movie_id):
-    movie_id = int(movie_id)
-    movie = LincolnCinema.find_movie(movie_id)
-    # Filter the list of screenings to include only active screenings
-    active_screenings = [screening for screening in movie.screenings if screening.is_active == True]
-    # Get a list of screening dates for the movie
-    screening_date_list = movie.get_screening_date_list()
-    return render_template('admin_view_movie_details.html', movie=movie, screening_date_list=screening_date_list, active_screenings=active_screenings)
 
 
 # Route to cancel a movie by admin
@@ -430,16 +503,7 @@ def admin_cancel_screening(screening_id, movie_id):
 
 
 
-
-
-
-
-
-
-
-
-
-# ========= Customer Views =========
+# ========= Customer Routes =========
 # Route for the customer's home page
 @views.route('/customer_home')
 def customer_home():
@@ -453,20 +517,6 @@ def customer_home():
     # Render the customer home page with the data
     return render_template('cus_home.html', all_movies=all_movies, language_list=language_list, genre_list=genre_list)
 
-
-# Route for viewing movie details
-@views.route('/customer_view_movie_details/<movie_id>')
-def customer_view_movie_details(movie_id):
-    # Check if there is an authenticated user, otherwise redirect to the login page
-    if not g.user:
-        return redirect(url_for('views.login'))
-    movie_id = int(movie_id)
-    # Find the movie object
-    movie = LincolnCinema.find_movie(movie_id)
-    # Get the screening dates for the movie
-    screening_date_list = movie.get_screening_date_list()
-    return render_template('cus_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
-        
 
 # Route for selecting seats for a movie screening
 @views.route('/customer_select_seats/<movie_id>/<screening_date>/<start_time>', methods=['GET', 'POST'])
@@ -724,14 +774,7 @@ def customer_booking_details(booking_id):
     
 
 
-
-
-
-
-
-
-
-# ========= staff views ==========
+# ========= Staff Routes ==========
 # Routes for staff home
 @views.route('/staff_home')
 def staff_home():
@@ -822,15 +865,6 @@ def staff_search_customer():
         flash('An error occurred while searching for the customer.', 'error')
         app.logger.error(str(e))
         return redirect(url_for('views.staff_view_bookings'))
-
-
-# Route for displaying details of a movie for staff
-@views.route('/staff_view_movie_details/<movie_id>')
-def staff_view_movie_details(movie_id):
-    movie_id = int(movie_id)
-    movie = LincolnCinema.find_movie(movie_id)
-    screening_date_list = movie.get_screening_date_list()
-    return render_template('staff_view_movie_details.html', movie = movie, screening_date_list=screening_date_list)
 
 
 # Route for selecting seats for staff
@@ -1064,69 +1098,3 @@ def staff_confirm_booking(booking_id, username):
 
 
 
-# ============ Filter Movies ============
-# Route for filtering movies based on customer preferences
-@views.route('/filter_movies', methods=['GET', 'POST'])
-def filter_movies():
-    # check if user logged in and find is user a customer, admin or staff
-    if g.user:
-        username = g.user.username
-        customer = LincolnCinema.find_customer(username)
-        admin = LincolnCinema.find_admin(username)
-        staff = LincolnCinema.find_staff(username)
-
-        if customer:
-            user = customer
-        elif admin:
-            user = admin
-        elif staff:
-            user = staff
-    else:
-        # Create a Guest object
-        user = Guest()
-
-    if request.method == 'POST':
-        # Get the customer's selected filters from the form
-        title = request.form.get('title')
-        selected_language = request.form.get('language')
-        selected_genre = request.form.get('genre')
-        date_from = request.form.get('date_from')
-        date_to = request.form.get('date_to')
-
-        # Handle date filtering
-        if date_from and not date_to:
-            date_to = str(date.today())
-        elif date_to and not date_from:
-            date_from = '1900-01-01'
-
-        # Filter movies based on the selected criteria
-        filtered_movies = LincolnCinema.filter_movies(title, selected_language, selected_genre, date_from, date_to, user)
-        language_list = LANGUAGE_LIST
-        genre_list = GENRE_LIST
-
-        if isinstance(user, Customer):
-            # Customer
-            return render_template('cus_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
-        elif isinstance(user, FrontDeskStaff):
-            # Front Desk Staff
-            return render_template('staff_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
-        elif isinstance(user, Admin):
-            # Admin
-            return render_template('admin_home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
-        elif isinstance(user, Guest):
-            # Admin
-            return render_template('home.html', all_movies=filtered_movies, language_list=language_list, genre_list=genre_list)
-
-    # If the method is GET, initially display the form
-    if isinstance(user, Customer):
-        # Customer
-        return redirect(url_for('views.customer_home'))
-    elif isinstance(user, FrontDeskStaff):
-        # Front Desk Staff
-        return redirect(url_for('views.staff_home'))
-    elif isinstance(user, Admin):
-        # Admin
-        return redirect(url_for('views.admin_home'))
-    elif isinstance(user, Guest):
-        # Guest
-        return redirect(url_for('views.home'))
