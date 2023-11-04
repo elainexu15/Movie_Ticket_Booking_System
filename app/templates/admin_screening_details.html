@@ -132,7 +132,7 @@
                         {% if booking.status == 'Refunded' %}
                         <p>Refunded</p>
                         {% elif booking.status == 'Paid' %}
-                        <a href="{{url_for('views.admin_refund_booking', booking_id = booking.booking_id, username = booking.customer.username, payment_id = booking.payment.payment_id)}}" class="btn btn-sm btn-primary">Refund</a>
+                        <a href="{{url_for('views.admin_refund_booking', booking_id = booking.booking_id, username = booking.customer.username, payment_id = booking.payment.payment_id)}}" class="btn btn-sm btn-outline-primary">Refund</a>
                         {% endif %}
                     
                     </td>
