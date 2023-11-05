@@ -21,7 +21,6 @@
 - **Username**: staff
 - **Password**: 11112222
 
-
 ## Coupon Code
 1. SAVE10  (Expired)
 2. GET15OFF (Valid)
