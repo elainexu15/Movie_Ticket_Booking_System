@@ -31,6 +31,7 @@
             {% include 'search.html' %}
             {% if all_movies %}
             {% for movie in all_movies %}
+            {% if movie.is_active == True %}
             <div class="col co-sm-4 col-lg-3 mb-3 ">
                 <div class="card" style="width: 18rem;">
                   <a href="{{url_for('views.view_movie_details', movie_id=movie.id)}}">
@@ -43,6 +44,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
             {% endfor %}
             {% else %}
             <h2 class="text-center mt-5">NO MOVIES FOUND</h2>

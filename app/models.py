@@ -787,19 +787,6 @@ class Movie(Base):
         screening_date_list = sorted(list(unique_dates))
         return screening_date_list
 
-
-    @classmethod
-    def update_movie_status_to_inactive(cls, movie_id):
-        """! Update the status of a movie to inactive in the JSON file.
-        @param movie_id (int): The ID of the movie to be updated.
-        """
-        movies_data = cls.read_from_json(MOVIES_FILENAME)
-        for movie_data in movies_data:
-            if movie_data["movie_id"] == movie_id:
-                movie_data["is_active"] = False
-        cls.save_to_file(movies_data, MOVIES_FILENAME)
-
-
     @classmethod
     def update_movies_json(cls, movies):
         """! Update the JSON file with movie data.
@@ -834,7 +821,6 @@ class Movie(Base):
             "duration": self.duration_in_mins,
             "description": self.description,
             "is_active": self.is_active,
-            "screenings": self.screenings,
         }
 
 

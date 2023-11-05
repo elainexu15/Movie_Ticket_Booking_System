@@ -337,10 +337,10 @@ def admin_cancel_movie(movie_id):
     if movie.screenings:
         flash('Please cancel screening first.', 'error')
     else:
-        # Cancel the movie by removing it from the list of movies
+        print('no Screening')
+        # Cancel the movie 
         LincolnCinema.cancel_movie(movie_id)
-        # update movie status to inactive in movie json file
-        Movie.update_movie_status_to_inactive(movie_id)
+        flash('Movie canceled successfully.')
     return redirect(url_for("views.admin_home"))
 
 

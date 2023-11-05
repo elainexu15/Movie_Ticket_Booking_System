@@ -8,8 +8,7 @@
         "release_date": "2023-11-13",
         "duration": "168",
         "description": "Description: The Cultural Phenomenon Continues On The Big Screen! Immerse Yourself In This Once-In-A-Lifetime Concert Film Experience With A Breathtaking, Cinematic View Of The History-Making Tour. Taylor Swift Eras Tour Attire And Friendship Bracelets Are Strongly Encouraged!",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     },
     {
         "movie_id": 101,
@@ -20,8 +19,7 @@
         "release_date": "2023-11-05",
         "duration": "118",
         "description": "Description: A Young Iranian Mother And Her Six-Year-Old Daughter Finds Refuge In An Australian Women'S Shelter During The Two Weeks Of Iranian New Year (Nowrooz) Which Is Celebrated As A Time Of Renewal And Rebirth. Aided By The Strong Community Of Women At The Refuge They Seek Their Freedom In This New World Of Possibilities, Only To Find Themselves Facing The Violence They Tried So Hard To Escape.",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     },
     {
         "movie_id": 102,
@@ -32,8 +30,7 @@
         "release_date": "2019-05-30",
         "duration": "132",
         "description": "Description: A Poor Family'S And A Rich Family'S Lives Unexpectedly Intersect In This Best Picture Oscar-Winning Tragicomedy From South Korean Auteur, Bong Joon-Ho.",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     },
     {
         "movie_id": 103,
@@ -44,8 +41,7 @@
         "release_date": "2023-01-16",
         "duration": "110",
         "description": "Since He Was A Kid, Yazid Has One Big Passion, Pastry Making. Raised Between Foster Homes And Group Homes, The Young Man Will Try To Make His Dream Come True: To Work With The Greatest Pastry Chefs And Become The Best.",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     },
     {
         "movie_id": 104,
@@ -56,8 +52,7 @@
         "release_date": "2023-02-24",
         "duration": "128",
         "description": "It Follows Three Mummies As They End Up In Present-Day London And Embark On A Journey In Search Of An Old Ring Belonging To The Royal Family, Stolen By The Ambitious Archaeologist Lord Carnaby.",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     },
     {
         "movie_id": 105,
@@ -68,8 +63,7 @@
         "release_date": "2023-08-11",
         "duration": "97",
         "description": "Inspired By An Epic Chinese Tale, Translated Into An Action-Packed Comedy, A Monkey And His Magical Fighting Stick Battle Demons, Dragons, Gods And The Greatest Adversary Of All - Monkey'S Ego.",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     },
     {
         "movie_id": 106,
@@ -80,8 +74,7 @@
         "release_date": "2023-01-27",
         "duration": "168",
         "description": "A Sweeping Historical Romance Created To Celebrate Toei\u2019S 70Th Anniversary, The Legend & Butterfly Casts Megastars Takuya Kimura As Oda Nobunaga And Haruka Ayase As His Wife, Nohime. While Oda Nobunaga Is One Of Japan\u2019S Most Well-Documented Historical Figures, Virtually No Information About Nohime Remains, And The Legend & Butterfly Fills This Mystery With A Turbulent, Thoroughly Modern Romance. A Sengoku Era Take On The Expression \u201cBehind Every Great Man Lies A Great Woman,\u201d The Legend & Butterfly Sees Over 30 Years Of Defining Moments In Japanese History Driven By Powerful, Private Moments Between Nobunaga And Nohime.",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     },
     {
         "movie_id": 107,
@@ -92,7 +85,6 @@
         "release_date": "2023-02-03",
         "duration": "119",
         "description": "The Four Friends Lukas, Julius, Gino And Sanchez Are Trying To Survive The Everyday Life In Neuk\u00f6lln, Berlin Between Drugs, Gangs, Rap, Violence And Boredom. Until They Are One Day Making A Serious Decision With Serious Consequences Because Of A Dead Certain Plan.",
-        "is_active": true,
-        "screenings": []
+        "is_active": true
     }
 ]
