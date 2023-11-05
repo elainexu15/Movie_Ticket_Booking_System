@@ -1,23 +1,35 @@
-# Movie_Ticket_Booking_System
-A python Flask MVC program
+# Movie Ticket Booking System
 
-validate password input
+This is a Python Flask-based Movie Ticket Booking System.
 
-Customer:  
-elaine  11112222
-leowu   11112222
+## Login Credentials
 
-Admin
-quentin 123
+### Customer
+- Username: elaine
+- Password: 11112222
 
-Front Desk Staff:
-claire 123
+- Username: leowu
+- Password: 11112222
 
+### Admin
+- Username: quentin
+- Password: 11112222
 
+### Front Desk Staff
+- Username: claire
+- Password: 11112222
 
-when Admin cancel movie and cancel screening, movie and screening will be not deleted completed. as thus can cause id mismatch when reload system. is_active attribute included and when canceled, is_active will be set to False
+## Functionality
 
-for Pytest:
-Search Methods (search_movie_title, search_movie_lang, search_movie_genre, search_movie_release_date) in Guest are tested. Those Search Methods are exactly same as Search Methods in Admin, Staff, Customer class.
+- When the Admin cancels a movie or screening, the `is_active` attribute is set to `False`. This prevents id mismatches when reloading the system.
 
-how to run Pytest:
+## Pytest
+
+- Search Methods (search_movie_title, search_movie_lang, search_movie_genre, search_movie_release_date) in the Guest class are tested. These Search Methods are the same as those in the Admin, Staff, and Customer classes.
+
+## Running Pytest
+
+To run Pytest, follow these steps:
+1. Change to the `tests` directory.
+2. Run the command: `python test_run.py`
+
