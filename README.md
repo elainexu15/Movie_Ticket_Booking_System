@@ -1,6 +1,6 @@
-# Movie Ticket Booking System
+# Lincoln Cinema Movie Ticket Booking System
 
-This is a Python Flask-based Movie Ticket Booking System.
+This system is a Movie Ticket Booking application built using Python with an OOP (Object-Oriented Programming) architecture and implemented as a Model-View-Controller (MVC) design within the Flask framework.
 
 ## Login Credentials
 
@@ -18,14 +18,6 @@ This is a Python Flask-based Movie Ticket Booking System.
 ### Front Desk Staff
 - Username: claire
 - Password: 11112222
-
-## Functionality
-
-- When the Admin cancels a movie or screening, the `is_active` attribute is set to `False`. This prevents id mismatches when reloading the system.
-
-## Pytest
-
-- Search Methods (search_movie_title, search_movie_lang, search_movie_genre, search_movie_release_date) in the Guest class are tested. These Search Methods are the same as those in the Admin, Staff, and Customer classes.
 
 ## Running Pytest
 
