@@ -13,7 +13,6 @@
                 <th>Start Time(24h)</th>
                 <th>End Time(24h)</th>
                 <th>Hall</th>
-                <th>Number of Seats</th>
                 <th>Selected Seats</th>
                 <th>Total Amount</th>
                 <th>Status</th>
@@ -28,7 +27,6 @@
                     <td>{{ booking.screening.start_time }}</td>
                     <td>{{ booking.screening.end_time }}</td>
                     <td>{{ booking.screening.hall.hall_name }}</td>
-                    <td>{{ booking.num_of_seats }}</td>
                     <td>
                         <ul>
                             {% for seat in booking.selected_seats %}
@@ -46,11 +44,11 @@
                                 <br>(Coupon applied)
                             {% endif %}
                         {% else %}
-                            {{ booking.total_amount }}
+                            ${{ booking.total_amount }}
                         {% endif %}
 
                     </td>
-                    <td>{{ booking.status }}</td>
+                    <td>{{ booking.status }}({{booking.payment_method}})</td>
                     <td>
                     {% if booking.status == 'Pending' %}
                         <a href="{{url_for('views.customer_apply_coupon', booking_id = booking.booking_id)}}" class="btn btn-sm btn-primary">Pay</a>
@@ -58,7 +56,7 @@
                     {% elif booking.status == 'Canceled' %}
                         <p>Canceled</p>
                     {% elif booking.status == 'Paid' %}
-                        <a href="{{url_for('views.customer_confirm_booking', booking_id = booking.booking_id)}}" class="btn btn-sm btn-primary">Ticket Details</a>
+                        <a href="{{url_for('views.customer_booking_details', booking_id = booking.booking_id)}}" class="btn btn-sm btn-primary">Ticket Details</a>
                     {% endif %}
                     </td>
                 </tr>

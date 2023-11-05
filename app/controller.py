@@ -81,9 +81,6 @@ class CinemaController:
     
 
     # =========== Methods to get controller object list ==========
-
-    
-
     @property
     def all_admins(self):
         """! Get a list of all admin objects.
@@ -420,6 +417,20 @@ class CinemaController:
         self.save_new_bookings_to_json(booking)
 
 
+    def reserve_seats(self, booking):
+        reserved_seats_id = []
+        for seat in booking.selected_seats:
+            for screening_seat in booking.screening.seats:
+                if seat.seat_id == screening_seat.seat_id:
+                    screening_seat.is_reserved = True
+                    reserved_seats_id.append(seat.seat_id)
+                    print('seat reserved successfully!')
+        is_reserved = True  
+        screening_id = booking.screening.screening_id
+        Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
+
+
+
     def cancel_movie(self, movie_id:int):
         """! Cancel a movie based on its ID.
         @param movie_id (int): The ID of the movie to cancel.
@@ -439,13 +450,22 @@ class CinemaController:
             Movie.update_movies_json(self.all_movies)
 
 
-    def update_booking_payment_and_status(self, booking_id, payment_id, new_status):
+    def update_booking_payment_and_status(self, booking_id, payment_id, new_status, payment_method):
         """! Update the payment and status of a booking.
         @param booking_id: The ID of the booking to update.
         @param payment_id: The ID of the associated payment.
         @param new_status: The new status of the booking.
         """
-        Booking.update_payment_and_status(booking_id, payment_id, new_status)
+        Booking.update_payment_and_status(booking_id, payment_id, new_status, payment_method)
+    
+    
+    def update_booking_payment_method(self, booking_id, payment_method, new_status):
+        """! Update the payment and status of a booking.
+        @param booking_id: The ID of the booking to update.
+        @param payment_id: The ID of the associated payment.
+        @param new_status: The new status of the booking.
+        """
+        Booking.update_payment_method(booking_id, payment_method, new_status)
 
 
     def update_status_to_canceled(self, booking_id, new_status):
@@ -498,10 +518,11 @@ class CinemaController:
                     created_on = date.fromisoformat(booking_info["created_on"])
                     total_amount = float(booking_info["total_amount"])
                     status = booking_info["status"]
+                    print(status)
+                    payment_method = booking_info["payment_method"]
                     payment_id = booking_info["payment_id"]
                     if payment_id:
                         payment = self.find_payment(int(payment_id))
-                        print(f'payment id found??????{payment}')
                     else:
                         payment = None
 
@@ -514,6 +535,7 @@ class CinemaController:
                         created_on=created_on,
                         total_amount=total_amount,
                         status=status,
+                        payment_method=payment_method,
                         payment=payment)
                     customer.add_booking(booking)
 

@@ -3,7 +3,7 @@
 {% block content %}
   {% if notifications %}
     <div class="container">
-      <h1 class="mt-4 text-center">NOTIFICATIONS</h1>
+      <h2 class="mt-2 text-center">NOTIFICATIONS</h2>
       <table class="table table-striped mt-3">
         <thead>
           <tr>
@@ -20,7 +20,7 @@
               <td>{{ notification.message }}</td>
               <td>{{ notification.date_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
               <td>
-                {% if notification.booking %}
+                {% if notification.booking and notification.booking.status == 'Paid' %}
                   <a href="{{url_for('views.customer_booking_details', booking_id=notification.booking.booking_id)}}" class="btn btn-primary btn-sm">Ticket Details</a>
                 {% endif %}
               </td>

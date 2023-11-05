@@ -1,0 +1,37 @@
+{% extends "staff_home.html" %}
+
+{% block title %}
+  Cash Payment
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 align="center" class="mb-3">CASH PAYMENT</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6" style="background: white;">
+
+            <form class="border rounded p-4 needs-validation" action="{{ url_for('views.staff_cash_payment', booking_id = booking.booking_id, username = booking.customer.username ) }}" method="POST">
+                <div class="mb-3">
+                    <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount to pay: </label>
+                    <input type="number" id="amount" name="amount_to_pay" class="form-control"  title="Please enter a valid amount (e.g. 10.99)" value = {{booking.total_amount}} readonly>
+                </div>
+
+                <input type="text" id="received_amount" name="amount" class="form-control" placeholder="Please enter a valid received amount (e.g. 10.99)" required>
+
+
+                <hr>
+                <div class="text-center">
+                    <input type="submit" class="btn btn-primary" style="width: 150px;" value="Confirm Payment">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

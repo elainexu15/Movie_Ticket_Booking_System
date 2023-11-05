@@ -173,14 +173,14 @@ def test_check_seat_availability(cinema_controller):
     # Create a sample booking with reserved seats
     selected_seats = [CinemaHallSeat(1, 1, True, 10.0), CinemaHallSeat(1, 2, False, 10.0)]
     screening = Screening(1, "2023-12-01", "18:00", "20:00", "Hall 1", [CinemaHallSeat(1, 1, True, 10.0)], True)
-    booking = Booking(cinema_controller.all_customers[0], cinema_controller.all_movies[0], screening, 2, selected_seats, date(2023, 12, 1), 20.0, "active")
+    booking = Booking(cinema_controller.all_customers[0], cinema_controller.all_movies[0], screening, 2, selected_seats, date(2023, 12, 1), 20.0, "active", 'Cash')
 
     # Check that seat availability is False
     assert cinema_controller.check_seat_availability(booking) is False
 
     # Create a sample booking with available seats
     selected_seats = [CinemaHallSeat(1, 3, False, 10.0), CinemaHallSeat(1, 4, False, 10.0)]
-    booking = Booking(cinema_controller.all_customers[0], cinema_controller.all_movies[0], screening, 2, selected_seats, date(2023, 12, 1), 20.0, "active")
+    booking = Booking(cinema_controller.all_customers[0], cinema_controller.all_movies[0], screening, 2, selected_seats, date(2023, 12, 1), 20.0, "active", 'Cash')
 
     # Check that seat availability is True
     assert cinema_controller.check_seat_availability(booking) is True

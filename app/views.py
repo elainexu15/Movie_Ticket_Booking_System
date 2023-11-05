@@ -549,10 +549,10 @@ def customer_select_seats(movie_id, screening_date, start_time):
 
             username = g.user.username
             customer = LincolnCinema.find_customer(username)
-    
+            payment_method = 'Unpaid'
             status = 'Pending'
             # create book object
-            new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status)
+            new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status, payment_method)
             is_booking_repeated = customer.add_booking(new_booking)
             if is_booking_repeated:
                 Booking.save_new_bookings_to_json(new_booking)
@@ -619,11 +619,27 @@ def customer_payment(booking_id):
     customer = LincolnCinema.find_customer(g.user.username)
     booking = customer.find_booking(int(booking_id))
     coupon = booking.coupon
+    payment_method = request.args.get('payment_method')        
+    # Handle payment based on the payment_method
+    if payment_method == 'credit_card':
+        return render_template('cus_credit_card_payment.html', booking=booking)
+    elif payment_method == 'cash':
+        return render_template('cus_cash_payment.html', booking=booking)
+    elif payment_method == 'debit_card':
+        return render_template('cus_debit_card_payment.html', booking=booking)
+
+
+
+# Route for staff to process a payment for a booking
+@views.route('/customer_credit_card_payment/<booking_id>', methods=['GET', 'POST'])
+def customer_credit_card_payment(booking_id):
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(int(booking_id))
+    coupon = booking.coupon
     if request.method == 'POST':
         # Check seat availability
         is_seats_available = LincolnCinema.check_seat_availability(booking)
         if is_seats_available == True: 
-            # Get payment information from the form
             card_holder_name = request.form.get('card_holder_name')
             card_number = request.form.get('card_number')
             expire_date = request.form.get('expire_date')
@@ -661,26 +677,19 @@ def customer_payment(booking_id):
                             # Assign the CreditCard object to the booking's payment attribute
                             booking.payment = credit_card_payment
 
-                            # update the booking status
+                            # You may also update the booking status here
                             new_status = 'Paid'
                             movie_id = booking.movie.id
-                            screening_id = booking.screening.screening_id
                             LincolnCinema.add_payment(credit_card_payment)
                             CreditCard.save_payment_to_json(credit_card_payment)  
                             booking.status = new_status
-                            LincolnCinema.update_booking_payment_and_status(booking_id, payment_id, new_status)
+                            new_status = 'Paid'
+                            booking.status = new_status
+                            payment_method = 'Credit Card'
+                            booking.payment_method = payment_method
+                            LincolnCinema.update_booking_payment_and_status(booking_id, payment_id, new_status, payment_method)
                             
-                            # Mark selected seats as reserved and update screening data
-                            reserved_seats_id = []
-                            for seat in booking.selected_seats:
-                                for screening_seat in booking.screening.seats:
-                                    if seat.seat_id == screening_seat.seat_id:
-                                        screening_seat.is_reserved = True
-                                        reserved_seats_id.append(seat.seat_id)
-                                        print('seat reserved successfully!')
-                            is_reserved = True       
-                            Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
-
+                            LincolnCinema.reserve_seats(booking)
                             # Redirect to a success or confirmation page
                             return redirect(url_for('views.customer_confirm_booking', booking_id=booking_id))
                         else:
@@ -696,9 +705,43 @@ def customer_payment(booking_id):
                 flash('Invalid date format. Please enter a valid expiry date.', 'error')
         else:
             flash('Seats have become unavailable. Please start a new booking and choose your seats again.', 'error')
-            bookings = customer.bookings()
-            return render_template('cus_bookings.html', bookings = bookings)
-    return render_template('cus_payment.html', booking=booking)
+            return render_template('cus_home.html')
+    return render_template('cus_credit_card_payment.html', booking=booking,)
+
+
+
+
+# Route for handling the payment process
+@views.route('/customer_cash_payment/<booking_id>', methods=['GET','POST'])
+def customer_cash_payment(booking_id):
+    # Find the customer and the booking based on the provided booking ID
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(int(booking_id))
+    coupon = booking.coupon
+    if request.method == 'POST':
+        amount = request.form.get('amount')
+        is_seats_available = LincolnCinema.check_seat_availability(booking)
+        
+        if float(amount) == booking.total_amount:
+            if is_seats_available == True: 
+                new_status = 'Paid'
+                booking.status = new_status
+                payment_method = 'Cash'
+                booking.payment_method = payment_method
+                LincolnCinema.update_booking_payment_method(booking_id, payment_method, new_status)
+                LincolnCinema.reserve_seats(booking)
+
+            else:
+                flash('Seats have become unavailable. Please cancel your booking and start a new booking again.', 'error')
+                bookings = customer.bookings()
+                return render_template('cus_bookings.html', bookings = bookings)
+        else:
+            flash('Please make sure cash payment amount is correct!', 'error')
+            return render_template('cus_cash_payment.html', booking=booking)
+        return redirect(url_for('views.customer_confirm_booking', booking_id=booking_id))
+    return render_template('cus_cash_payment.html', booking=booking)
+
+
 
 
 # Route for displaying the customer's bookings
@@ -755,6 +798,14 @@ def customer_confirm_booking(booking_id):
     return render_template("cus_confirm_booking.html", booking=booking)
 
 
+# Route for confirming a booking
+@views.route('/customer_booking_details/<booking_id>')
+def customer_booking_details(booking_id):
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(booking_id)
+    return render_template("cus_booking_details.html", booking=booking)
+
+
 # Route for displaying customer notifications
 @views.route('customer_notifications')
 def customer_notifications():
@@ -764,14 +815,6 @@ def customer_notifications():
     notifications = sorted(notifications, key=lambda notification: notification.date_time, reverse=True)
     return render_template('cus_notifications.html', notifications=notifications)
 
-
-# Route for displaying details of a customer's booking
-@views.route('customer_booking_details/<booking_id>')
-def customer_booking_details(booking_id):
-    customer = LincolnCinema.find_customer(g.user.username)
-    booking = customer.find_booking(booking_id)    
-    return render_template("cus_booking_details.html", booking=booking)
-    
 
 
 # ========= Staff Routes ==========
@@ -803,7 +846,8 @@ def staff_refund_booking(booking_id, username):
     # Find the customer based on the provided username
     customer = LincolnCinema.find_customer(username)
     if customer is None:
-        flash("Customer not found", 'error')
+        print("Customer not found", 'error')
+
     # Find the booking to refund within the customer's bookings
     booking = customer.find_booking(booking_id)
     if booking is None:
@@ -811,39 +855,67 @@ def staff_refund_booking(booking_id, username):
     # Retrieve movie and screening information
     movie_id = booking.movie.id
     screening_id = booking.screening.screening_id
-    creditcard_payment = booking.payment
+    payment_method = booking.payment_method
+    if payment_method == 'Cash':
+        print('cash refund')
+        is_success =True
+        if is_success:
+            reserved_seats_id = []
+            for seat in booking.selected_seats:
+                seat_id = seat.seat_id
+                reserved_seats_id.append(seat_id)
+                for screening_seat in booking.screening.seats:
+                    if screening_seat.seat_id == seat_id:
+                        screening_seat.is_reserved = False
+            is_reserved = False       
+            Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
 
-    if creditcard_payment is None:
-        flash("Payment not found", 'error')
-        return redirect(url_for('views.some_error_route'))  # Handle error redirection
-    # Process the refund and update related information
-    is_success = creditcard_payment.process_refund()
-    
-    if is_success:
-        reserved_seats_id = []
-        for seat in booking.selected_seats:
-            seat_id = seat.seat_id
-            reserved_seats_id.append(seat_id)
-            for screening_seat in booking.screening.seats:
-                if screening_seat.seat_id == seat_id:
-                    screening_seat.is_reserved = False
-        is_reserved = False       
-        Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
+            new_status = 'Refunded'
+            booking.status = new_status
+            FrontDeskStaff.cancel_booking(booking_id, new_status)
 
-        new_status = 'Refunded'
-        booking.status = new_status
-        FrontDeskStaff.cancel_booking(booking_id, new_status)
+            # Create a confirmation notification
+            confirmation_message = "Your booking has been refunded successffully."
+            notification = Notification(customer, "Refund Confirmation", confirmation_message, datetime.now(), booking)
+            customer.add_notification(notification)
 
-        # Create a confirmation notification
-        confirmation_message = "Your booking has been refunded successffully."
-        notification = Notification(customer, "Refund Confirmation", confirmation_message, datetime.now(), booking)
-        customer.add_notification(notification)
+            # Save the confirmation notification to JSON
+            Notification.save_notification_to_json(notification)
 
-        # Save the confirmation notification to JSON
-        Notification.save_notification_to_json(notification)
+            # Use Flask's flash function to send the confirmation message
+            flash("Booking has been refunded! A confirmation notice has been sent to the customer.", 'success')
 
-        # Use Flask's flash function to send the confirmation message
-        flash("Booking has been refunded! A confirmation notice has been sent to the customer.", 'success')
+    if payment_method == 'Credit Card':
+        creditcard_payment = booking.payment
+
+        # Process the refund and update related information
+        is_success = creditcard_payment.process_refund()
+        
+        if is_success:
+            reserved_seats_id = []
+            for seat in booking.selected_seats:
+                seat_id = seat.seat_id
+                reserved_seats_id.append(seat_id)
+                for screening_seat in booking.screening.seats:
+                    if screening_seat.seat_id == seat_id:
+                        screening_seat.is_reserved = False
+            is_reserved = False       
+            Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
+
+            new_status = 'Refunded'
+            booking.status = new_status
+            FrontDeskStaff.cancel_booking(booking_id, new_status)
+
+            # Create a confirmation notification
+            confirmation_message = "Your booking has been refunded successffully."
+            notification = Notification(customer, "Refund Confirmation", confirmation_message, datetime.now(), booking)
+            customer.add_notification(notification)
+
+            # Save the confirmation notification to JSON
+            Notification.save_notification_to_json(notification)
+
+            # Use Flask's flash function to send the confirmation message
+            flash("Booking has been refunded! A confirmation notice has been sent to the customer.", 'success')
 
     return redirect(url_for('views.staff_view_bookings'))
 
@@ -904,8 +976,9 @@ def staff_select_seats(movie_id, screening_date, start_time):
             for seat in seat_objects:
                 total_price += float(seat.seat_price)    
             status = 'Pending'
+            payment_method = 'Unpaid'
             # create book object
-            new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status)
+            new_booking = Booking(customer, movie, screening, num_of_seats, seat_objects, current_date, total_price, status, payment_method)
             is_booking_repeated = customer.add_booking(new_booking)
             if is_booking_repeated:
                 Booking.save_new_bookings_to_json(new_booking)
@@ -954,22 +1027,132 @@ def staff_validate_coupon():
     return redirect(url_for('views.staff_apply_coupon', booking_id=booking_id, username = username))
 
 
-# Route for staff to apply a coupon and proceed to checkout
-@views.route('staff_apply_coupon/<booking_id>/<username>')
-def staff_apply_coupon(booking_id, username):
+
+# Route for staff cancel booking
+@views.route('staff_cancel_booking/<booking_id>/<username>')
+def staff_cancel_booking(booking_id, username):
     customer = LincolnCinema.find_customer(username)
     booking = customer.find_booking(booking_id)
-    is_seats_available = LincolnCinema.check_seat_availability(booking)
-    if is_seats_available == True: 
-        return render_template('staff_checkout.html', booking=booking, customer=customer)
-    else:
-        flash('Seats have become unavailable. Please choose seats again.', 'error')
-        return redirect(url_for('views.staff_view_bookings'))
+    customer.cancel_booking(booking_id)
+    bookings = customer.bookings()
+    new_status = 'Canceled'
+    LincolnCinema.update_status_to_canceled(booking_id, new_status)
     
+    # Create a confirmation notification
+    confirmation_message = "Your booking has been canceled!"
+    notification = Notification(customer, "Cancel Confirmation", confirmation_message, datetime.now(), booking)
+    customer.add_notification(notification)
+    # Save the confirmation notification to JSON
+    Notification.save_notification_to_json(notification)
+
+    # Use Flask's flash function to send the confirmation message
+    flash(f"{customer.name}'s booking has been canceled! A confirmation notice has been sent to {customer.name}!", 'success')  # You can use 'success' or any other category
+    
+    return redirect(url_for('views.staff_view_bookings'))
+
+
+# Route for staff confirm booking 
+@views.route('/staff_confirm_booking/<booking_id>/<username>')
+def staff_confirm_booking(booking_id, username):
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(booking_id)
+
+    # Create a confirmation notification
+    confirmation_message = "Your booking has been confirmed! Thank you for choosing Lincoln Cinema."
+    notification = Notification(customer, "Booking Confirmation", confirmation_message, datetime.now(), booking)
+    customer.add_notification(notification)
+    # Save the confirmation notification to JSON
+    Notification.save_notification_to_json(notification)
+
+    # Use Flask's flash function to send the confirmation message
+    flash("Your booking has been confirmed! A confirmation notice has been sent to you!", 'success')  # You can use 'success' or any other category
+    
+    return render_template("staff_confirm_booking.html", booking=booking)
+
+
+# Route for handling the payment process
+@views.route('/staff_cash_payment/<booking_id>/<username>', methods=['GET','POST'])
+def staff_cash_payment(booking_id, username):
+    print(username)
+    # Find the customer and the booking based on the provided booking ID
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(int(booking_id))
+    coupon = booking.coupon
+    if request.method == 'POST':
+        amount = request.form.get('amount')
+        is_seats_available = LincolnCinema.check_seat_availability(booking)
+        
+        if float(amount) == booking.total_amount:
+            if is_seats_available == True: 
+                new_status = 'Paid'
+                booking.status = new_status
+                payment_method = 'Cash'
+                booking.payment_method = payment_method
+                LincolnCinema.update_booking_payment_method(booking_id, payment_method, new_status)
+                LincolnCinema.reserve_seats(booking)
+
+            else:
+                flash('Seats have become unavailable. Please cancel booking and start a new booking again.', 'error')
+                bookings = customer.bookings()
+                return redirect(url_for('views.staff_view_bookings'))  # Handle error redirection
+        else:
+            flash('Please make sure cash payment amount is correct!', 'error')
+            return render_template('cus_cash_payment.html', booking=booking)
+        return redirect(url_for('views.staff_confirm_booking', booking_id=booking_id, username = username))
+    return render_template('staff_cash_payment.html', booking=booking)
+
+
+# Route for handling the payment process
+@views.route('/staff_debit_card_payment/<booking_id>/<username>', methods=['POST'])
+def staff_debit_card_payment(booking_id, username):
+    print(username)
+    # Find the customer and the booking based on the provided booking ID
+    customer = LincolnCinema.find_customer(username)
+    booking = customer.find_booking(int(booking_id))
+    coupon = booking.coupon
+    amount = request.form.get('amount')
+    is_seats_available = LincolnCinema.check_seat_availability(booking)
+    if float(amount) == booking.total_amount:
+        if is_seats_available == True: 
+            LincolnCinema.reserve_seats(booking)
+            new_status = 'Paid'
+            booking.status = new_status
+            payment_method = 'Cash'
+            booking.payment_method = payment_method
+            LincolnCinema.update_booking_payment_method(booking_id, payment_method, new_status)  
+        else:
+            flash('Seats have become unavailable. Please cancel your booking and start a new booking again.', 'error')
+            bookings = customer.bookings()
+            return render_template('cus_bookings.html', bookings = bookings)
+    else:
+        flash('Please make sure cash payment amount is correct!', 'error')
+        return render_template('cus_cash_payment.html', booking=booking)
+    return redirect(url_for('views.staff_confirm_booking', booking_id=booking_id))
+
+
+
+
+# Route for handling the payment process
+@views.route('/staff_payment/<booking_id>', methods=['GET', 'POST'])
+def staff_payment(booking_id):
+    # Find the customer and the booking based on the provided booking ID
+    customer = LincolnCinema.find_customer(g.user.username)
+    booking = customer.find_booking(int(booking_id))
+    coupon = booking.coupon
+    payment_method = request.args.get('payment_method')        
+    # Handle payment based on the payment_method
+    if payment_method == 'credit_card':
+        return render_template('staff_credit_card_payment.html', booking=booking)
+    elif payment_method == 'cash':
+        return render_template('staff_cash_payment.html', booking=booking)
+    elif payment_method == 'debit_card':
+        return render_template('staff_debit_card_payment.html', booking=booking)
+
+
 
 # Route for staff to process a payment for a booking
-@views.route('/staff_payment/<booking_id>/<username>', methods=['GET', 'POST'])
-def staff_payment(booking_id, username):
+@views.route('/staff_credit_card_payment/<booking_id>/<username>', methods=['GET', 'POST'])
+def staff_credit_card_payment(booking_id, username):
     print(f"username....{username}")
     customer = LincolnCinema.find_customer(username)
     booking = customer.find_booking(int(booking_id))
@@ -1018,22 +1201,16 @@ def staff_payment(booking_id, username):
                             # You may also update the booking status here
                             new_status = 'Paid'
                             movie_id = booking.movie.id
-                            screening_id = booking.screening.screening_id
                             LincolnCinema.add_payment(credit_card_payment)
                             CreditCard.save_payment_to_json(credit_card_payment)  
                             booking.status = new_status
-                            LincolnCinema.update_booking_payment_and_status(booking_id, payment_id, new_status)
+                            new_status = 'Paid'
+                            booking.status = new_status
+                            payment_method = 'Credit Card'
+                            booking.payment_method = payment_method
+                            LincolnCinema.update_booking_payment_and_status(booking_id, payment_id, new_status, payment_method)
                             
-                            reserved_seats_id = []
-                            for seat in booking.selected_seats:
-                                for screening_seat in booking.screening.seats:
-                                    if seat.seat_id == screening_seat.seat_id:
-                                        screening_seat.is_reserved = True
-                                        reserved_seats_id.append(seat.seat_id)
-                                        print('seat reserved successfully!')
-                            is_reserved = True       
-                            Screening.update_reserved_seats_to_json(screening_id, reserved_seats_id, is_reserved)
-
+                            LincolnCinema.reserve_seats(booking)
                             # Redirect to a success or confirmation page
                             return redirect(url_for('views.staff_confirm_booking', booking_id=booking_id, username=username))
                         else:
@@ -1050,49 +1227,13 @@ def staff_payment(booking_id, username):
         else:
             flash('Seats have become unavailable. Please start a new booking and choose your seats again.', 'error')
             return render_template('staff_home.html')
-    return render_template('staff_payment.html', booking=booking, username = username)
+    return render_template('staff_credit_card_payment.html', booking=booking, username = username)
 
 
-# Route for staff cancel booking
-@views.route('staff_cancel_booking/<booking_id>/<username>')
-def staff_cancel_booking(booking_id, username):
+
+# Route for staff to apply a coupon and proceed to checkout
+@views.route('staff_apply_coupon/<booking_id>/<username>', methods = ['GET', 'POST'])
+def staff_apply_coupon(booking_id, username, ):
     customer = LincolnCinema.find_customer(username)
-    booking = customer.find_booking(booking_id)
-    customer.cancel_booking(booking_id)
-    bookings = customer.bookings()
-    new_status = 'Canceled'
-    LincolnCinema.update_status_to_canceled(booking_id, new_status)
-    
-    # Create a confirmation notification
-    confirmation_message = "Your booking has been canceled!"
-    notification = Notification(customer, "Cancel Confirmation", confirmation_message, datetime.now(), booking)
-    customer.add_notification(notification)
-    # Save the confirmation notification to JSON
-    Notification.save_notification_to_json(notification)
-
-    # Use Flask's flash function to send the confirmation message
-    flash(f"{customer.name}'s booking has been canceled! A confirmation notice has been sent to {customer.name}!", 'success')  # You can use 'success' or any other category
-    
-    return redirect(url_for('views.staff_view_bookings'))
-
-
-# Route for staff confirm booking 
-@views.route('/staff_confirm_booking/<booking_id>/<username>')
-def staff_confirm_booking(booking_id, username):
-    customer = LincolnCinema.find_customer(username)
-    booking = customer.find_booking(booking_id)
-
-    # Create a confirmation notification
-    confirmation_message = "Your booking has been confirmed! Thank you for choosing Lincoln Cinema."
-    notification = Notification(customer, "Booking Confirmation", confirmation_message, datetime.now(), booking)
-    customer.add_notification(notification)
-    # Save the confirmation notification to JSON
-    Notification.save_notification_to_json(notification)
-
-    # Use Flask's flash function to send the confirmation message
-    flash("Your booking has been confirmed! A confirmation notice has been sent to you!", 'success')  # You can use 'success' or any other category
-    
-    return render_template("staff_confirm_booking.html", booking=booking)
-
-
-
+    booking = customer.find_booking(int(booking_id))
+    return render_template('staff_checkout.html', username=username, booking = booking)

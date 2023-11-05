@@ -9,7 +9,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6" style="background:white;">
 
-            <form class="border rounded p-4 needs-validation" action="{{ url_for('views.staff_payment', booking_id = booking.booking_id, username = booking.customer.username) }}" method="POST">
+            <form class="border rounded p-4 needs-validation" action="{{ url_for('views.staff_credit_card_payment', booking_id = booking.booking_id, username = booking.customer.username) }}" method="POST">
                 <div class="mb-3">
                     <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
                     <label for="card_holder_name" class="form-label">Cardholder Name</label>

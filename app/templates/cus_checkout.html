@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <div class="row mt-2">
+    <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
             <h2 class="mb-4 text-center">CHECKOUT</h2>
@@ -38,9 +38,8 @@
                 <div class="card mt-3">
                     <div class="card-body">
                         <h5 class="card-title">Apply Coupon</h5>
-                        <p>Enter your coupon code:</p>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="coupon_code" placeholder="Coupon code">
+                            <input type="text" class="form-control" name="coupon_code" placeholder="Enter your coupon code here">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-primary">Apply</button>
                             </div>
@@ -49,10 +48,16 @@
                 </div>
             </form>
             
-            <div class="mt-3">
-                <a href="{{ url_for('views.customer_payment', booking_id = booking.booking_id)}}"
-                    class="btn btn-primary">Proceed to Payment</a>
+            <div class="text-center mt-3">
+                <a href="{{ url_for('views.customer_credit_card_payment', booking_id=booking.booking_id, username = booking.customer.username) }}"
+                   class="btn btn-primary mx-2">Pay by Credit Card</a>
+            
+                <a href="{{ url_for('views.customer_cash_payment', booking_id=booking.booking_id, username = booking.customer.username) }}"
+                   class="btn btn-primary mx-2">Pay by Cash</a>
+            
             </div>
+            
+            
         </div>
         <div class="col-2"></div>
     </div>

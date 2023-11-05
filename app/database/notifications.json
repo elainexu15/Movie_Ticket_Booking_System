@@ -4,47 +4,87 @@
         "customer_username": "elaine",
         "subject": "Booking Confirmation",
         "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
-        "date_time": "2023-11-03 23:10:46.719",
+        "date_time": "2023-11-05 15:30:33.081",
         "booking_id": 1
     },
     {
         "notification_id": 101,
         "customer_username": "elaine",
-        "subject": "Cancel Confirmation",
-        "message": "Your booking has been canceled!",
-        "date_time": "2023-11-03 23:51:05.478",
-        "booking_id": 2
+        "subject": "Refund Confirmation",
+        "message": "Your booking has been refunded successffully.",
+        "date_time": "2023-11-05 15:30:41.194",
+        "booking_id": 1
     },
     {
         "notification_id": 102,
-        "customer_username": "elaine",
+        "customer_username": "leowu",
         "subject": "Booking Confirmation",
         "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
-        "date_time": "2023-11-04 00:02:51.188",
-        "booking_id": 3
+        "date_time": "2023-11-05 15:32:47.988",
+        "booking_id": 2
     },
     {
         "notification_id": 103,
-        "customer_username": "elaine",
-        "subject": "Cancel Confirmation",
-        "message": "Your booking has been canceled!",
-        "date_time": "2023-11-04 00:18:50.580",
-        "booking_id": 4
+        "customer_username": "leowu",
+        "subject": "Refund Confirmation",
+        "message": "Your booking has been refunded successffully.",
+        "date_time": "2023-11-05 15:32:55.162",
+        "booking_id": 2
     },
     {
         "notification_id": 104,
-        "customer_username": "leowu",
+        "customer_username": "elaine",
         "subject": "Booking Confirmation",
         "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
-        "date_time": "2023-11-04 13:06:50.275",
-        "booking_id": 5
+        "date_time": "2023-11-05 15:40:46.956",
+        "booking_id": 4
     },
     {
         "notification_id": 105,
-        "customer_username": "leowu",
-        "subject": "Refund Confirmation",
-        "message": "Due to the screening cancellation, your booking has been refunded. We apologize for any inconvenience caused.",
-        "date_time": "2023-11-05 09:30:01.386",
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-05 15:45:03.993",
         "booking_id": 5
+    },
+    {
+        "notification_id": 106,
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-05 15:45:17.761",
+        "booking_id": 4
+    },
+    {
+        "notification_id": 107,
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-05 15:46:39.196",
+        "booking_id": 3
+    },
+    {
+        "notification_id": 108,
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-05 15:46:49.814",
+        "booking_id": 4
+    },
+    {
+        "notification_id": 109,
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-05 15:53:26.705",
+        "booking_id": 6
+    },
+    {
+        "notification_id": 110,
+        "customer_username": "elaine",
+        "subject": "Booking Confirmation",
+        "message": "Your booking has been confirmed! Thank you for choosing Lincoln Cinema.",
+        "date_time": "2023-11-05 15:54:31.294",
+        "booking_id": 7
     }
 ]

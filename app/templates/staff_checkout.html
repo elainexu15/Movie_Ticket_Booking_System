@@ -49,9 +49,12 @@
                     </div>
                 </div>
             </form>
-            <div class="mt-3">
-                <a href="{{ url_for('views.staff_payment', booking_id = booking.booking_id, username = booking.customer.username)}}"
-                    class="btn btn-primary">Proceed to Payment</a>
+            <div class="text-center mt-3">
+                <a href="{{ url_for('views.staff_credit_card_payment', booking_id=booking.booking_id, username = booking.customer.username) }}"
+                   class="btn btn-primary mx-2">Pay by Credit Card</a>
+            
+                <a href="{{ url_for('views.staff_cash_payment', booking_id=booking.booking_id, username = booking.customer.username) }}"
+                   class="btn btn-primary mx-2">Pay by Cash</a>
             </div>
 
         </div>

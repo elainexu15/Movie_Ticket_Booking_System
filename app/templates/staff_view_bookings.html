@@ -52,11 +52,11 @@
                                 <br>(Coupon applied)
                             {% endif %}
                         {% else %}
-                            {{ booking.total_amount }}
+                            ${{ booking.total_amount }}
                         {% endif %}
 
                     </td>
-                    <td>{{ booking.status }}</td>
+                    <td>{{ booking.status }}({{booking.payment_method}})</td>
                     <td>
                         {% if booking.status == 'Pending' %}
                             <a href="{{url_for('views.staff_apply_coupon', booking_id = booking.booking_id, username=booking.customer.username )}}" class="btn btn-sm btn-primary">Pay</a>
@@ -64,7 +64,31 @@
                         {% elif booking.status == 'Canceled' %}
                             <p>Canceled</p>
                         {% elif booking.status == 'Paid' %}
-                            <a href="{{ url_for('views.staff_refund_booking', booking_id=booking.booking_id, username=booking.customer.username, payment_id=booking.payment.payment_id) }}" class="btn btn-sm btn-primary">Refund</a>
+                        <a href="{{ url_for('views.staff_refund_booking', booking_id=booking.booking_id, username=booking.customer.username, payment_id=booking.payment.payment_id) }}"
+                        data-toggle="modal" data-target="#refundConfirmationModal"
+                        class="btn btn-sm btn-primary">Refund</a>
+                                             
+                        <div class="modal fade" id="refundConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="refundConfirmationModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="refundConfirmationModalLabel">Confirm Refund</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to refund this booking?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <a href="{{ url_for('views.staff_refund_booking', booking_id=booking.booking_id, username=booking.customer.username, payment_id=booking.payment.payment_id) }}"
+                                           class="btn btn-primary">Confirm Refund</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         {% elif booking.status == 'Refunded' %}
                             <p>Refunded</p>
 

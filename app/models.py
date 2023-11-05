@@ -1380,7 +1380,7 @@ class DebitCard(Payment):
 class Booking(Base):
     """! The Notification class: Represents a notification sent to a user. """
     next_id = 1
-    def __init__(self, customer: Customer, movie: Movie, screening: Screening, num_of_seats: int, selected_seats: List[CinemaHallSeat], created_on: date, total_amount: float, status: str, payment = None, coupon = None) -> None:
+    def __init__(self, customer: Customer, movie: Movie, screening: Screening, num_of_seats: int, selected_seats: List[CinemaHallSeat], created_on: date, total_amount: float, status: str, payment_method: str, payment = None, coupon = None) -> None:
         """! Constructor for the Booking class.
         @param customer (Customer): The customer who made the booking.
         @param movie (Movie): The movie being booked.
@@ -1402,6 +1402,7 @@ class Booking(Base):
         self.__created_on = created_on
         self.__total_amount = total_amount
         self.__status = status
+        self.__payment_method = payment_method
         self.__payment = payment
         self.__coupon = coupon
         Booking.next_id += 1
@@ -1469,12 +1470,27 @@ class Booking(Base):
         """
         return self.__status
     
+    @property
+    def payment_method(self):
+        """! Get the status of the booking.
+        @return (str): The current status of the booking.
+        """
+        return self.__payment_method
+    
+    
     @status.setter
     def status(self, status):
         """! Set the status of the booking.
         @param status (str): The new status to set for the booking.
         """
         self.__status = status
+    
+    @payment_method.setter
+    def payment_method(self, payment_method):
+        """! Set the status of the booking.
+        @param status (str): The new status to set for the booking.
+        """
+        self.__payment_method = payment_method
     
     @property
     def coupon(self):
@@ -1527,6 +1543,8 @@ class Booking(Base):
             "total_amount": self.__total_amount,
             "payment_id": self.__payment.payment_id if self.__payment else None,
             "status": self.__status,
+            "payment_method": self.__payment_method,
+
         }
         if self.__payment:
             booking_dict["payment"] = self.__payment.payment_id
@@ -1536,7 +1554,7 @@ class Booking(Base):
 
 
     @classmethod
-    def update_payment_and_status(cls, booking_id, payment_id, new_status):
+    def update_payment_and_status(cls, booking_id, payment_id, new_status, payment_method):
         """! Update payment and status of a booking.
         @param booking_id (int): The ID of the booking to update.
         @param payment_id (int): The ID of the associated payment.
@@ -1547,6 +1565,7 @@ class Booking(Base):
             if booking_info["booking_id"] == int(booking_id):
                 booking_info["payment_id"] = payment_id
                 booking_info["status"] = new_status
+                booking_info["payment_method"] = payment_method
 
         cls.save_to_file(bookings_info, BOOKINGS_FILENAME)
 
@@ -1566,6 +1585,21 @@ class Booking(Base):
 
 
     @classmethod
+    def update_payment_method(cls, booking_id, payment_method, new_status):
+        """! Update the status of a booking to 'canceled'.
+        @param booking_id (int): The ID of the booking to update.
+        @param new_status (str): The new status to set for the booking.
+        """
+        bookings_info = cls.read_from_file(BOOKINGS_FILENAME)
+        for booking_info in bookings_info:
+            if booking_info["booking_id"] == int(booking_id):
+                booking_info["payment_method"] = payment_method
+                booking_info["status"] = new_status
+
+        cls.save_to_file(bookings_info, BOOKINGS_FILENAME)
+
+
+    @classmethod
     def save_new_bookings_to_json(cls, booking):
         """! Save a new booking to a JSON file.
         @param booking: The booking object to be saved.
@@ -1578,21 +1612,6 @@ class Booking(Base):
             existing_data.append(booking.to_dict())
 
         cls.save_to_file(existing_data, BOOKINGS_FILENAME)
-
-
-    def __str__(self):
-        """! Get a formatted string representation of the Booking object.
-        @return: A string containing formatted booking information.
-        """
-        return f"Booking ID: {self.__booking_id}\n" \
-               f"Customer: {self.__customer}\n" \
-               f"Screening: {self.__screening}\n" \
-               f"Number of Seats: {self.__num_of_seats}\n" \
-               f"Selected Seats: {', '.join(map(str, self.__selected_seats))}\n" \
-               f"Created On: {self.__created_on}\n" \
-               f"Total Amount: {self.__total_amount}\n" \
-               f"Payment: {self.__payment}\n" \
-               f"Status: {self.__status}"
     
 
 class Notification(Base):

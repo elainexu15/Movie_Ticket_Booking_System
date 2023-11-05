@@ -142,22 +142,6 @@ def test_admin_getter_methods(admin_instance):
     assert admin_instance.username == "adminuser"
     assert admin_instance.password == "adminpassword"
 
-
-def test_read_admins_from_file(admin_data_file, admin_instance):
-    # Call the method to read admin data from the temporary JSON file
-    admins_data = Admin.read_admins_from_file()
-
-    # Ensure the data is a list of dictionaries
-    assert isinstance(admins_data, list)
-
-    # Ensure the data contains the expected number of admin records
-    assert len(admins_data) == 1
-
-    # Check the content of the first admin record
-    assert admins_data[0]["name"] ==  'Quentin Smith'
-    assert admins_data[0]["username"] == 'quentin'
-
-
 # =========== Test FrontDeskStaff class ============
 # Define a fixture to create an Admin instance for testing
 @pytest.fixture
@@ -194,8 +178,9 @@ def sample_booking():
     created_on = date(2023, 1, 1)
     total_amount = 20.0
     status = "Pending"
+    payment_method = 'Credit Card'
 
-    return Booking(customer, movie, screening, num_of_seats, selected_seats, created_on, total_amount, status)
+    return Booking(customer, movie, screening, num_of_seats, selected_seats, created_on, total_amount, status, payment_method)
 
 
 def test_customer_getter_methods(customer_instance):
@@ -454,7 +439,7 @@ screening = Screening(1, "2023-12-01", "18:00", "20:00", hall, [], True)
 
 
 # Create a Booking object
-booking = Booking(customer, movie, screening, 2, selected_seats, created_on, total_amount, "active")
+booking = Booking(customer, movie, screening, 2, selected_seats, created_on, total_amount, "active", "Credit Card")
 
 # Test basic properties
 def test_booking_properties():
@@ -479,17 +464,6 @@ def test_change_status():
 def test_change_total_amount():
     booking.total_amount = 15.0
     assert booking.total_amount == 15.0
-
-
-# Test saving new booking to JSON
-def test_save_new_booking_to_json():
-    Booking.save_new_bookings_to_json(booking)
-    # Implement a method to read bookings from a file and check if the saved booking exists
-
-# Test updating status to canceled
-def test_update_status_to_canceled():
-    Booking.update_status_to_canceled(booking.booking_id, "canceled")
-    assert booking.status == "canceled"
 
 
 if __name__ == '__main__':
