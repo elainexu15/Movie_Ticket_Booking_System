@@ -7,7 +7,7 @@
 ## Login Credentials
 
 ### Customer
-- **Username**: elaine
+- **UsernameS**: elaine
 - **Password**: 11112222
 
 - **Username**: leo
@@ -20,7 +20,6 @@
 ### Front Desk Staff
 - **Username**: staff
 - **Password**: 11112222
-
 
 ## Coupon Code
 1. SAVE10  (Expired)
